@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idaratech — AI Model Selection · Reporting V2</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1a3a5c;--blue:#1e6fa8;--lb:#4db8e8;--teal:#2db5a3;--purple:#7c4daa;--orange:#e8873a;--red:#c94040;--silver:#9ca3af;--bg:#0a1628;--sf:#0f2040;--sf2:#162b50;--bd:#1e3a5c;--tx:#e8f0f8;--mu:#7a9bbf;--dm:#3a5a7c}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',-apple-system,system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;zoom:1.5}
+.header{display:flex;justify-content:space-between;align-items:center;padding:10px 24px 8px}
+.header-left{display:flex;align-items:center;gap:10px}
+.brand{color:var(--lb);font-size:13px;font-weight:700}.sep{color:var(--bd);font-size:12px}.sub{color:var(--dm);font-size:11px}
+.header-right{display:flex;align-items:center;gap:12px}
+.jump-btn{background:transparent;color:var(--mu);border:1px solid var(--bd);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:11px;font-family:inherit}
+.jump-btn.active{background:var(--navy)}
+.slide-num{color:var(--dm);font-size:11px;font-weight:600}
+.jump-nav{display:none;flex-wrap:wrap;gap:6px;padding:6px 24px 8px;border-bottom:1px solid var(--bd)}
+.jump-nav.open{display:flex}
+.jump-nav button{background:var(--sf);color:var(--mu);border:1px solid var(--bd);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:11px;font-family:inherit}
+.jump-nav button.active{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
+.progress{display:flex;gap:3px;padding:0 24px}
+.progress div{flex:1;height:3px;border-radius:2px;background:var(--bd);cursor:pointer;transition:background .2s}
+.progress div.done{background:var(--blue)}.progress div.cur{background:var(--orange)}
+.slide-area{flex:1;padding:16px 30px;overflow:auto}
+.slide{display:none;height:100%;flex-direction:column}.slide.active{display:flex}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:6px 28px 14px}
+.footer .author{color:var(--dm);font-size:11px}
+.footer .nav{display:flex;align-items:center;gap:16px}
+.footer .label{color:var(--dm);font-size:11px}
+.btn{border-radius:8px;padding:7px 22px;font-weight:700;font-size:13px;cursor:pointer;border:none;font-family:inherit}
+.btn-prev{background:var(--sf2);color:var(--tx);border:1px solid var(--bd)}
+.btn-prev:disabled{background:var(--sf);color:var(--dm);cursor:not-allowed}
+.btn-next{background:var(--blue);color:#fff}.btn-next:disabled{background:var(--sf);color:var(--dm);cursor:not-allowed}
+.st{margin-bottom:14px}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:7px}
+.st h2{font-size:22px;font-weight:800;color:var(--tx);margin:0}
+.st .bar{height:3px;width:48px;background:linear-gradient(90deg,var(--orange),var(--blue));border-radius:2px;margin-top:6px}
+.card{background:var(--sf);border-radius:10px;padding:13px 16px;border:1px solid var(--bd)}
+.info{background:var(--sf2);border:1.5px solid var(--orange);border-left:4px solid var(--orange);border-radius:8px;padding:9px 14px;color:var(--mu);font-size:12px;margin-top:8px;box-shadow:0 0 8px #e8873a33}
+.cons{background:var(--sf2);border:1.5px solid var(--red);border-left:4px solid var(--red);border-radius:8px;padding:9px 14px;color:var(--mu);font-size:12px;margin-top:8px;box-shadow:0 0 8px #c9404033}
+.bul{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}
+.bul .dot{margin-top:2px;flex-shrink:0;font-size:12px}
+.bul span:last-child{color:var(--mu);font-size:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1}
+.g2s{display:grid;grid-template-columns:1fr 1.6fr;gap:14px;flex:1}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--navy);color:var(--mu);padding:7px 10px;text-align:left;font-size:10px;font-weight:700}
+td{padding:7px 10px;font-size:11px;vertical-align:top;border-bottom:1px solid var(--bd)}
+tr:nth-child(even){background:var(--sf)}tr:nth-child(odd){background:var(--sf2)}
+.mono{font-family:'Courier New',monospace}
+.step-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.step-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.flow-step{display:flex;gap:8px;margin-bottom:4px;align-items:flex-start}
+.flow-num{color:#fff;font-weight:800;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.role-row{display:flex;gap:8px;margin-bottom:5px;padding:5px 8px;border-radius:6px;background:var(--sf2);border:1px solid var(--bd)}
+.spec-item{margin-bottom:5px}.spec-item .k{color:var(--dm);font-size:10px}.spec-item .v{color:var(--tx);font-size:11px;font-weight:600}
+.cover-center{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;gap:22px}
+.cover-logo{display:flex;align-items:center;gap:16px;background:var(--sf);border-radius:16px;padding:14px 28px;border:1px solid var(--bd)}
+.agenda-item{display:flex;gap:12px;align-items:flex-start}
+.agenda-num{color:#fff;font-weight:800;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.code-block{background:var(--sf2);border-radius:8px;padding:10px 12px;font-size:11px;font-family:'Courier New',monospace}
+.tenant-box{background:var(--sf2);border-radius:8px;padding:8px;margin-bottom:6px}
+.data-section{border-radius:6px;padding:8px;margin-bottom:6px}
+.factor-card{display:flex;gap:12px;align-items:flex-start;padding:10px 14px}
+.factor-q{background:var(--sf2);border-radius:6px;padding:4px 10px;color:var(--dm);font-size:11px;margin-top:5px}
+.tok-row{display:flex;gap:8px;margin-top:6px}
+.tok-box{flex:1;border-radius:6px;padding:8px 10px}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="header-left">
+<svg width="28" height="28" viewBox="0 0 52 52"><path d="M26,4 L46,15" stroke="#e8873a" stroke-width="6" stroke-linecap="round"/><path d="M46,15 L46,37" stroke="#c94040" stroke-width="6" stroke-linecap="round"/><path d="M46,37 L26,48" stroke="#9ca3af" stroke-width="6" stroke-linecap="round"/><path d="M26,48 L6,37" stroke="#4db8e8" stroke-width="6" stroke-linecap="round"/><path d="M6,37 L6,15" stroke="#2db5a3" stroke-width="6" stroke-linecap="round"/><path d="M6,15 L26,4" stroke="#7c4daa" stroke-width="6" stroke-linecap="round"/><polygon points="26,14 38,21 38,31 26,38 14,31 14,21" fill="#0a1628"/></svg>
+<span class="brand">Idaratech</span><span class="sep">|</span><span class="sub">AI Model Selection — Reporting V2</span>
+</div>
+<div class="header-right">
+<button class="jump-btn" id="jumpBtn" onclick="toggleJump()">☰ Jump</button>
+<span class="slide-num" id="slideNum"></span>
+</div>
+</div>
+<div class="jump-nav" id="jumpNav"></div>
+<div class="progress" id="progressBar"></div>
+<div class="slide-area" id="slideArea"></div>
+<div class="footer">
+<span class="author">Bilal Elhalawaty</span>
+<div class="nav">
+<button class="btn btn-prev" id="prevBtn" onclick="go(-1)">← Prev</button>
+<span class="label" id="slideLabel"></span>
+<button class="btn btn-next" id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+</div>
+
+<script>
+const labels=["Cover","Agenda","Training","Pipeline","DB: Option A","DB: Option B","B: Auth+Tenant+Security","DB: Option C","5 Factors","Qwen3-32B","Qwen3-235B","Claude Opus","Gemini 2.5 Pro","Gemini 3.1 Pro","Cost","Recommendation"];
+const T=labels.length;
+let cur=0,navOpen=false;
+
+function bul(c,t){return`<div class="bul"><span class="dot" style="color:${c}">▸</span><span>${t}</span></div>`}
+function info(i,t){return`<div class="info">${i?`<span style="margin-right:6px">${i}</span>`:''}${t}</div>`}
+function consx(t){return`<div class="cons">${t}</div>`}
+function bdg(t,c){return`<span class="badge" style="background:${c}">${t}</span>`}
+function st(t,b,bc){return`<div class="st">${b?`<div>${bdg(b,bc)}</div>`:''}${'<h2>'+t+'</h2>'}<div class="bar"></div></div>`}
+
+function tokBox(label,color,avg,en,ar,border){
+return`<div class="tok-box" style="background:var(--sf2);border:1px solid ${border||color}">
+<div style="color:var(--dm);font-size:9px;font-weight:700;letter-spacing:.5px;margin-bottom:3px">${label}</div>
+<div style="color:${color};font-size:14px;font-weight:800">${avg}</div>
+<div style="display:flex;gap:10px;margin-top:3px">
+<span style="color:var(--dm);font-size:9px">EN: ${en}</span>
+<span style="color:var(--dm);font-size:9px">AR: ${ar}</span>
+</div>
+<div style="color:var(--dm);font-size:8px;margin-top:3px;font-style:italic">* benchmark context — see note</div>
+</div>`}
+
+function modelSlide(title,bg,bc,specs,tokA,tokB,ft,ftOk,factors){
+return`${st(title,bg,bc)}
+<div class="g2s" style="flex:1">
+<div style="display:flex;flex-direction:column;gap:8px;overflow-y:auto">
+<div class="card" style="padding:10px 14px">
+<div style="font-weight:700;color:var(--dm);font-size:10px;margin-bottom:6px;letter-spacing:1px">SPECS</div>
+${specs.map(([k,v])=>`<div class="spec-item"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}
+</div>
+<div class="card" style="background:var(--sf2);border:1px solid ${bc};padding:10px 14px">
+<div style="color:var(--dm);font-size:10px;font-weight:700;margin-bottom:6px;letter-spacing:.5px">AVG TOKENS / REQUEST (Benchmarked)</div>
+<div class="tok-row">
+${tokA?tokBox('🅰️ OPTION A · SQL','var(--purple)',tokA.avg,tokA.en,tokA.ar,'var(--purple)'):'<div class="tok-box" style="background:var(--sf);border:1px solid var(--bd)"><div style="color:var(--dm);font-size:9px">🅰️ OPTION A · SQL</div><div style="color:var(--dm);font-size:11px;margin-top:3px">Not tested</div></div>'}
+${tokB?tokBox('🅱️ OPTION B · Tools','var(--teal)',tokB.avg,tokB.en,tokB.ar,'var(--teal)'):'<div class="tok-box" style="background:var(--sf);border:1px solid var(--bd)"><div style="color:var(--dm);font-size:9px">🅱️ OPTION B · Tools</div><div style="color:var(--dm);font-size:11px;margin-top:3px">Not tested</div></div>'}
+</div>
+</div>
+<div class="card" style="background:${ftOk?'#0a1f0a':'#1f0a0a'};border:1px solid ${ftOk?'var(--teal)':'var(--red)'};padding:10px 14px">
+<div style="color:var(--dm);font-size:10px;margin-bottom:3px">FINE-TUNING</div>
+<div style="color:${ftOk?'var(--teal)':'var(--red)'};font-size:11px;font-weight:700">${ft}</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;overflow-y:auto">
+${factors.map(f=>`<div class="card" style="padding:8px 12px"><div style="display:flex;gap:8px"><span style="font-size:13px;flex-shrink:0">${f.i}</span><div><div style="font-weight:700;font-size:11px">${f.l}</div><div style="color:var(--mu);font-size:11px">${f.b}</div></div></div></div>`).join('')}
+</div>
+</div>`}
+
+const slides=[
+// 0 Cover
+()=>`<div class="cover-center">
+<div class="cover-logo">
+<svg width="52" height="52" viewBox="0 0 52 52"><polygon points="26,4 46,15 46,37 26,48 6,37 6,15" fill="none" stroke="var(--bd)" stroke-width="2"/><polygon points="26,12 40,20 40,32 26,40 12,32 12,20" fill="var(--bg)"/><path d="M26,4 L46,15" stroke="var(--orange)" stroke-width="5" stroke-linecap="round"/><path d="M46,15 L46,37" stroke="var(--red)" stroke-width="5" stroke-linecap="round"/><path d="M46,37 L26,48" stroke="var(--silver)" stroke-width="5" stroke-linecap="round"/><path d="M26,48 L6,37" stroke="var(--lb)" stroke-width="5" stroke-linecap="round"/><path d="M6,37 L6,15" stroke="var(--teal)" stroke-width="5" stroke-linecap="round"/><path d="M6,15 L26,4" stroke="var(--purple)" stroke-width="5" stroke-linecap="round"/></svg>
+<div style="text-align:left"><div style="color:var(--lb);font-size:22px;font-weight:900">Idaratech</div><div style="color:var(--mu);font-size:13px;font-family:serif">إدارتك</div></div>
+</div>
+<div><h1 style="font-size:34px;font-weight:900;margin-bottom:8px">AI Model Selection</h1><p style="color:var(--mu);font-size:16px">Reporting V2 — Technical Research &amp; Recommendation</p></div>
+${info('⚠️','<strong style="color:var(--orange)">This is a proposal / research document — not a finalized decision</strong>')}
+<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">${['Idaratech HR Platform','2026'].map(m=>`<span style="background:var(--sf2);color:var(--mu);font-size:12px;padding:5px 14px;border-radius:99px;border:1px solid var(--bd)">${m}</span>`).join('')}</div>
+</div>`,
+
+// 1 Agenda
+()=>{const items=[{n:'1',t:'Training Approach: Session-Based vs Fine-Tuning',c:'var(--blue)'},{n:'2',t:'How Our AI Reporting Feature Could Work',c:'var(--teal)'},{n:'3',t:'DB Access Strategy: Three Options',c:'var(--orange)'},{n:'4',t:'Why Tool-Based Solves Auth + Security + Tenancy',c:'var(--lb)'},{n:'5',t:'The 5 Critical Decision Factors',c:'var(--red)'},{n:'6',t:'Model Candidates & Deep Evaluation (5 Models)',c:'var(--purple)'},{n:'7',t:'Cost Comparison & Recommendation',c:'var(--teal)'}];
+return`${st('Agenda')}<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1">${items.map(i=>`<div class="card agenda-item"><div class="agenda-num" style="background:${i.c}">${i.n}</div><span style="font-size:13px">${i.t}</span></div>`).join('')}</div>`},
+
+// 2 Training Approach
+()=>`${st('Training Approach: What Will We Use?')}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px">
+<div class="card" style="border:1.5px solid var(--teal);background:var(--sf2);padding:10px 14px">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:16px">💡</span><strong style="color:var(--teal);font-size:12px">Usage ≠ Learning. Ever.</strong></div>
+<div style="color:var(--mu);font-size:11px">The model does NOT learn from your employees' queries. Each conversation starts completely fresh. No data is retained between requests.</div>
+</div>
+<div class="card" style="border:1.5px solid var(--lb);background:var(--sf2);padding:10px 14px">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:16px">💡</span><strong style="color:var(--lb);font-size:12px">Weights Are Frozen Files</strong></div>
+<div style="color:var(--mu);font-size:11px">Pre-training + tuning happen once offline by the AI company. Model weights are read-only frozen files — physically cannot change from usage.</div>
+</div>
+</div>
+<div class="g2" style="flex:1">
+<div class="card" style="border:2px solid var(--teal);display:flex;flex-direction:column;gap:6px">
+${bdg('RECOMMENDATION — PHASE 1','var(--teal)')}
+<div style="font-weight:800;font-size:14px">Session-Based + RAG</div>
+<div style="color:var(--dm);font-size:11px;font-weight:700">USE MODEL AS-IS — NO TRAINING FROM OUR SIDE</div>
+${bul('var(--teal)','Use the pre-trained model directly — no additional training')}
+${bul('var(--teal)','Inject tool definitions + descriptions into the system prompt')}
+${bul('var(--teal)','Each API call is 100% stateless — model retains nothing')}
+${bul('var(--teal)','Zero risk of client data entering any training pipeline')}
+${bul('var(--teal)','Ready immediately — fastest path to production')}
+${info('','<strong style="color:var(--orange)">Example:</strong> User asks "كم موظف غاب هذا الشهر؟" → we inject tool defs → model picks get_attendance_summary(period="this_month") → our backend executes → result shown.')}
+</div>
+<div class="card" style="display:flex;flex-direction:column;gap:6px">
+${bdg('FUTURE OPTION — PHASE 2','var(--dm)')}
+<div style="font-weight:800;font-size:14px">Fine-Tuning</div>
+<div style="color:var(--dm);font-size:11px;font-weight:700">OFFLINE TRAINING ON OUR OWN DATA</div>
+${bul('var(--blue)','Collect real usage logs: prompts where model made mistakes')}
+${bul('var(--blue)','Build corrected prompt → tool selection pairs (anonymized)')}
+${bul('var(--blue)','Run offline fine-tune job — model specializes for our HR tools')}
+${bul('var(--orange)','⚠️ Only feasible with Qwen3 (self-hosted) or Gemini via Vertex AI')}
+${bul('var(--red)','❌ Not available on Claude — Anthropic does not offer fine-tuning')}
+${info('','When to consider: after 6–12 months, if prompt engineering alone is not achieving accuracy needed.')}
+</div>
+</div>`,
+
+// 3 Pipeline
+()=>{const steps=[{i:'💬',l:'User',d:'"عدد الموظفين السعوديين في قسم المبيعات"'},{i:'⚙️',l:'Our Backend',d:'Authenticate → Identify tenant → Check role → Build prompt with ONLY tools this role can access'},{i:'🤖',l:'AI Model',d:'Selects best matching tool + fills parameters. Never sees real data. Never executes anything.'},{i:'🛡️',l:'Validation Layer',d:'Double-check permission → Validate tool → Resolve tenant DB from auth → Execute pre-built query'},{i:'📊',l:'Response',d:'"عدد الموظفين السعوديين في المبيعات: 47" + CSV / Chart'}];
+return`${st('How Our AI Reporting Feature Could Work')}
+${info('⚠️','<strong style="color:var(--orange)">Proposal under research</strong> — not a finalized implementation.')}
+<div class="g2" style="margin-top:10px;flex:1">
+<div style="display:flex;flex-direction:column;gap:2px;justify-content:center">
+${steps.map((s,i)=>`<div style="display:flex;gap:10px;align-items:flex-start"><div style="display:flex;flex-direction:column;align-items:center"><div style="background:var(--sf2);border:2px solid var(--blue);border-radius:8px;padding:4px 8px;font-size:15px">${s.i}</div>${i<steps.length-1?'<div style="width:2px;height:10px;background:var(--bd)"></div>':''}</div><div style="padding-bottom:3px"><div style="font-weight:700;color:var(--lb);font-size:12px">${s.l}</div><div style="color:var(--mu);font-size:11px">${s.d}</div></div></div>`).join('')}
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="card" style="border:1px solid var(--teal)">
+<div style="font-weight:700;color:var(--teal);font-size:13px;margin-bottom:6px">✓ What This Guarantees</div>
+${bul('var(--teal)','AI never has network access to any database')}
+${bul('var(--teal)','Authorization enforced BEFORE and AFTER AI responds')}
+${bul('var(--teal)','Each role sees only permitted tools — AI doesn\'t know others exist')}
+${bul('var(--teal)','Tenant resolved from auth — never from AI prompt or response')}
+${bul('var(--teal)','Full audit trail — every query logged with user + tenant ID')}
+</div>
+<div class="card" style="background:var(--sf2)">
+<div style="font-weight:700;color:var(--mu);font-size:12px;margin-bottom:4px">📌 AI Only Sees Text</div>
+<div style="color:var(--dm);font-size:11px">Model receives <strong style="color:var(--tx)">tool definitions</strong> (names + descriptions). Outputs tool selection + params as JSON. Our backend decides whether to execute.</div>
+</div>
+</div>
+</div>`},
+
+// 4 DB Option A
+()=>`${st('DB Access — Option A: AI Generates SQL Text','Option A of 3','var(--blue)')}
+<div class="g2" style="flex:1">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="card" style="border:1px solid var(--blue)">
+<div style="font-weight:700;color:var(--lb);font-size:14px;margin-bottom:8px">How It Works</div>
+${[['User asks','"Show salary by department for 2025"'],['We send','System prompt + DB schema as text'],['AI returns','SELECT department, AVG(net_salary) FROM Payroll WHERE year=2025 GROUP BY department'],['Our backend','Validates SQL → whitelist check → executes on tenant DB']].map(([k,v])=>`<div class="step-row"><span class="step-badge" style="background:var(--navy);color:var(--blue)">${k}</span><span style="color:var(--mu);font-size:12px">${v}</span></div>`).join('')}
+</div>
+<div class="card" style="border:1px solid var(--teal)">
+<div style="font-weight:700;color:var(--teal);font-size:13px;margin-bottom:6px">✅ Pros</div>
+${bul('var(--teal)','AI has zero DB access — only generates text')}
+${bul('var(--teal)','Flexible — handles ad-hoc queries beyond a fixed menu')}
+${bul('var(--teal)','60–75% fewer tokens than Option B (benchmarked)')}
+${bul('var(--teal)','Richer computed columns + Arabic aliases in CSV exports')}
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+${consx(`<div style="font-weight:700;color:var(--red);font-size:13px;margin-bottom:6px">⚠️ Security & Auth Risks</div>
+${bul('var(--red)','SQL validation extremely hard — edge cases and bypass techniques')}
+${bul('var(--red)','Prompt injection — users could manipulate AI into malicious SQL')}
+${bul('var(--red)','Authorization hard to enforce — AI doesn\'t know user roles')}
+${bul('var(--red)','Arabic → SQL adds hallucination risk')}
+${bul('var(--red)','Unpredictable performance — can\'t pre-optimize')}
+${bul('var(--red)','Hard to audit for PDPL — can\'t pre-certify dynamic SQL')}
+${bul('var(--red)','Some models generate phantom filters (0-row results)')}`)}
+${info('🔒','<strong style="color:var(--orange)">Auth gap:</strong> No natural way to map free-form SQL to permissions. Need complex SQL parser — fragile and error-prone.')}
+</div>
+</div>`,
+
+// 5 DB Option B
+()=>`${st('DB Access — Option B: Pre-Built Tool Menu','Option B of 3 · Recommended','var(--teal)')}
+<div class="g2" style="flex:1">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="card" style="border:1px solid var(--teal)">
+<div style="font-weight:700;color:var(--lb);font-size:14px;margin-bottom:6px">How It Works</div>
+<div style="color:var(--mu);font-size:12px;margin-bottom:8px">We define pre-built tools. AI picks the best matching tool + fills parameters. Our backend executes the pre-built query.</div>
+<div class="code-block">
+<div style="color:var(--teal);margin-bottom:4px;font-weight:700;font-family:sans-serif;font-size:11px">Tool Menu (we define):</div>
+<div style="color:var(--lb)">search_employees<span style="color:var(--dm)">(dept_id, limit, status)</span></div>
+<div style="color:var(--lb)">get_attendance_summary<span style="color:var(--dm)">(month, dept_id)</span></div>
+<div style="color:var(--lb)">get_salary_by_department<span style="color:var(--dm)">(year, dept)</span></div>
+<div style="color:var(--lb)">get_absentee_report<span style="color:var(--dm)">(threshold, period)</span></div>
+<div style="color:var(--orange);margin-top:6px;font-family:sans-serif">User: "أحدث 10 موظفين في المبيعات"</div>
+<div style="color:var(--teal);font-family:sans-serif">AI: search_employees(dept_id=3, limit=10)</div>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="card" style="border:2px solid var(--teal)">
+<div style="font-weight:700;color:var(--teal);font-size:13px;margin-bottom:6px">✅ Why This Is Strongest</div>
+${bul('var(--teal)','Zero SQL injection risk — AI never writes SQL')}
+${bul('var(--teal)','Each tool = a user permission — auth is built-in')}
+${bul('var(--teal)','AI never sees real data — only tool names/descriptions')}
+${bul('var(--teal)','Double permission check: before AI + after AI responds')}
+${bul('var(--teal)','Predictable performance — pre-optimized queries')}
+${bul('var(--teal)','PDPL auditable — every tool is a certified query')}
+</div>
+${consx(`<div style="font-weight:700;color:var(--red);font-size:13px;margin-bottom:6px">⚠️ Limitations</div>
+${bul('var(--red)','Only pre-defined report types — no fully ad-hoc queries')}
+${bul('var(--red)','New report = new tool added by developer')}
+${bul('var(--red)','Higher token usage — ~3× more tokens than Option A')}`)}
+</div>
+</div>`,
+
+// 6 Option B - Auth + Tenant + Security
+()=>`${st('Option B: How It Solves Auth, Tenancy & Security','Deep Dive','var(--lb)')}
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;flex:1">
+<div class="card" style="border:1px solid var(--lb);display:flex;flex-direction:column;gap:6px">
+<div style="font-weight:700;color:var(--lb);font-size:13px">🛡️ Authorization</div>
+<div style="color:var(--mu);font-size:11px;margin-bottom:4px">Each role sees <strong style="color:var(--tx)">only their tools</strong>. AI doesn't know others exist.</div>
+${[{r:'Employee',t:'my_salary, my_leave',c:'var(--lb)'},{r:'HR Manager',t:'All reporting tools',c:'var(--orange)'},{r:'Admin',t:'All tools + system',c:'var(--purple)'}].map(r=>`<div class="role-row"><span style="color:${r.c};font-weight:700;font-size:10px;min-width:65px">${r.r}</span><span style="color:var(--tx);font-size:10px;font-family:monospace">${r.t}</span></div>`).join('')}
+<div style="margin-top:auto">
+<div style="color:var(--teal);font-size:11px;font-weight:700;margin-bottom:4px">Double Validation:</div>
+${[{s:'1',l:'Filter tools by role before sending to AI',c:'var(--blue)'},{s:'2',l:'AI selects from filtered list only',c:'var(--teal)'},{s:'3',l:'Backend re-validates before executing',c:'var(--orange)'},{s:'4',l:'Row-level security scopes data per user',c:'var(--purple)'}].map(s=>`<div class="flow-step"><div class="flow-num" style="background:${s.c}">${s.s}</div><span style="color:var(--mu);font-size:10px">${s.l}</span></div>`).join('')}
+</div>
+</div>
+<div class="card" style="border:1px solid var(--orange);display:flex;flex-direction:column;gap:6px">
+<div style="font-weight:700;color:var(--orange);font-size:13px">🏢 Multi-Tenant Isolation</div>
+<div style="color:var(--mu);font-size:11px;margin-bottom:4px">AI is <strong style="color:var(--tx)">completely tenant-blind</strong>. No company info in any prompt.</div>
+<div class="tenant-box">
+<div style="color:var(--lb);font-size:10px;font-weight:700">Company A request → AI sees:</div>
+<div style="color:var(--dm);font-size:10px;font-family:monospace">"كم عدد الموظفين؟" + [tools]</div>
+<div style="color:var(--teal);font-size:9px;margin-top:2px">No tenant ID. No company name. No data.</div>
+</div>
+<div style="color:var(--teal);font-size:11px;font-weight:700;margin-top:auto;margin-bottom:4px">4 Protection Layers:</div>
+${bul('var(--teal)','Physical DB per company — can\'t cross boundaries')}
+${bul('var(--teal)','Tenant from auth session only — never from AI')}
+${bul('var(--teal)','Stateless API — zero cross-tenant contamination')}
+${bul('var(--teal)','Shared API key safe — each request isolated')}
+</div>
+<div class="card" style="border:1px solid var(--blue);display:flex;flex-direction:column;gap:6px">
+<div style="font-weight:700;color:var(--blue);font-size:13px">🔒 Data Security</div>
+<div style="color:var(--mu);font-size:11px;margin-bottom:4px">Real employee data <strong style="color:var(--tx)">never leaves</strong> our infrastructure.</div>
+<div class="data-section" style="background:#0a1f0a;border:1px solid var(--teal)">
+<div style="font-weight:700;color:var(--teal);font-size:10px;margin-bottom:3px">✅ AI Sees (safe)</div>
+<div style="color:var(--mu);font-size:10px">User question, tool names, param schemas, system instructions</div>
+</div>
+<div class="data-section" style="background:#1a0f0f;border:1px solid var(--red)">
+<div style="font-weight:700;color:var(--red);font-size:10px;margin-bottom:3px">❌ AI Never Sees</div>
+<div style="color:var(--mu);font-size:10px">Employee data, salaries, IDs, DB records, credentials, query results</div>
+</div>
+<div style="color:var(--teal);font-size:11px;font-weight:700;margin-top:auto;margin-bottom:4px">PDPL Compliant Because:</div>
+${bul('var(--teal)','No PII sent to AI provider')}
+${bul('var(--teal)','Pre-built queries control output columns')}
+${bul('var(--teal)','Fully auditable — known query set')}
+</div>
+</div>
+${info('💡','<strong style="color:var(--orange)">Restaurant Menu Analogy:</strong> AI is a customer — can only order from the menu (tools). Can\'t enter the kitchen (database). We wrote the menu, we cook the food, we serve only what\'s allowed.')}`,
+
+// 7 DB Option C
+()=>`${st('DB Access — Option C: AI Has Direct DB Access','Option C of 3 · Not Recommended','var(--red)')}
+<div class="g2" style="flex:1">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="card" style="border:1px solid var(--red)">
+<div style="font-weight:700;font-size:14px;margin-bottom:8px">How It Works</div>
+<div style="color:var(--mu);font-size:12px;margin-bottom:8px">Model gets DB credentials and queries directly. Real results flow through the model.</div>
+${[['User asks','"Employees with salary over 15,000"'],['AI gets','DB credentials + direct access'],['AI queries','Runs SELECT on production DB'],['AI returns','Actual employee names + salaries']].map(([k,v])=>`<div class="step-row"><span class="step-badge" style="background:var(--sf2);color:var(--red)">${k}</span><span style="color:var(--mu);font-size:12px">${v}</span></div>`).join('')}
+</div>
+<div class="card"><div style="font-weight:700;color:var(--teal);font-size:13px;margin-bottom:6px">✅ The Only Pros</div>
+${bul('var(--teal)','Simpler implementation — no validation layer')}
+${bul('var(--teal)','Model can iteratively refine queries')}
+</div>
+</div>
+<div>${consx(`<div style="font-weight:700;color:var(--red);font-size:14px;margin-bottom:4px">❌ Critical Risks</div>
+${bul('var(--red)','Real PII flows through AI servers — PDPL violation')}
+${bul('var(--red)','Live access to production data if model misbehaves')}
+${bul('var(--red)','Tenant isolation depends on AI following instructions — not enforced')}
+${bul('var(--red)','DB credentials shared with model — massive attack surface')}
+${bul('var(--red)','No authorization — accesses any column freely')}
+${bul('var(--red)','Bypasses role-based access entirely')}
+${bul('var(--red)','Audit trail depends on AI provider')}
+`)}</div>
+</div>`,
+
+// 8 5 Factors
+()=>{const f=[
+{n:'1',nm:'Security & Data Privacy',ic:'🔒',c:'var(--blue)',d:'HR data must never be used for training or exposed. Multi-tenant SaaS — PDPL compliance mandatory.',q:'Is data NOT used for training? Processed in KSA/ME?'},
+{n:'2',nm:'Session-Based (No Training)',ic:'🔄',c:'var(--purple)',d:'Every request must be stateless. Model must not retain or learn from queries. Contractual or technical guarantee.',q:'Is each call independent? Any storage on provider servers?'},
+{n:'3',nm:'Authorization & Usage Control',ic:'🛡️',c:'var(--lb)',d:'Tool-based approach: each tool = permission. AI sees only permitted tools. Double validation. Per-user limits.',q:'Can we enforce role-based tool visibility and cost caps?'},
+{n:'4',nm:'Database Access Strategy',ic:'🗄️',c:'var(--teal)',d:'AI never has direct DB access. Option B: AI selects tools, backend executes. No PII flows to AI provider.',q:'Native Function Calling / Tool Use support?'},
+{n:'5',nm:'Multi-Tenant Isolation',ic:'🏢',c:'var(--orange)',d:'Separate DB per company. AI is tenant-blind. Tenant from auth only. Stateless API = zero cross-tenant risk.',q:'Is API stateless? Any context bleed between companies?'}];
+return`${st('The 5 Critical Decision Factors')}
+<div style="display:flex;flex-direction:column;gap:7px;flex:1;overflow-y:auto">
+${f.map(x=>`<div class="card factor-card"><div class="agenda-num" style="background:${x.c}">${x.n}</div><div style="flex:1"><div style="display:flex;gap:8px;align-items:center;margin-bottom:3px"><span>${x.ic}</span><span style="font-weight:700;font-size:13px">${x.nm}</span></div><div style="color:var(--mu);font-size:12px;margin-bottom:4px">${x.d}</div><div class="factor-q"><strong style="color:${x.c}">Key Q: </strong>${x.q}</div></div></div>`).join('')}
+</div>`},
+
+// 9 Qwen3-32B
+()=>modelSlide('Qwen3-32B','Self-Hosted · Open Source · Alibaba','var(--purple)',
+[['Parameters','32B (Dense)'],['Context Window','131K tokens'],['License','Apache 2.0 — full commercial use'],['Deployment','Self-hosted on GCP (1× H100 80GB or 2× A100 40GB)'],['VRAM Needed','~65 GB (FP16) / ~32 GB (4-bit quantized)'],['System RAM','128 GB DDR5 recommended'],['Arabic Quality','⭐ Good']],
+{avg:'~2,165',en:'2,187',ar:'2,143'},
+{avg:'~7,316',en:'7,558',ar:'7,073'},
+'✅ Full control — run fine-tune jobs anytime, no provider',true,[
+{i:'✅',l:'Data Privacy',b:'Data NEVER leaves our GCP. Frozen read-only weights — technically impossible to train on usage. Best PDPL position.'},
+{i:'✅',l:'Session-Based',b:'Inference only. No gradients. Fully stateless. Guarantee is TECHNICAL, not policy — there is no provider.'},
+{i:'⚠️',l:'Auth & Usage Control',b:'No built-in controls — must build role-based tool visibility, limits ourselves. ~2–3 weeks dev.'},
+{i:'⚠️',l:'Tool Use / SQL Quality',b:'Option A: generated phantom WHERE filter causing 0 rows. Inconsistent row counts (15 vs 16). Option B: weak Arabic in tool responses.'},
+{i:'✅',l:'Multi-Tenant',b:'Zero tenant concept. Our app routes to correct DB. Technically guaranteed.'},
+{i:'❌',l:'Reliability',b:'Not recommended — critical failures in both Option A (phantom filters, wrong row counts) and Option B (garbled Arabic, English fallback).'}
+]),
+
+// 10 Qwen3-235B-A22B
+()=>modelSlide('Qwen3-235B-A22B','Self-Hosted · MoE · Alibaba','var(--purple)',
+[['Parameters','235B total / 22B active per token (MoE)'],['Context Window','131K tokens'],['License','Apache 2.0 — full commercial use'],['Deployment','Self-hosted (Min 2× H100 80GB, 4× recommended)'],['VRAM Needed','~143 GB+ (full weights must be loaded)'],['System RAM','512 GB DDR5 (dual-socket server)'],['Arabic Quality','⭐⭐⭐ Excellent — strong dialect support']],
+{avg:'~2,221',en:'2,259',ar:'2,181'},
+{avg:'~7,118',en:'7,284',ar:'6,952'},
+'✅ Full control — same as Qwen3-32B',true,[
+{i:'✅',l:'Data Privacy',b:'Same as Qwen3-32B — data never leaves our servers. Best PDPL position.'},
+{i:'✅',l:'Session-Based',b:'Stateless inference. Frozen weights. Technical guarantee.'},
+{i:'⚠️',l:'Auth & Usage Control',b:'Same as Qwen3-32B — build ourselves.'},
+{i:'⚠️',l:'Tool Use / SQL Quality',b:'Option A: bad JOIN caused 0 rows on nationality query. Calculated wrong metric (overtime vs delay). Option B: sometimes responds in English to Arabic prompts.'},
+{i:'✅',l:'Multi-Tenant',b:'Technically guaranteed — no provider involvement.'},
+{i:'⚠️',l:'Integration',b:'Very High — 2–8× H100s, complex infra. $2.9K–$11.5K/mo. Only justified at scale or strict on-prem requirement.'}
+]),
+
+// 11 Claude Opus 4.6
+()=>modelSlide('Claude Opus 4.6','API Only · Anthropic','var(--orange)',
+[['Parameters','Undisclosed (closed-source)'],['Context Window','200K tokens'],['Deployment','API only — Anthropic, AWS Bedrock, GCP Vertex, Azure'],['Self-Hosted','❌ Not available — closed source'],['Arabic Quality','⭐⭐ Very Good (MSA) — partial Saudi dialect'],['Tool Use Quality','⭐⭐⭐ Excellent structured output']],
+{avg:'~2,396',en:'2,334',ar:'2,459'},
+{avg:'~7,198',en:'7,118',ar:'7,276'},
+'❌ Not Available — Anthropic does not offer fine-tuning',false,[
+{i:'⚠️',l:'Data Privacy',b:'NOT used for training (all API tiers). SOC 2 Type II. BUT: NO Middle East data residency. Data on US/EU servers.'},
+{i:'✅',l:'Session-Based',b:'Stateless per Commercial ToS. No-training applies to ALL tiers equally. ~30 day safety retention (verify).'},
+{i:'✅',l:'Auth & Usage',b:'API keys, usage dashboards, spend limits via Console. No IAM granularity like GCP.'},
+{i:'✅',l:'SQL & Tool Quality',b:'Best SQL quality — proper filters (deleted_at, status=active), Arabic aliases, complex CASE expressions. 100% accuracy in both options. Zero 0-row errors.'},
+{i:'✅',l:'Multi-Tenant',b:'No persistent memory. Stateless by design. No cross-company risk.'},
+{i:'⚠️',l:'Infra Gaps',b:'No VPC, no CMEK, no data residency, no audit logs on direct API. Available via Bedrock/Vertex for platform controls.'}
+]),
+
+// 12 Gemini 2.5 Pro
+()=>modelSlide('Gemini 2.5 Pro','API · Vertex AI · Google','var(--teal)',
+[['Parameters','Undisclosed (closed-source)'],['Context Window','1M tokens'],['Deployment','API via Vertex AI (GCP)'],['Data Residency','✅ me-west1 Dammam · me-central1 Doha (verify model avail.)'],['Self-Hosted','❌ Not available — closed source'],['Arabic Quality','⭐⭐ Very Good (MSA) — weaker on Saudi dialect'],['Tool Use Quality','⭐⭐ Very Good — native Function Calling']],
+null,
+{avg:'~5,849',en:'5,596',ar:'6,091'},
+'✅ Available via Vertex AI — data stays in our GCP',true,[
+{i:'✅',l:'Data Privacy',b:'Vertex AI: NOT used for training (Cloud ToS). ME data residency — strongest PDPL among API models. Must use Vertex AI, NOT AI Studio.'},
+{i:'✅',l:'Session-Based',b:'Google DPA prohibits using customer data for training. Verify retention for abuse monitoring.'},
+{i:'✅',l:'Auth & Usage',b:'Best — GCP IAM native. Billing alerts, quotas, rate limits. VPC Service Controls.'},
+{i:'✅',l:'Tool Use',b:'Native Function Calling — first-class feature. Structured function_call responses.'},
+{i:'✅',l:'Multi-Tenant',b:'Stateless. GCP VPC adds extra network isolation.'},
+{i:'✅',l:'Infrastructure',b:'Easiest — already on GCP. SDK + billing, IAM, Audit Logs all native.'},
+{i:'⚠️',l:'Cost Note',b:'Thinking tokens billed separately at ~$3.50/M. Complex queries can add 2–5× base cost. Set budget caps.'}
+]),
+
+// 13 Gemini 3.1 Pro Preview
+()=>modelSlide('Gemini 3.1 Pro Preview','API · Vertex AI · Google','var(--teal)',
+[['Parameters','Undisclosed (closed-source)'],['Context Window','1M tokens'],['Deployment','API via Vertex AI (GCP)'],['Data Residency','Same as Gemini 2.5 Pro (verify availability)'],['Self-Hosted','❌ Not available — closed source'],['Arabic Quality','⭐⭐⭐ Excellent — strong Arabic support'],['Tool Use Quality','⭐⭐⭐ Excellent — native Function Calling']],
+{avg:'~2,487',en:'2,486',ar:'2,489'},
+{avg:'~5,462',en:'5,755',ar:'5,169'},
+'TBD — check Vertex AI availability',true,[
+{i:'✅',l:'Data Privacy',b:'Same Vertex AI policies as Gemini 2.5 Pro. Cloud ToS: not used for training.'},
+{i:'✅',l:'Session-Based',b:'Same stateless guarantees as all Vertex AI models.'},
+{i:'✅',l:'Auth & Usage',b:'Same GCP IAM, VPC, billing controls.'},
+{i:'✅',l:'SQL & Tool Quality',b:'Option A: clean SQL, proper filters, good Arabic aliases. 100% accuracy. Option B: excellent tool selection with localized responses.'},
+{i:'✅',l:'Multi-Tenant',b:'Same stateless isolation as Gemini 2.5 Pro.'},
+{i:'⚠️',l:'Preview Status',b:'Preview pricing ($2/$12 per 1M) — subject to change at GA. No free tier. Strong candidate for production once GA.'}
+]),
+
+// 14 Cost
+()=>`${st('Cost Comparison (2026 Pricing)')}
+<div class="g2" style="flex:1">
+<div style="display:flex;flex-direction:column;gap:8px;overflow-y:auto">
+<div style="font-weight:700;color:var(--dm);font-size:10px;letter-spacing:1px">API PRICING (per 1M tokens)</div>
+<table><thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Note</th></tr></thead><tbody>
+<tr><td style="color:var(--teal);font-weight:600">Gemini 2.5 Pro</td><td>$1.25</td><td>$10.00</td><td style="color:var(--dm);font-size:10px">+ thinking ~$3.50/M. ≤200K ctx. Doubles >200K.</td></tr>
+<tr><td style="color:var(--teal);font-weight:600">Gemini 3.1 Pro</td><td>$2.00</td><td>$12.00</td><td style="color:var(--dm);font-size:10px">Preview pricing — may change at GA.</td></tr>
+<tr><td style="color:var(--orange);font-weight:600">Claude Opus 4.6</td><td>$5.00</td><td>$25.00</td><td style="color:var(--dm);font-size:10px">Fast mode: 6×. Batch: 50% off.</td></tr>
+<tr><td style="color:var(--purple);font-weight:600">Qwen3-32B (API)</td><td>$0.20</td><td>$0.60</td><td style="color:var(--dm);font-size:10px">Alibaba Cloud. Third-party varies.</td></tr>
+<tr><td style="color:var(--purple);font-weight:600">Qwen3-235B (API)</td><td>$0.20</td><td>$1.00</td><td style="color:var(--dm);font-size:10px">Thinking mode: $0.70/$8.40</td></tr>
+</tbody></table>
+
+<div style="font-weight:700;color:var(--dm);font-size:10px;letter-spacing:1px;margin-top:4px">ESTIMATED MONTHLY COST (API)</div>
+<table style="font-size:10px"><thead><tr><th>Model</th><th style="text-align:center">~1M tok/mo</th><th style="text-align:center">~10M tok/mo</th><th style="text-align:center">~100M tok/mo</th></tr></thead><tbody>
+<tr><td style="color:var(--teal);font-weight:600">Gemini 2.5 Pro</td><td style="text-align:center">~$4</td><td style="text-align:center">~$39</td><td style="text-align:center">~$388</td></tr>
+<tr><td style="color:var(--teal);font-weight:600">Gemini 3.1 Pro</td><td style="text-align:center">~$5</td><td style="text-align:center">~$50</td><td style="text-align:center">~$500</td></tr>
+<tr><td style="color:var(--orange);font-weight:600">Claude Opus 4.6</td><td style="text-align:center">~$11</td><td style="text-align:center">~$110</td><td style="text-align:center">~$1,100</td></tr>
+<tr><td style="color:var(--purple);font-weight:600">Qwen3-32B (API)</td><td style="text-align:center">~$0.32</td><td style="text-align:center">~$3.20</td><td style="text-align:center">~$32</td></tr>
+<tr><td style="color:var(--purple);font-weight:600">Qwen3-235B (API)</td><td style="text-align:center">~$0.44</td><td style="text-align:center">~$4.40</td><td style="text-align:center">~$44</td></tr>
+</tbody></table>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;overflow-y:auto">
+<div style="font-weight:700;color:var(--dm);font-size:10px;letter-spacing:1px">SELF-HOSTED COSTS (monthly)</div>
+<table><thead><tr><th>Model</th><th>GPU Setup</th><th>Monthly Cost</th></tr></thead><tbody>
+<tr><td style="color:var(--purple);font-weight:600">Qwen3-32B</td><td style="font-size:10px">1× H100 80GB (or 2× A100 40GB)</td><td>$1,440–$2,880</td></tr>
+<tr><td style="color:var(--purple);font-weight:600">Qwen3-235B-A22B</td><td style="font-size:10px">2–8× H100 80GB SXM</td><td>$2,880–$11,520</td></tr>
+</tbody></table>
+
+${info('⚠️','<strong style="color:var(--orange)">Gemini Thinking Tokens:</strong> Billed separately. Complex Arabic queries can add 2–5× base cost. Essential to set budget caps in production.')}
+
+<div class="card" style="border:1px solid var(--purple);padding:10px 14px">
+<div style="font-weight:700;color:var(--purple);font-size:12px;margin-bottom:6px">📊 Avg Tokens per Request (Benchmarked)</div>
+<table style="font-size:10px"><thead><tr><th>Model</th><th style="text-align:center">🅰️ Opt A</th><th style="text-align:center">A-EN</th><th style="text-align:center">A-AR</th><th style="text-align:center">🅱️ Opt B</th><th style="text-align:center">B-EN</th><th style="text-align:center">B-AR</th></tr></thead><tbody>
+<tr><td style="color:var(--orange)">Claude Opus 4.6</td><td style="text-align:center;color:var(--teal)">2,396</td><td style="text-align:center">2,334</td><td style="text-align:center">2,459</td><td style="text-align:center">7,198</td><td style="text-align:center">7,118</td><td style="text-align:center">7,276</td></tr>
+<tr><td style="color:var(--teal)">Gemini 2.5 Pro</td><td style="text-align:center;color:var(--dm)">—</td><td style="text-align:center;color:var(--dm)">—</td><td style="text-align:center;color:var(--dm)">—</td><td style="text-align:center">5,849</td><td style="text-align:center">5,596</td><td style="text-align:center">6,091</td></tr>
+<tr><td style="color:var(--teal)">Gemini 3.1 Pro</td><td style="text-align:center;color:var(--teal)">2,487</td><td style="text-align:center">2,486</td><td style="text-align:center">2,489</td><td style="text-align:center">5,462</td><td style="text-align:center">5,755</td><td style="text-align:center">5,169</td></tr>
+<tr><td style="color:var(--purple)">Qwen3-32B</td><td style="text-align:center;color:var(--red)">2,165*</td><td style="text-align:center">2,187</td><td style="text-align:center">2,143</td><td style="text-align:center">7,316</td><td style="text-align:center">7,558</td><td style="text-align:center">7,073</td></tr>
+<tr><td style="color:var(--purple)">Qwen3-235B</td><td style="text-align:center;color:var(--red)">2,221*</td><td style="text-align:center">2,259</td><td style="text-align:center">2,181</td><td style="text-align:center">7,118</td><td style="text-align:center">7,284</td><td style="text-align:center">6,952</td></tr>
+</tbody></table>
+<div style="color:var(--dm);font-size:9px;margin-top:4px">* Qwen token counts are low but include critical accuracy failures (0-row results, wrong metrics)</div>
+<div style="background:var(--sf);border:1px solid var(--orange);border-radius:6px;padding:6px 10px;margin-top:6px">
+<div style="color:var(--orange);font-size:9px;font-weight:700">⚠️ IMPORTANT: Token counts are context-dependent</div>
+<div style="color:var(--dm);font-size:9px;line-height:1.5;margin-top:2px">These averages reflect our benchmark test setup. In production, each request includes more than just the user's text — <strong style="color:var(--mu)">Option A</strong> sends a custom prompt + full table schemas + relations + instructions + user message. <strong style="color:var(--mu)">Option B</strong> sends all tool definitions + constraints + instructions + user message. Actual tokens will vary significantly based on how we engineer and optimize this context.</div>
+</div>
+</div>
+
+<div class="card" style="background:var(--sf2);padding:10px 14px">
+<div style="font-weight:700;color:var(--mu);font-size:11px;margin-bottom:4px">💡 Cost Optimization</div>
+${bul('var(--blue)','Option A uses 60–75% fewer tokens than Option B')}
+${bul('var(--blue)','System prompt is ~85% of tokens in Option B — keep lean')}
+${bul('var(--blue)','Set Gemini thinking budget caps')}
+${bul('var(--blue)','Cache repeated queries')}
+${bul('var(--blue)','Use batch API (50% off) for non-realtime reports')}
+</div>
+</div>
+</div>`,
+
+// 15 Recommendation
+()=>`${st('Recommendation')}
+<div class="g2" style="margin-bottom:10px">
+<div class="card" style="border:2px solid var(--teal);display:flex;flex-direction:column;gap:6px">
+${bdg('PRIMARY MODEL','var(--teal)')}
+<div style="font-weight:800;font-size:14px">Gemini 3.1 Pro (Vertex AI)</div>
+<div style="color:var(--dm);font-size:11px">Default for all standard reporting queries</div>
+${bul('var(--teal)','100% accuracy in both Option A and Option B — zero failures')}
+${bul('var(--teal)','Excellent Arabic — responds in Arabic with localized labels')}
+${bul('var(--teal)','Lowest token cost: Opt A ~2,487 / Opt B ~5,462 per req')}
+${bul('var(--teal)','ME data residency (Dammam) — strongest PDPL position among API models')}
+${bul('var(--teal)','GCP-native — IAM, VPC, Audit Logs, billing all built-in')}
+${bul('var(--teal)','Most cost-effective: ~$5–$50/mo at early scale')}
+${bul('var(--orange)','⚠️ Preview pricing ($2/$12 per 1M) — may change at GA')}
+${bul('var(--orange)','⚠️ Verify model availability in ME region before launch')}
+</div>
+<div class="card" style="border:2px solid var(--orange);display:flex;flex-direction:column;gap:6px">
+${bdg('QUALITY FALLBACK','var(--orange)')}
+<div style="font-weight:800;font-size:14px">Claude Opus 4.6 (Anthropic)</div>
+<div style="color:var(--dm);font-size:11px">For complex queries or when Gemini output needs higher quality</div>
+${bul('var(--orange)','Best overall quality — highest SQL accuracy, richest computed columns')}
+${bul('var(--orange)','100% language accuracy in both EN and AR across all queries')}
+${bul('var(--orange)','Zero 0-row errors — proper deleted_at, status filters every time')}
+${bul('var(--orange)','Best Arabic SQL aliases — full localization in CSV exports')}
+${bul('var(--orange)','Option A avg ~2,396 tok — most efficient SQL generation')}
+${bul('var(--red)','❌ $5/$25 per 1M — 3–4× more expensive than Gemini')}
+${bul('var(--red)','❌ No ME data residency — US/EU servers only')}
+${bul('var(--red)','❌ No fine-tuning available')}
+</div>
+</div>
+
+<div class="g2" style="margin-bottom:10px">
+<div class="card" style="border:1px solid var(--teal);display:flex;flex-direction:column;gap:6px">
+${bdg('FALLBACK','var(--blue)')}
+<div style="font-weight:800;font-size:14px">Gemini 2.5 Pro (Vertex AI)</div>
+<div style="color:var(--dm);font-size:11px">If 3.1 Pro pricing changes at GA or availability issues</div>
+${bul('var(--blue)','GA model — stable, production-ready')}
+${bul('var(--blue)','Same GCP/PDPL benefits as 3.1 Pro')}
+${bul('var(--blue)','Opt B avg ~5,849 tokens — slightly more than 3.1 Pro')}
+${bul('var(--blue)','100% accuracy in Option B benchmarks')}
+${bul('var(--orange)','⚠️ Not tested in Option A — needs benchmarking if used for SQL')}
+</div>
+<div class="card" style="border:1px solid var(--purple);display:flex;flex-direction:column;gap:6px">
+${bdg('FALLBACK · SELF-HOSTED','var(--purple)')}
+<div style="font-weight:800;font-size:14px">Qwen3-235B-A22B (Self-Hosted GCP)</div>
+<div style="color:var(--dm);font-size:11px">For strict on-prem / data sovereignty requirements</div>
+${bul('var(--purple)','Best Arabic + Saudi dialect support of all models')}
+${bul('var(--purple)','Data NEVER leaves our servers — strongest PDPL guarantee')}
+${bul('var(--purple)','Full fine-tuning control — specialize for HR domain later')}
+${bul('var(--purple)','Fixed cost ($2.9K–$11.5K/mo) — predictable at scale')}
+${bul('var(--purple)','Apache 2.0 — full commercial use, no vendor lock-in')}
+${bul('var(--orange)','⚠️ Some accuracy issues in benchmarks — needs prompt engineering optimization')}
+${bul('var(--orange)','⚠️ Requires ML/DevOps — 4–6 weeks to deploy')}
+${bul('var(--red)','❌ Qwen3-32B NOT recommended — critical failures (phantom filters, 0 rows, garbled Arabic)')}
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div class="card" style="background:var(--sf2);border:1.5px solid var(--teal);padding:12px 16px">
+<div style="font-weight:700;color:var(--teal);font-size:12px;margin-bottom:6px">🔒 DB Strategy: Option B (Tools) as Default</div>
+${bul('var(--teal)','Zero SQL injection risk — AI never writes SQL')}
+${bul('var(--teal)','Built-in auth — each tool = a permission')}
+${bul('var(--teal)','PDPL auditable — known, certified query set')}
+${bul('var(--teal)','~3× more tokens but strongest security posture')}
+${bul('var(--dm)','Consider Option A (SQL) for admin-level ad-hoc queries in future — Claude produces excellent SQL with 60–75% fewer tokens')}
+</div>
+
+</div>
+${info('📌','<strong style="color:var(--orange)">Note on Token Averages:</strong> All token numbers in this report are from our benchmark test setup. In production, each API request includes significantly more than the user\'s plain text. <strong>Option A</strong> bundles a custom system prompt + database table schemas + column relations + query instructions + user message. <strong>Option B</strong> bundles all tool definitions + parameter schemas + behavioral constraints + instructions + user message. The actual per-request token count will vary based on how we engineer and optimize this context — leaner prompts = fewer tokens = lower cost. These numbers should be used for <strong>relative model comparison</strong>, not as absolute production estimates.')}`
+];
+
+function render(){
+const a=document.getElementById('slideArea');
+a.innerHTML=`<div class="slide active">${slides[cur]()}</div>`;
+document.getElementById('slideNum').textContent=`${cur+1} / ${T}`;
+document.getElementById('slideLabel').textContent=labels[cur];
+document.getElementById('prevBtn').disabled=cur===0;
+document.getElementById('nextBtn').disabled=cur===T-1;
+document.getElementById('progressBar').innerHTML=Array.from({length:T}).map((_,i)=>`<div class="${i===cur?'cur':i<cur?'done':''}" onclick="goTo(${i})"></div>`).join('');
+document.getElementById('jumpNav').innerHTML=labels.map((l,i)=>`<button class="${i===cur?'active':''}" onclick="goTo(${i});toggleJump()">${l}</button>`).join('');
+}
+function go(d){cur=Math.max(0,Math.min(T-1,cur+d));render()}
+function goTo(i){cur=i;render()}
+function toggleJump(){navOpen=!navOpen;document.getElementById('jumpNav').classList.toggle('open',navOpen);document.getElementById('jumpBtn').classList.toggle('active',navOpen)}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1)});
+render();
+</script>
+</body>
+</html>

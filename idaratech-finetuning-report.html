@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Idaratech — Fine-Tuning Recommendation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F8FAFC;color:#1E293B;line-height:1.6}
+.header{background:linear-gradient(135deg,#0F172A 0%,#1E1B4B 50%,#0F172A 100%);padding:32px 24px 28px;color:#fff}
+.mx{max-width:1060px;margin:0 auto}
+.header-top{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.brand{font-size:13px;color:#A78BFA;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+h1{font-size:26px;font-weight:800;line-height:1.2}
+.sub{font-size:13px;color:#94A3B8;margin-top:8px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
+.kpi{background:rgba(255,255,255,.06);border-radius:10px;padding:14px 12px;border:1px solid rgba(255,255,255,.08)}
+.kpi-l{font-size:11px;color:#94A3B8;margin-bottom:4px}
+.kpi-v{font-size:20px;font-weight:800;color:#F0FDFA}
+.tab-nav{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:10;overflow-x:auto}
+.tab-inner{max-width:1060px;margin:0 auto;display:flex;padding:0 24px}
+.tb{padding:14px 16px;font-size:13px;font-weight:500;color:#64748B;background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s}
+.tb.active{font-weight:700;color:#7C3AED;border-bottom-color:#7C3AED}
+.tb:hover{color:#7C3AED}
+.content{max-width:1060px;margin:0 auto;padding:24px 24px 60px}
+.tc{display:none}.tc.active{display:block}
+.sec{margin-bottom:28px}
+.sec h3{font-size:17px;font-weight:800;color:#0F172A;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #E2E8F0}
+.sec h4{font-size:14px;font-weight:700;margin-bottom:10px;margin-top:16px}
+p{color:#475569;line-height:1.7;margin-bottom:14px;font-size:14px}
+code{background:#F1F5F9;padding:1px 5px;border-radius:4px;font-size:12px}
+pre{background:#1E293B;color:#E2E8F0;padding:16px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.5;margin-bottom:16px}
+pre code{background:none;padding:0;color:inherit}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+th{text-align:left;padding:10px 12px;font-weight:600;color:#64748B;font-size:12px;border-bottom:2px solid #E2E8F0;white-space:nowrap}
+td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
+.b{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.b-green{background:#D1FAE5;color:#065F46;border:1px solid #6EE7B7}
+.b-blue{background:#DBEAFE;color:#1E40AF;border:1px solid #93C5FD}
+.b-purple{background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD}
+.b-yellow{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.b-red{background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5}
+.b-gray{background:#F3F4F6;color:#374151;border:1px solid #D1D5DB}
+.card{background:#fff;border-radius:12px;border:1px solid #E2E8F0;padding:20px;margin-bottom:16px}
+.card h4{margin-top:0;font-size:16px;font-weight:800;padding-bottom:8px;border-bottom:2px solid #E2E8F0}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.sb{background:#F8FAFC;border-radius:8px;padding:10px 14px}
+.sb-l{font-size:11px;color:#94A3B8}
+.sb-v{font-size:18px;font-weight:700}
+.str{color:#059669;font-weight:700}
+.wk{color:#DC2626;font-weight:700}
+.alert{border-radius:10px;padding:16px;margin-bottom:16px;font-size:13px}
+.alert-info{background:#EEF2FF;border:1px solid #C7D2FE}
+.alert-warn{background:#FFFBEB;border:1px solid #FCD34D}
+.alert-success{background:#F0FDF4;border:1px solid #86EFAC}
+.alert-danger{background:#FEF2F2;border:1px solid #FECACA}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.pipe-card{border-radius:12px;padding:18px;border:1px solid}
+.fix-row{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #F1F5F9;font-size:13px;align-items:flex-start}
+.fix-row:last-child{border-bottom:none}
+.fix-before{min-width:200px;color:#DC2626;font-weight:600}
+.fix-after{color:#059669}
+.arrow{color:#94A3B8;font-size:16px;flex-shrink:0}
+.footer{background:#0F172A;color:#94A3B8;padding:24px;text-align:center;font-size:12px}
+.footer-brand{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+.footer-brand span{font-weight:700;color:#E2E8F0}
+.footer-author{margin-top:8px;color:#A78BFA;font-weight:600}
+.tier-card{border-radius:12px;padding:18px;margin-bottom:12px;border:1px solid #E2E8F0;border-left:5px solid}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-lbl{font-size:12px;min-width:110px;font-weight:600}
+.bar-track{flex:1;height:12px;background:#E5E7EB;border-radius:6px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:6px;transition:width .6s}
+.bar-val{font-size:12px;font-weight:700;min-width:65px;text-align:right}
+.num{font-weight:800;font-size:18px}
+.jsonl-block{background:#0F172A;border-radius:10px;padding:16px;margin-bottom:16px;overflow-x:auto}
+.jsonl-block pre{background:none;margin:0;padding:0}
+.jsonl-block code{color:#A5F3FC;font-size:11.5px}
+.jsonl-label{font-size:11px;color:#94A3B8;margin-bottom:4px;font-weight:600}
+.calc-box{background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:12px;padding:20px;margin-bottom:16px}
+.cost-type-tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px}
+.cost-one{background:#DBEAFE;color:#1E40AF}
+.cost-monthly{background:#FEF3C7;color:#92400E}
+.cost-per-token{background:#EDE9FE;color:#5B21B6}
+.important-note{background:#fff;border:2px solid #7C3AED;border-radius:12px;padding:16px 20px;margin-bottom:16px}
+.important-note .note-title{font-weight:800;color:#7C3AED;font-size:14px;margin-bottom:6px}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="mx">
+  <div class="header-top">
+    <svg width="52" height="52" viewBox="0 0 120 120" fill="none" id="logo"></svg>
+    <div>
+      <div class="brand">Idaratech · إدارتك</div>
+      <h1>Fine-Tuning Recommendation Report</h1>
+    </div>
+  </div>
+  <div class="sub">Strategy, cost analysis, and training data blueprint for production-grade natural language-to-SQL</div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-l">🎯 Goal</div><div class="kpi-v">95%+ Accuracy</div></div>
+    <div class="kpi"><div class="kpi-l">💰 One-Time Training</div><div class="kpi-v">$1.39 – $37.50</div></div>
+    <div class="kpi"><div class="kpi-l">🏆 Best Candidate</div><div class="kpi-v">Gemini 2.5 Pro</div></div>
+    <div class="kpi"><div class="kpi-l">⚡ Fastest ROI</div><div class="kpi-v">GPT 4.1</div></div>
+    <div class="kpi"><div class="kpi-l">🔓 Self-Hosted</div><div class="kpi-v">Qwen 3 32B</div></div>
+  </div>
+</div>
+</div>
+
+<div class="tab-nav"><div class="tab-inner">
+  <button class="tb active" onclick="showTab('costs')">Cost Breakdown</button>
+  <button class="tb" onclick="showTab('strategy')">Strategy</button>
+  <button class="tb" onclick="showTab('candidates')">Model Analysis</button>
+  <button class="tb" onclick="showTab('training')">Training Data</button>
+  <button class="tb" onclick="showTab('sources')">Sources</button>
+</div></div>
+
+<div class="content">
+
+<!-- ===== COST BREAKDOWN (NOW FIRST) ===== -->
+<div class="tc active" id="tab-costs">
+
+<div class="sec">
+<h3>Understanding Fine-Tuning Costs — Three Types of Cost</h3>
+<p>Before reading any numbers in this report, it's important to understand that fine-tuning involves <strong>three different types of cost</strong>. Each one is paid differently:</p>
+
+<div class="g3" style="margin-bottom:16px">
+  <div class="card" style="border-top:4px solid #3B82F6">
+    <div class="cost-type-tag cost-one">① One-Time Cost</div>
+    <div style="font-size:18px;font-weight:800;margin:6px 0">Training Cost</div>
+    <p style="font-size:13px;margin-bottom:8px">You pay this <strong>once</strong> when you train the model. Like paying a tutor for a single course — once the course is done, you don't pay again. You only pay again if you want to retrain with new data.</p>
+    <p style="font-size:13px;margin-bottom:0"><strong>Example:</strong> $37.50 to train GPT 4.1 with 500 examples. Pay once. Done.</p>
+  </div>
+  <div class="card" style="border-top:4px solid #8B5CF6">
+    <div class="cost-type-tag cost-per-token">② Per-Use Cost</div>
+    <div style="font-size:18px;font-weight:800;margin:6px 0">Inference Cost</div>
+    <p style="font-size:13px;margin-bottom:8px">You pay this <strong>every time a user asks a question</strong> and the model generates a response. It's billed per token (per word, roughly). This is the same cost you already pay today when using Gemini or GPT.</p>
+    <p style="font-size:13px;margin-bottom:0"><strong>Example:</strong> $1.25/M input tokens for Gemini 2.5 Pro (same before and after fine-tuning).</p>
+  </div>
+  <div class="card" style="border-top:4px solid #F59E0B">
+    <div class="cost-type-tag cost-monthly">③ Monthly Cost (Self-Hosted Only)</div>
+    <div style="font-size:18px;font-weight:800;margin:6px 0">Server Hosting Cost</div>
+    <p style="font-size:13px;margin-bottom:8px">Only applies to <strong>Qwen 3 32B self-hosted</strong>. You rent a GPU server that runs 24/7 to serve the model. Like renting a dedicated server — you pay monthly whether users send 10 or 10,000 queries.</p>
+    <p style="font-size:13px;margin-bottom:0"><strong>Example:</strong> ~$1,015/month for an A100 GPU on RunPod running 24/7.</p>
+  </div>
+</div>
+
+<div class="alert alert-info">💡 <strong>For GPT 4.1 and Gemini 2.5 Pro</strong>, there is <strong>no monthly server cost</strong> — they run on the provider's infrastructure. You only pay the one-time training cost + per-use inference cost (which you already pay today).</div>
+</div>
+
+<div class="sec">
+<h3>How Training Cost Is Calculated</h3>
+<p>Training cost is based on <strong>how many tokens the model processes during training</strong>. Here's the formula:</p>
+<div class="calc-box">
+  <div style="font-size:14px;font-weight:700;margin-bottom:8px">Cost Formula</div>
+  <pre><code>Training Cost = (dataset tokens × number of epochs) × price per million tokens</code></pre>
+  <p style="font-size:13px;margin-bottom:8px">Where:</p>
+  <p style="font-size:13px;margin-bottom:4px"><strong>Dataset tokens</strong> = total tokens across all your training examples</p>
+  <p style="font-size:13px;margin-bottom:4px"><strong>Epochs</strong> = how many times the model reads through all your data (typically 3 — like re-reading a textbook 3 times to learn it better)</p>
+  <p style="font-size:13px;margin-bottom:4px"><strong>Price per million tokens</strong> = set by the provider (e.g., $25/M for Gemini 2.5 Pro)</p>
+</div>
+
+<div class="important-note">
+  <div class="note-title">📝 How We Estimate ~1,000 Tokens Per Example</div>
+  <p style="font-size:13px;margin-bottom:8px">Each training example contains three parts: the <strong>system prompt</strong> (~600-900 tokens — this is the HR schema definition with all table names, columns, and rules), the <strong>user question</strong> (~15-50 tokens — e.g., "How many employees per department?"), and the <strong>model's SQL response</strong> (~80-250 tokens). Added together, each example averages approximately <strong>1,000 tokens</strong>.</p>
+  <p style="font-size:13px;margin-bottom:0">A simple query like "count employees" is ~750 tokens. A complex query with CASE expressions and Arabic aliases is ~1,200 tokens. We use 1,000 as the average for all cost calculations in this report.</p>
+</div>
+
+<p><strong>Worked example:</strong></p>
+<div class="calc-box">
+<pre><code>500 examples × ~1,000 tokens each  = 500,000 dataset tokens
+500,000 × 3 epochs                  = 1,500,000 effective tokens (1.5M)
+1.5M × $25.00 per million           = $37.50 ← one-time training cost (pay once, never again)</code></pre>
+</div>
+</div>
+
+<div class="sec">
+<h3>One-Time Training Cost Comparison</h3>
+<p>This table shows the <strong>one-time cost to train each model</strong> with 500 examples (~1.5M effective tokens). You pay this once per training run — not monthly, not hourly.</p>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Model</th><th>Provider</th><th>Method</th><th>One-Time Training Cost</th><th>What You're Paying For</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Gemini 2.5 Pro</strong></td><td>Vertex AI</td><td><span class="b b-green">SFT</span></td><td><span class="num" style="color:#10B981">$37.50</span></td><td>Google trains the model for you on their GPUs</td></tr>
+    <tr><td><strong>GPT 4.1</strong></td><td>OpenAI</td><td><span class="b b-green">SFT</span></td><td><span class="num" style="color:#8B5CF6">$37.50</span></td><td>OpenAI trains the model for you on their GPUs</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Together AI</td><td><span class="b b-blue">LoRA</span></td><td><span class="num" style="color:#F59E0B">$2.25</span></td><td>Together AI trains the model for you (managed)</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Fireworks AI</td><td><span class="b b-green">SFT</span></td><td>$4.50</td><td>Fireworks trains the model for you (managed)</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Vertex AI</td><td><span class="b b-green">SFT</span></td><td>$9.86</td><td>Google trains the model for you on Vertex AI</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Self-hosted (RunPod)</td><td><span class="b b-purple">QLoRA</span></td><td><span class="num" style="color:#059669">~$1.39</span></td><td>You rent a GPU server for ~1 hour ($1.39/hr) and run the training yourself. The training itself is free — you only pay for the server time.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="alert alert-info">💡 <strong>Why is self-hosted Qwen $1.39?</strong> The Qwen 3 model is free and open-source (Apache 2.0 license). The training code (Unsloth) is also free. The only cost is <strong>renting a GPU server for ~1 hour</strong> to run the training. RunPod charges $1.39/hour for an A100 80GB GPU. So $1.39 = 1 hour of server rental, not a training fee.</div>
+
+<div class="alert alert-info">💡 <strong>Key finding:</strong> Gemini 2.5 Pro and GPT 4.1 have identical training cost ($25/M tokens). Difference: Gemini charges <strong>no inference premium</strong> after fine-tuning, while OpenAI charges <strong>1.5×</strong> more per token for the fine-tuned model.</div>
+</div>
+
+<div class="sec">
+<h3>Per-Use Inference Cost (After Fine-Tuning)</h3>
+<p>After fine-tuning, every time a user sends a question, you pay the inference cost per token. This is the <strong>ongoing cost you already pay today</strong> — fine-tuning may or may not change it depending on the provider.</p>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Model</th><th>Provider</th><th>Input / 1M tokens</th><th>Output / 1M tokens</th><th>Change After Fine-Tuning</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Gemini 2.5 Pro</strong></td><td>Vertex AI</td><td>$1.25</td><td>$10.00</td><td><span class="b b-green">No change — same price as before</span></td></tr>
+    <tr><td><strong>GPT 4.1</strong></td><td>OpenAI</td><td>$3.00</td><td>$12.00</td><td><span class="b b-yellow">1.5× more expensive than base model</span></td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Together AI</td><td colspan="2">~$1.20/M (bundled)</td><td><span class="b b-green">No change</span></td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Self-hosted</td><td colspan="2">$0 per token (included in server cost)</td><td><span class="b b-green">N/A — no per-token billing</span></td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="sec">
+<h3>Monthly Server Cost (Self-Hosted Qwen 3 32B Only)</h3>
+<p>This section <strong>only applies to Qwen 3 32B self-hosted</strong>. GPT 4.1 and Gemini 2.5 Pro run on the provider's servers — you don't need to rent anything.</p>
+<p>If you choose to self-host Qwen 3 32B, you need a GPU server running 24/7 to serve the model to your users. This is a <strong>monthly recurring cost</strong> — like a server hosting fee.</p>
+
+<div class="alert alert-warn">⚠️ <strong>Important — Training vs Serving are separate concerns:</strong><br><br>
+<strong>Training</strong> (one-time): You rent a GPU for ~1 hour to fine-tune the model, then shut it down. Cost: ~$1.39 on RunPod.<br><br>
+<strong>Serving / Inference</strong> (ongoing): You need a GPU server running 24/7 so your users can send questions and get responses. This is the monthly cost below.<br><br>
+You <strong>can use the same server for both</strong> training and serving — but training only takes ~1 hour while serving runs continuously. In practice, many teams rent a cheap GPU for the 1-hour training run, then deploy the fine-tuned model to their production server.</div>
+
+<h4>GPU Requirements for Serving</h4>
+<table>
+  <thead><tr><th>Precision</th><th>VRAM Needed</th><th>Recommended GPU</th></tr></thead>
+  <tbody>
+    <tr><td>FP16 (full precision)</td><td>~70-80 GB</td><td>2× A100 80GB or 1× H100 80GB</td></tr>
+    <tr><td>FP8 (8-bit quantized)</td><td>~40-48 GB</td><td>1× A100 80GB</td></tr>
+    <tr><td>INT4 (4-bit quantized)</td><td>~22-24 GB</td><td>1× RTX 4090 (24GB)</td></tr>
+  </tbody>
+</table>
+<p style="font-size:13px;color:#64748B"><strong>System RAM:</strong> 128 GB DDR5 minimum (2× VRAM capacity recommended).</p>
+
+<h4>Monthly Hosting Cost (24/7 Server)</h4>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Setup</th><th>Provider</th><th>Hourly Cost</th><th>Monthly Cost (~730 hrs)</th></tr></thead>
+  <tbody>
+    <tr><td>1× A100 80GB</td><td>RunPod</td><td>$1.39/hr</td><td><strong>~$1,015/mo</strong></td></tr>
+    <tr><td>1× A100 80GB</td><td>Lambda</td><td>$2.06/hr</td><td>~$1,504/mo</td></tr>
+    <tr><td>1× A100 80GB (a2-highgpu-1g)</td><td>Google Cloud (GCP)</td><td>~$3.67/hr</td><td>~$2,679/mo</td></tr>
+    <tr><td>1× A100 80GB (a2-highgpu-1g) — committed</td><td>Google Cloud (GCP) 1-year</td><td>~$2.35/hr</td><td>~$1,716/mo</td></tr>
+    <tr><td>1× H100 80GB</td><td>RunPod</td><td>$1.99/hr</td><td>~$1,453/mo</td></tr>
+    <tr><td>1× H100 80GB</td><td>Lambda</td><td>$3.44/hr</td><td>~$2,511/mo</td></tr>
+    <tr><td>1× H100 80GB (a3-highgpu-1g)</td><td>Google Cloud (GCP)</td><td>~$3.83/hr</td><td>~$2,796/mo</td></tr>
+    <tr><td>1× H100 80GB</td><td>AWS EC2</td><td>$3.90/hr</td><td>~$2,847/mo</td></tr>
+  </tbody>
+</table>
+</div>
+<p style="font-size:13px;color:#64748B"><strong>GCP committed-use discounts:</strong> Google Cloud offers 1-year and 3-year committed use discounts that can reduce costs by ~35-55%. Since GCP is Idaratech's primary cloud, committed pricing is likely available.</p>
+</div>
+
+<div class="sec">
+<h3>Training Server Requirements (One-Time, ~1 Hour)</h3>
+<p>Fine-tuning requires <strong>more GPU memory than serving</strong> because the training process needs extra memory for gradients and optimizer states. You rent this server for ~1 hour, run the training, save the result, then shut it down.</p>
+<table>
+  <thead><tr><th>Method</th><th>VRAM Required</th><th>Recommended GPU</th><th>~Cost for 1 Run</th></tr></thead>
+  <tbody>
+    <tr><td>Full SFT</td><td>150+ GB</td><td>2× A100 80GB</td><td>~$2.78-4.12/hr</td></tr>
+    <tr><td>LoRA</td><td>70-80 GB</td><td>1× H100 80GB</td><td>~$1.99/hr</td></tr>
+    <tr><td>QLoRA (recommended)</td><td>20-24 GB</td><td>1× RTX 4090 or A100</td><td>~$1.39/hr</td></tr>
+    <tr><td>QLoRA with Unsloth (2× faster)</td><td>~17.5 GB</td><td>1× RTX 4090</td><td>~$0.70 (30 min)</td></tr>
+  </tbody>
+</table>
+
+<div class="important-note">
+  <div class="note-title">🔑 Can I Use the Same Server for Training and Serving?</div>
+  <p style="font-size:13px;margin-bottom:8px"><strong>Yes, you can.</strong> If you rent an A100 80GB for production serving, you can also run QLoRA training on that same server. However, during training (~1 hour), the server will be busy and cannot serve user requests.</p>
+  <p style="font-size:13px;margin-bottom:8px"><strong>Recommended approach:</strong> For the first training run, rent a separate cheap GPU (e.g., RunPod A100 for $1.39/hr) for ~1 hour. Save the fine-tuned model files. Then deploy those files to your production server. This way your production server never goes offline.</p>
+  <p style="font-size:13px;margin-bottom:0"><strong>For retraining:</strong> When you want to retrain with new data later, you can either rent another temporary GPU, or schedule a maintenance window on your production server.</p>
+</div>
+</div>
+
+<div class="sec">
+<h3>Cost Per Token Tier — All Models</h3>
+<p>This table shows the <strong>one-time training cost</strong> at different dataset sizes. Use it to estimate cost based on how many examples you prepare.</p>
+
+<h4>Gemini 2.5 Pro &amp; GPT 4.1 ($25.00/M training tokens)</h4>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Examples</th><th>Effective Tokens (3 epochs)</th><th>One-Time Training Cost</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>~50</td><td>150K</td><td><strong>$3.75</strong></td><td>Minimum viable test</td></tr>
+    <tr><td>~100</td><td>300K</td><td><strong>$7.50</strong></td><td>Small dataset</td></tr>
+    <tr><td>~200</td><td>600K</td><td><strong>$15.00</strong></td><td>Baseline</td></tr>
+    <tr><td>~500</td><td>1.5M</td><td><strong>$37.50</strong></td><td>Recommended ⭐</td></tr>
+    <tr><td>~1,000</td><td>3.0M</td><td><strong>$75.00</strong></td><td>Production-grade</td></tr>
+    <tr><td>~2,000</td><td>6.0M</td><td><strong>$150.00</strong></td><td>Extended</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Qwen 3 32B — All Providers</h4>
+<p style="font-size:13px;color:#64748B">Self-hosted costs are <strong>server rental time</strong>, not token fees. The model and training software are free.</p>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Examples</th><th>Effective Tokens</th><th>Together AI<br>($1.50/M, LoRA)</th><th>Fireworks<br>($3/M, SFT)</th><th>Vertex AI<br>($6.57/M, SFT)</th><th>Self-Hosted RunPod<br>(~$1.39/hr server rental)</th></tr></thead>
+  <tbody>
+    <tr><td>~200</td><td>600K</td><td><strong>$0.90</strong></td><td>$1.80</td><td>$3.94</td><td>~$0.70 (30 min server time)</td></tr>
+    <tr><td>~500</td><td>1.5M</td><td><strong>$2.25</strong></td><td>$4.50</td><td>$9.86</td><td>~$1.39 (1 hr server time)</td></tr>
+    <tr><td>~1,000</td><td>3.0M</td><td><strong>$4.50</strong></td><td>$9.00</td><td>$19.71</td><td>~$2.78 (2 hrs server time)</td></tr>
+    <tr><td>~2,000</td><td>6.0M</td><td><strong>$9.00</strong></td><td>$18.00</td><td>$39.42</td><td>~$5.56 (4 hrs server time)</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="sec">
+<h3>Provider Price Summary</h3>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Model</th><th>Provider</th><th>Price/1M Train Tokens</th><th>Method</th><th>FT Inference Premium</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Gemini 2.5 Pro</strong></td><td>Vertex AI</td><td><strong>$25.00</strong></td><td>SFT</td><td>None (same price)</td></tr>
+    <tr><td><strong>GPT 4.1</strong></td><td>OpenAI</td><td><strong>$25.00</strong></td><td>SFT</td><td>1.5× more expensive</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Together AI</td><td><strong>$1.50</strong></td><td>LoRA</td><td>None</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Fireworks AI</td><td><strong>$3.00</strong></td><td>SFT</td><td>None</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Vertex AI</td><td><strong>$6.57</strong></td><td>SFT</td><td>None</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Self-hosted</td><td>Free (pay server rental only)</td><td>QLoRA</td><td>N/A</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="sec">
+<h3>Cost at Scale (Per 1M Tokens — Ongoing)</h3>
+<table>
+  <thead><tr><th>Architecture</th><th>Est. Cost/M tokens</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Current (Gemini 2.5 Pro only)</td><td><span style="color:#DC2626;font-weight:700">~$10.00</span></td><td>Expensive, slow</td></tr>
+    <tr><td>GPT 4.1 primary + Gemini fallback</td><td><span style="color:#F59E0B;font-weight:700">~$3-5</span></td><td>80/20 split</td></tr>
+    <tr><td>Qwen 3 32B self-hosted primary</td><td><span style="color:#059669;font-weight:700">~$0.50</span></td><td>After monthly server investment</td></tr>
+    <tr><td><strong>Full 3-model stack</strong></td><td><span style="color:#059669;font-weight:700">~$2-3</span></td><td>Optimal cost + quality</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="sec">
+<h3>Quick Cost Calculator</h3>
+<div class="calc-box">
+<pre><code>1. Decide how many examples:           _____ examples
+2. Each example ≈ 1,000 tokens
+   (schema + question + SQL response)
+3. Multiply: examples × 1,000          = _____ dataset tokens
+4. Multiply by 3 epochs:               = _____ effective tokens
+5. Divide by 1,000,000:                = _____ M tokens
+6. Multiply by provider price/M:       = $_____ one-time training cost
+
+Example: 500 examples on Gemini 2.5 Pro:
+500 × 1,000 = 500,000 dataset tokens
+500,000 × 3 = 1,500,000 effective tokens (3 full passes)
+1,500,000 / 1,000,000 = 1.5M
+1.5M × $25.00 = $37.50 ← pay once, use forever</code></pre>
+</div>
+</div>
+</div>
+
+<!-- ===== STRATEGY (NOW SECOND) ===== -->
+<div class="tc" id="tab-strategy">
+
+<div class="sec">
+<h3>TL;DR — Recommended Strategy</h3>
+<div class="g3" style="margin-bottom:16px">
+  <div class="card" style="border-left:4px solid #10B981">
+    <div style="font-size:12px;color:#059669;font-weight:600;text-transform:uppercase;letter-spacing:1px">Best Candidate (Recommended)</div>
+    <div style="font-size:22px;font-weight:800;margin:6px 0">Gemini 2.5 Pro</div>
+    <div style="font-size:13px;color:#475569">Highest baseline (88/100), strong Arabic, fine-tuning on Vertex AI amplifies already-excellent model. Best ceiling.</div>
+  </div>
+  <div class="card" style="border-left:4px solid #8B5CF6">
+    <div style="font-size:12px;color:#7C3AED;font-weight:600;text-transform:uppercase;letter-spacing:1px">Best Speed + Cost Balance</div>
+    <div style="font-size:22px;font-weight:800;margin:6px 0">GPT 4.1</div>
+    <div style="font-size:13px;color:#475569">Fastest (5.2s), cheapest tokens, pattern-level failures that fine-tuning fixes perfectly. API fine-tuning ready.</div>
+  </div>
+  <div class="card" style="border-left:4px solid #F59E0B">
+    <div style="font-size:12px;color:#D97706;font-weight:600;text-transform:uppercase;letter-spacing:1px">Best Long-Term / Self-Hosted</div>
+    <div style="font-size:22px;font-weight:800;margin:6px 0">Qwen 3 32B</div>
+    <div style="font-size:13px;color:#475569">Open-source (Apache 2.0), excellent Arabic base, full control, no vendor lock-in, cheapest at scale.</div>
+  </div>
+</div>
+</div>
+
+<div class="sec">
+<h3>Why Fine-Tuning Works for This Use Case</h3>
+<p>Our SQL Chat feature has <strong>predictable, repeatable patterns</strong> — exactly where fine-tuning shines:</p>
+<div class="g2">
+  <div class="card"><div style="font-size:28px;margin-bottom:8px">🗄️</div><strong>Fixed Schema</strong><p style="font-size:13px;margin-top:4px;margin-bottom:0">Same ~30 tables across all tenants (users, departments, hr_requests, attendances, user_shifts, leave_balances, user_salaries, payslips, etc.)</p></div>
+  <div class="card"><div style="font-size:28px;margin-bottom:8px">🔄</div><strong>Finite Question Types</strong><p style="font-size:13px;margin-top:4px;margin-bottom:0">HR questions follow patterns: employee counts, leave requests, attendance, salary breakdowns, late hours</p></div>
+  <div class="card"><div style="font-size:28px;margin-bottom:8px">🐛</div><strong>Known Failure Modes</strong><p style="font-size:13px;margin-top:4px;margin-bottom:0">Models fail on the same things: wrong table names, missing filters, wrong metrics — all trainable patterns</p></div>
+  <div class="card"><div style="font-size:28px;margin-bottom:8px">🌐</div><strong>Bilingual Requirements</strong><p style="font-size:13px;margin-top:4px;margin-bottom:0">Arabic column selection (_ar columns), Arabic aliases, Arabic summaries — all learnable patterns</p></div>
+</div>
+</div>
+
+<div class="sec">
+<h3>Expected Post Fine-Tuning Scores</h3>
+<div id="score-bars"></div>
+<table>
+  <thead><tr><th>Model</th><th>Before</th><th>After (est.)</th><th>Improvement</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Gemini 2.5 Pro</strong></td><td><span class="num" style="color:#10B981">88</span></td><td><span class="num" style="color:#059669">93-97</span></td><td><span class="b b-green">+5-9 pts</span></td></tr>
+    <tr><td><strong>GPT 4.1</strong></td><td><span class="num" style="color:#8B5CF6">80</span></td><td><span class="num" style="color:#6D28D9">90-95</span></td><td><span class="b b-purple">+10-15 pts</span></td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td><span class="num" style="color:#F97316">55</span></td><td><span class="num" style="color:#EA580C">82-88</span></td><td><span class="b b-yellow">+27-33 pts</span></td></tr>
+    <tr><td><span style="color:#94A3B8">Gemma 3 27B</span></td><td><span style="color:#94A3B8">44</span></td><td><span style="color:#94A3B8">~60-68</span></td><td><span class="b b-gray">Not recommended</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="sec">
+<h3>Key Takeaway</h3>
+<div class="alert alert-success">
+  <strong style="color:#065F46;font-size:15px">Arabic Data Is the Deciding Factor</strong>
+  <p style="font-size:13px;color:#065F46;margin-top:8px;margin-bottom:0">For a <strong>one-time cost of ~$37.50-75.00</strong> with a well-curated <strong>500-example dataset (60% Arabic)</strong>, we can realistically achieve <strong>93-97% accuracy</strong>. The dataset curation effort (2-3 weeks) is the real investment, not the compute cost.</p>
+</div>
+</div>
+</div>
+
+<!-- ===== MODEL ANALYSIS ===== -->
+<div class="tc" id="tab-candidates">
+
+<div class="sec" id="model-analysis-cards"></div>
+
+<div class="sec">
+<h3>Not Recommended for Fine-Tuning</h3>
+<div class="alert alert-danger">
+  <div style="margin-bottom:12px"><strong>Gemma 3 27B</strong> (44/100) — ALL 7 Arabic responses returned in English (0% Arabic compliance). Fundamental reasoning errors (overtime instead of late hours, shift duration instead of lateness). These are logic + language failures — fine-tuning is less effective at fixing deep reasoning. Restrictive license (Gemma ToU, not Apache 2.0).</div>
+  <div><strong>Qwen 3 235B</strong> (63/100) — Too large to fine-tune practically (needs 8× H100 80GB). 4/7 Arabic in English. Failed AR Hard 2 entirely (claimed schema doesn't exist). Better to fine-tune the 32B variant instead.</div>
+</div>
+</div>
+</div>
+
+<!-- ===== TRAINING DATA ===== -->
+<div class="tc" id="tab-training">
+
+<div class="sec">
+<h3>What the Research Says</h3>
+<div class="g3">
+  <div class="card" style="border-top:3px solid #3B82F6">
+    <div style="font-size:12px;color:#3B82F6;font-weight:600;text-transform:uppercase;margin-bottom:6px">Text-to-SQL</div>
+    <p style="font-size:13px;margin-bottom:0">Scale AI found fine-tuning GPT-4 on Spider improved accuracy <strong>70% → 84%</strong> (+14 pts). Our task is simpler (fixed schema, finite questions) — expect larger gains from fewer examples.</p>
+  </div>
+  <div class="card" style="border-top:3px solid #10B981">
+    <div style="font-size:12px;color:#10B981;font-weight:600;text-transform:uppercase;margin-bottom:6px">Arabic Fine-Tuning</div>
+    <p style="font-size:13px;margin-bottom:0">PLOS ONE study: GPT-4o Mini with just <strong>500 Arabic examples surpassed SOTA</strong>. Largest gains up to 500 examples — beyond 1,000, diminishing returns. Arabic datasets exist: <strong>Ar-SPIDER</strong> and <strong>Dialect2SQL</strong> (9,428 Arabic NLQ-SQL pairs).</p>
+  </div>
+  <div class="card" style="border-top:3px solid #F59E0B">
+    <div style="font-size:12px;color:#F59E0B;font-weight:600;text-transform:uppercase;margin-bottom:6px">Scaling Laws</div>
+    <p style="font-size:13px;margin-bottom:0">OpenAI: "Similar improvement every time you double examples" — <strong>logarithmic scaling</strong>. ~100 = first jump, ~500 = near-peak, ~1,000+ = diminishing returns.</p>
+  </div>
+</div>
+</div>
+
+<div class="sec">
+<h3>What a Training Example Looks Like</h3>
+<p>Each example teaches the model: <em>"Given this schema and this question, produce this SQL."</em></p>
+
+<div class="jsonl-block">
+  <div class="jsonl-label">Example 1 — English query</div>
+  <pre><code>{"messages": [
+  {"role": "system", "content": "You are an SQL assistant for an HR system. Available tables:\n- users (id, first_name, last_name, first_name_ar, last_name_ar, department_id, status, ...)\n- departments (id, name, name_ar)\n- hr_requests (id, user_id, type, group, status, date, from, to, created_at)\n...\nRules: Only SELECT, always LIMIT, use _ar columns for Arabic"},
+  {"role": "user", "content": "How many active employees are in each department?"},
+  {"role": "assistant", "content": "```sql\nSELECT d.name AS \"Department\", COUNT(u.id) AS \"Employee Count\"\nFROM users u JOIN departments d ON u.department_id = d.id\nWHERE u.status = 'active'\nGROUP BY d.id, d.name ORDER BY COUNT(u.id) DESC LIMIT 1000;\n```"}
+]}</code></pre>
+</div>
+
+<div class="jsonl-block">
+  <div class="jsonl-label">Example 2 — Arabic query</div>
+  <pre><code>{"messages": [
+  {"role": "system", "content": "[same schema]"},
+  {"role": "user", "content": "كم عدد الموظفين النشطين في كل قسم؟"},
+  {"role": "assistant", "content": "```sql\nSELECT d.name_ar AS \"القسم\", COUNT(u.id) AS \"عدد الموظفين\"\nFROM users u JOIN departments d ON u.department_id = d.id\nWHERE u.status = 'active'\nGROUP BY d.id, d.name_ar ORDER BY COUNT(u.id) DESC LIMIT 1000;\n```"}
+]}</code></pre>
+</div>
+
+<div class="jsonl-block">
+  <div class="jsonl-label">Example 3 — Hard Arabic query (correct table + CASE translation)</div>
+  <pre><code>{"messages": [
+  {"role": "system", "content": "[same schema]"},
+  {"role": "user", "content": "أظهر لي إجمالي طلبات الإجازة المعتمدة حسب النوع لعام 2025"},
+  {"role": "assistant", "content": "```sql\nSELECT\n  CASE hr.type\n    WHEN 'vacation-leave' THEN 'إجازة سنوية'\n    WHEN 'sick-leave' THEN 'إجازة مرضية'\n    WHEN 'unpaid-leave' THEN 'إجازة بدون راتب'\n    ELSE hr.type\n  END AS \"نوع الإجازة\",\n  COUNT(*) AS \"عدد الطلبات المعتمدة\"\nFROM hr_requests hr\nWHERE hr.`group` = 'leave' AND hr.status = 'approved'\n  AND YEAR(hr.created_at) = 2025\nGROUP BY hr.type ORDER BY COUNT(*) DESC LIMIT 1000;\n```"}
+]}</code></pre>
+</div>
+</div>
+
+<div class="sec">
+<h3>Token Composition Per Training Example</h3>
+<table>
+  <thead><tr><th>Component</th><th>Description</th><th>Est. Tokens</th></tr></thead>
+  <tbody>
+    <tr><td><strong>System prompt</strong></td><td>HR schema definition (~30 tables) + rules</td><td>~600-900</td></tr>
+    <tr><td><strong>User message</strong></td><td>Natural language question (EN or AR)</td><td>~15-50</td></tr>
+    <tr><td><strong>Assistant response</strong></td><td>SQL query + optional summary</td><td>~80-250</td></tr>
+    <tr><td><strong>JSON overhead</strong></td><td><code>{"messages": [...]}</code>, role keys</td><td>~30-50</td></tr>
+    <tr><td style="font-weight:700">Total per example</td><td></td><td style="font-weight:700">~750-1,250 (~1,000 avg)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="sec">
+<h3>Dataset Size Tiers</h3>
+
+<div class="tier-card" style="border-left-color:#0EA5E9">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+    <div><span class="b b-blue">Tier 1: Baseline</span> <span style="font-size:13px;color:#64748B;margin-left:8px">Target: ~88-92% accuracy</span></div>
+    <div style="font-weight:800;font-size:18px;color:#0EA5E9">200 examples</div>
+  </div>
+  <div class="sg">
+    <div class="sb"><div class="sb-l">Total</div><div class="sb-v" style="color:#0EA5E9">200</div></div>
+    <div class="sb"><div class="sb-l">Arabic Share</div><div class="sb-v" style="color:#0EA5E9">50%</div></div>
+    <div class="sb"><div class="sb-l">Dataset Tokens</div><div class="sb-v" style="color:#0EA5E9">~200K</div></div>
+    <div class="sb"><div class="sb-l">Effective (3 epochs)</div><div class="sb-v" style="color:#0EA5E9">~600K</div></div>
+  </div>
+  <p style="font-size:13px;margin-bottom:0">Best for GPT 4.1 and Gemini 2.5 Pro (high baseline, few failures to fix). Covers all 7 benchmark patterns (EN+AR) plus ~86 additional HR query patterns.</p>
+</div>
+
+<div class="tier-card" style="border-left-color:#10B981;background:#F0FDF4">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+    <div><span class="b b-green">Tier 2: Recommended</span> <span style="font-size:13px;color:#64748B;margin-left:8px">Target: ~93-96% accuracy</span></div>
+    <div style="font-weight:800;font-size:18px;color:#10B981">500 examples</div>
+  </div>
+  <div class="sg">
+    <div class="sb"><div class="sb-l">Total</div><div class="sb-v" style="color:#10B981">500</div></div>
+    <div class="sb"><div class="sb-l">Arabic Share</div><div class="sb-v" style="color:#10B981">60%</div></div>
+    <div class="sb"><div class="sb-l">Dataset Tokens</div><div class="sb-v" style="color:#10B981">~500K</div></div>
+    <div class="sb"><div class="sb-l">Effective (3 epochs)</div><div class="sb-v" style="color:#10B981">~1.5M</div></div>
+  </div>
+  <p style="font-size:13px;margin-bottom:0"><strong>Arabic intentionally over-weighted at 60%</strong> — Arabic is the #1 differentiator and the biggest weakness. PLOS ONE shows Arabic needs ~1.5× more examples than English for equivalent performance.</p>
+</div>
+
+<div class="tier-card" style="border-left-color:#7C3AED">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+    <div><span class="b b-purple">Tier 3: Production-Grade</span> <span style="font-size:13px;color:#64748B;margin-left:8px">Target: ~95-98% accuracy</span></div>
+    <div style="font-weight:800;font-size:18px;color:#7C3AED">1,000 examples</div>
+  </div>
+  <div class="sg">
+    <div class="sb"><div class="sb-l">Total</div><div class="sb-v" style="color:#7C3AED">1,000</div></div>
+    <div class="sb"><div class="sb-l">Arabic Share</div><div class="sb-v" style="color:#7C3AED">65%</div></div>
+    <div class="sb"><div class="sb-l">Dataset Tokens</div><div class="sb-v" style="color:#7C3AED">~1M</div></div>
+    <div class="sb"><div class="sb-l">Effective (3 epochs)</div><div class="sb-v" style="color:#7C3AED">~3M</div></div>
+  </div>
+  <p style="font-size:13px;margin-bottom:0">Best for Qwen 3 32B (needs more data due to lower baseline). Adds real customer queries, negative examples, multi-step reasoning, Gulf Arabic dialect variations.</p>
+</div>
+</div>
+
+<div class="sec">
+<h3>Arabic-Specific Training Examples (Critical)</h3>
+<div class="alert alert-warn">⚠️ <strong>Arabic data is the deciding factor.</strong> 500 high-quality Arabic examples is the sweet spot. Beyond 1,000, diminishing returns. Every model benefits disproportionately from Arabic examples.</div>
+<table>
+  <thead><tr><th>Pattern</th><th>Count</th><th>Why Critical</th></tr></thead>
+  <tbody>
+    <tr><td>Arabic aliases and headers</td><td><strong>50</strong></td><td>Models default to English aliases when not trained</td></tr>
+    <tr><td>_ar column selection rules</td><td><strong>40</strong></td><td>Must learn: Arabic → prefer name_ar over name</td></tr>
+    <tr><td>Arabic summary/description text</td><td><strong>40</strong></td><td>Response text must be in Arabic, not just SQL</td></tr>
+    <tr><td>Arabic date formatting</td><td>20</td><td>Saudi context requires Hijri-aware responses</td></tr>
+    <tr><td>Mixed bilingual columns</td><td>30</td><td>Handle columns with no _ar equivalent</td></tr>
+    <tr><td>WHERE clause values (never translate)</td><td>20</td><td>DB values stay English even when response is Arabic</td></tr>
+    <tr><td>Complex Arabic queries</td><td><strong>50</strong></td><td>Hard queries fail more in Arabic</td></tr>
+    <tr><td>Common HR vocabulary (Arabic)</td><td><strong>50</strong></td><td>حضور، غياب، تأخير، إجازة، راتب، بدل، قسم</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="sec">
+<h3>Cost to Reach 95%+ Per Model</h3>
+<table>
+  <thead><tr><th>Model</th><th>Recommended Tier</th><th>One-Time Training Cost</th><th>Ongoing Inference Cost</th><th>Time to 95%+</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Gemini 2.5 Pro</strong></td><td><span class="b b-green">Tier 2 (500)</span></td><td><strong>$37.50</strong> (one-time)</td><td>$1.25-10/M (no premium)</td><td>2-3 weeks</td></tr>
+    <tr><td><strong>GPT 4.1</strong></td><td><span class="b b-blue">Tier 2 (500)</span></td><td><strong>$37.50</strong> (one-time)</td><td>$3-12/M (1.5× premium)</td><td>1-2 weeks</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td><span class="b b-purple">Tier 3 + iterative</span></td><td><strong>$7-30</strong> (one-time)</td><td>~$1,015/mo server</td><td>4-6 weeks</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- ===== SOURCES ===== -->
+<div class="tc" id="tab-sources">
+<div class="sec">
+<h3>Source Index</h3>
+<p>All cost figures are sourced from official provider documentation. Estimates are clearly labeled.</p>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Provider</th><th>Source</th><th>Verified</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Google Vertex AI</strong></td><td>Pricing page, SFT Docs</td><td>Feb 2026</td></tr>
+    <tr><td><strong>Google Cloud (GCP)</strong></td><td>Compute Engine GPU Pricing (A100/H100 instances)</td><td>Feb 2026</td></tr>
+    <tr><td><strong>OpenAI</strong></td><td>API Pricing, Developer Docs, SFT Guide</td><td>Feb 2026</td></tr>
+    <tr><td><strong>Together AI</strong></td><td>Pricing, FT Models Docs, FT Pricing Docs</td><td>Feb 2026</td></tr>
+    <tr><td><strong>Fireworks AI</strong></td><td>Pricing page</td><td>Feb 2026</td></tr>
+    <tr><td><strong>Alibaba Cloud</strong></td><td>Model Studio Pricing</td><td>Feb 2026</td></tr>
+    <tr><td><strong>AWS SageMaker</strong></td><td>Pricing, QLoRA Sample Notebook</td><td>Feb 2026</td></tr>
+    <tr><td><strong>RunPod</strong></td><td>Pricing page</td><td>Feb 2026</td></tr>
+    <tr><td><strong>Lambda</strong></td><td>Pricing page</td><td>Feb 2026</td></tr>
+    <tr><td><strong>Qwen 3 Hardware</strong></td><td>Unsloth Docs, Hardware Corner Guide</td><td>Feb 2026</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-brand"><svg width="24" height="24" viewBox="0 0 120 120" fill="none" class="flogo"></svg><span>Idaratech · إدارتك</span></div>
+  <div>Fine-Tuning Recommendation Report · AI SQL Chat</div>
+  <div class="footer-author">Prepared by Bilal Elhalawaty</div>
+</div>
+
+<script>
+// Logo
+function drawLogo(el){
+  const R=56,r=33,cx=60,cy=60,colors=["#E8792F","#C73A3A","#8C8C8C","#2980B9","#1DA8A0","#7B5EA7"];
+  const ang=i=>(i*60-90)*Math.PI/180;
+  const ox=i=>cx+R*Math.cos(ang(i)),oy=i=>cy+R*Math.sin(ang(i));
+  const ix=i=>cx+r*Math.cos(ang(i)),iy=i=>cy+r*Math.sin(ang(i));
+  const bg=el.closest('.footer')?'#0F172A':'#15102e';
+  let p='';
+  for(let i=0;i<6;i++){const j=(i+1)%6;p+=`<path d="M${ox(i)},${oy(i)} L${ox(j)},${oy(j)} L${ix(j)},${iy(j)} L${ix(i)},${iy(i)} Z" fill="${colors[i]}"/>`;}
+  let inner=`M${ix(0)},${iy(0)}`;for(let i=1;i<6;i++)inner+=` L${ix(i)},${iy(i)}`;inner+=' Z';
+  p+=`<path d="${inner}" fill="${bg}"/>`;el.innerHTML=p;
+}
+document.querySelectorAll('#logo,.flogo').forEach(drawLogo);
+
+// Tabs
+function showTab(id){
+  document.querySelectorAll('.tc').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Score projection bars
+const bars=[
+  {name:"Gemini 2.5 Pro",before:88,after:95,color:"#10B981"},
+  {name:"GPT 4.1",before:80,after:92.5,color:"#8B5CF6"},
+  {name:"Qwen 3 32B",before:55,after:85,color:"#F59E0B"},
+  {name:"Gemma 3 27B",before:44,after:64,color:"#94A3B8"},
+];
+document.getElementById('score-bars').innerHTML=bars.map(b=>`
+  <div class="bar-row">
+    <span class="bar-lbl">${b.name}</span>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:${b.before}%;background:${b.color};opacity:0.35"></div>
+      <div class="bar-fill" style="width:${b.after}%;background:${b.color};position:absolute;top:0;left:0;opacity:0.15;border-right:3px solid ${b.color}"></div>
+    </div>
+    <span class="bar-val" style="color:${b.color}">${b.before} → ${Math.round(b.after)}</span>
+  </div>`).join('');
+
+// Model analysis cards — NO training cost shown here (it's in Cost Breakdown tab)
+const ma=[
+  {name:"Gemini 2.5 Pro",score:88,est:"93-97",color:"#10B981",method:"Vertex AI SFT",time:"29.8s",tokens:"4,803",pass:"93% (13/14)",arComp:"7/7 (100%)",selfHosted:"No",
+   why:"Highest baseline quality (88/100). Fine-tuning an already-excellent model yields the highest absolute ceiling. Perfect Arabic compliance, strong reasoning, CASE expressions, TIMESTAMPDIFF precision. Marginal failures are all schema-specific patterns.",
+   fixes:["AR Medium 1: MONTHNAME() English → Arabic month mapping via CASE","Hard 2: Different table EN vs AR → Consistent table selection","Token overhead from thinking → Reduced unnecessary reasoning steps"],
+   risk:"Vendor dependency on Google Cloud / Vertex AI. Cannot export weights. Higher per-token cost than GPT 4.1."},
+  {name:"GPT 4.1",score:80,est:"90-95",color:"#8B5CF6",method:"OpenAI API SFT",time:"5.2s",tokens:"2,796",pass:"100% (14/14)",arComp:"7/7 (100%)",selfHosted:"No",
+   why:"Fastest model (5.2s, 6× faster than Gemini). Cheapest tokens. Failures are pattern-level mistakes (wrong table, missing DISTINCT) — not reasoning failures. Fine-tuning fixes these perfectly. Zero retries, best Hard 2 consistency, auto-masks Saudi ID numbers.",
+   fixes:["AR Easy 2: 'leaves' table → Learns hr_requests + group='leave'","Medium 1: absent/leave zeros → Correct CASE logic with user_shifts","Hard 1: COUNT inflation → Learns COUNT(DISTINCT u.id)","AR responses lack depth → Arabic response examples with richer context"],
+   risk:"Vendor lock-in with OpenAI. Fine-tuned inference costs 1.5× more than base. If deprecated, must re-tune."},
+  {name:"Qwen 3 32B",score:55,est:"82-88",color:"#F59E0B",method:"QLoRA (self-hosted) or LoRA/SFT (managed)",time:"3-8s (self-hosted)",tokens:"3,559",pass:"86% (12/14)",arComp:"3/7 (43%)",selfHosted:"Yes (Apache 2.0)",
+   why:"Apache 2.0 license — full ownership. Best Arabic foundation (119 languages). Self-hosted with vLLM drops from 59.7s to 3-8s. Zero per-token billing at scale. Full control over prompts, generation params, tokenizer extensions.",
+   fixes:["4/7 Arabic in English → Full Arabic response examples","Hebrew char corruption → Correct Arabic aliases for all columns","Easy 2: wrong date column → Learns created_at + group='leave'","Hard 1: missing late hours → Complete query patterns","AR Medium 1: all zeros except present → Correct CASE expressions"],
+   risk:"Requires infrastructure management. Lower baseline means more training data needed (Tier 3 recommended). Current Arabic compliance poor (3/7)."}
+];
+
+document.getElementById('model-analysis-cards').innerHTML=ma.map(m=>`
+<div class="card" style="border-left:4px solid ${m.color}">
+  <h4 style="color:${m.color}">${m.name} — ${m.score}/100 → ${m.est}</h4>
+  <div class="sg">
+    <div class="sb"><div class="sb-l">Current Score</div><div class="sb-v" style="color:${m.color}">${m.score}</div></div>
+    <div class="sb"><div class="sb-l">Post-FT Estimate</div><div class="sb-v" style="color:${m.color}">${m.est}</div></div>
+    <div class="sb"><div class="sb-l">Method</div><div class="sb-v" style="font-size:13px;color:${m.color}">${m.method}</div></div>
+    <div class="sb"><div class="sb-l">Avg Response Time</div><div class="sb-v" style="color:${m.color}">${m.time}</div></div>
+    <div class="sb"><div class="sb-l">Avg Tokens</div><div class="sb-v" style="color:${m.color}">${m.tokens}</div></div>
+    <div class="sb"><div class="sb-l">Pass Rate</div><div class="sb-v" style="color:${m.color}">${m.pass}</div></div>
+    <div class="sb"><div class="sb-l">AR Compliance</div><div class="sb-v" style="color:${m.color}">${m.arComp}</div></div>
+    <div class="sb"><div class="sb-l">Self-Hosted</div><div class="sb-v" style="font-size:13px;color:${m.color}">${m.selfHosted}</div></div>
+  </div>
+  <p style="font-size:13px"><span class="str">Why:</span> ${m.why}</p>
+  <h4 style="font-size:13px">What fine-tuning fixes:</h4>
+  ${m.fixes.map(f=>{const parts=f.split(' → ');return `<div class="fix-row"><span class="fix-before">${parts[0]}</span><span class="arrow">→</span><span class="fix-after">${parts[1]||''}</span></div>`;}).join('')}
+  <p style="font-size:13px;margin-top:12px;margin-bottom:0"><span class="wk">Risk:</span> ${m.risk}</p>
+</div>`).join('');
+</script>
+</body>
+</html>

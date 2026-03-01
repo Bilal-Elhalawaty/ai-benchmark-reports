@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idaratech — AI SQL Chat Benchmark Report v2</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F8FAFC;color:#1E293B;line-height:1.6}
+.header{background:linear-gradient(135deg,#0F172A 0%,#0B3B34 50%,#0F172A 100%);padding:32px 24px 28px;color:#fff}
+.container{max-width:960px;margin:0 auto}
+.header-top{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.header-subtitle{font-size:13px;color:#94A3B8}
+.brand-label{font-size:13px;color:#5EEAD4;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+h1{font-size:26px;font-weight:800;line-height:1.2}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:20px}
+.kpi-card{background:rgba(255,255,255,.06);border-radius:10px;padding:14px 12px;border:1px solid rgba(255,255,255,.08)}
+.kpi-label{font-size:11px;color:#94A3B8;margin-bottom:4px}
+.kpi-value{font-size:20px;font-weight:800;color:#F0FDFA}
+.tab-nav{background:#fff;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:10;overflow-x:auto}
+.tab-nav-inner{max-width:960px;margin:0 auto;display:flex;padding:0 24px}
+.tab-btn{padding:14px 18px;font-size:13px;font-weight:500;color:#64748B;background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s}
+.tab-btn.active{font-weight:700;color:#0B9B8A;border-bottom-color:#0B9B8A}
+.tab-btn:hover{color:#0B9B8A}
+.content{max-width:960px;margin:0 auto;padding:24px 24px 60px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.section{margin-bottom:28px}
+.section h3{font-size:17px;font-weight:800;color:#0F172A;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #E2E8F0}
+.section h4{font-size:14px;font-weight:700;margin-bottom:12px}
+p{color:#475569;line-height:1.7;margin-bottom:16px}
+code{background:#F1F5F9;padding:1px 5px;border-radius:4px;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 12px;font-weight:600;color:#64748B;font-size:12px;border-bottom:2px solid #E2E8F0}
+td{padding:10px 12px;color:#1E293B}
+tr{border-bottom:1px solid #F1F5F9}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.badge-pass{background:#D1FAE5;color:#065F46;border:1px solid #6EE7B7}
+.badge-fail{background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5}
+.badge-partial{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.badge-easy{background:#DBEAFE;color:#1E40AF;border:1px solid #93C5FD}
+.badge-medium{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.badge-hard{background:#FCE7F3;color:#9D174D;border:1px solid #F9A8D4}
+.rank-row{background:#fff;border-radius:12px;padding:16px 20px;border:1px solid #E2E8F0;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.rank-circle{width:36px;height:36px;border-radius:99px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+.rank-info{min-width:140px;flex-shrink:0}
+.rank-name{font-weight:700;font-size:15px}
+.rank-id{font-size:11px;color:#94A3B8}
+.score-bar-wrap{flex:1;min-width:160px;display:flex;align-items:center;gap:8px}
+.score-bar-bg{flex:1;height:10px;background:#E5E7EB;border-radius:5px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:5px;transition:width .6s ease}
+.score-val{font-weight:700;font-size:14px;min-width:40px}
+.rank-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;align-items:center}
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.dim-card{background:#fff;border-radius:10px;padding:16px;border:1px solid #E2E8F0;border-left-width:4px}
+.dim-name{font-weight:700;font-size:14px;margin-bottom:4px}
+.dim-weight{font-size:22px;font-weight:800;margin-bottom:4px}
+.dim-desc{font-size:12px;color:#94A3B8}
+.model-card{background:#fff;border-radius:12px;border:1px solid #E2E8F0;padding:20px;margin-bottom:16px}
+.model-card h4{font-size:16px;font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #E2E8F0}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat-box{background:#F8FAFC;border-radius:8px;padding:10px 14px}
+.stat-label{font-size:11px;color:#94A3B8}
+.stat-value{font-size:18px;font-weight:700}
+.strength{color:#059669;font-weight:700}
+.weakness{color:#DC2626;font-weight:700}
+.alert-box{border-radius:10px;padding:16px;margin-bottom:20px;font-size:13px}
+.alert-danger{background:#FEF2F2;border:1px solid #FECACA}
+.failure-card{border-radius:10px;padding:14px;margin-bottom:10px}
+.failure-red{background:#FEF2F2;border-left:4px solid #EF4444}
+.failure-yellow{background:#FFFBEB;border-left:4px solid #F59E0B}
+.pattern-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F1F5F9}
+.pattern-row:last-child{border-bottom:none}
+.pattern-icon{font-size:20px}
+.pattern-title{font-weight:700;font-size:14px;margin-bottom:2px}
+.pattern-desc{font-size:13px;color:#64748B}
+.rec-card{background:#fff;border-radius:12px;padding:18px;margin-bottom:12px;border:1px solid #E2E8F0;border-left-width:4px}
+.rec-label{font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.rec-model{font-size:18px;font-weight:800;margin-bottom:6px}
+.rec-reason{font-size:13px;color:#475569}
+.not-rec{background:#FEF2F2;border-radius:12px;padding:18px;border:1px solid #FECACA}
+.improve-row{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #F1F5F9}
+.improve-row:last-child{border-bottom:none}
+.improve-num{width:28px;height:28px;border-radius:8px;background:#E6F7F5;color:#0B9B8A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.arch-card{border-radius:12px;padding:18px}
+.phase1{background:#F0FDFA;border:1px solid #99F6E4}
+.phase1 .arch-title{color:#0B9B8A}
+.phase2{background:#EEF2FF;border:1px solid #C7D2FE}
+.phase2 .arch-title{color:#4F46E5}
+.arch-title{font-weight:800;font-size:15px;margin-bottom:8px}
+.arch-desc{font-size:13px;color:#475569;line-height:1.7}
+.layer-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.layer-chip{background:#F8FAFC;border-radius:8px;padding:8px 14px;font-size:12px;border:1px solid #E2E8F0;color:#475569}
+.layer-chip strong{color:#1E293B}
+.limit-row{font-size:13px;color:#64748B;padding:6px 0;display:flex;gap:8px}
+.limit-icon{color:#F59E0B}
+.status-dot{width:18px;height:18px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700}
+.dot-pass{background:#10B981}.dot-fail{background:#EF4444}.dot-partial{background:#F59E0B}.dot-passstar{background:#86EFAC}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{font-size:12px;min-width:100px;font-weight:500}
+.bar-track{flex:1;height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.bar-val{font-size:11px;color:#94A3B8;min-width:45px;text-align:right}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.compare-card{border-radius:10px;padding:16px}
+.compare-31{background:#F0FDFA;border:1px solid #99F6E4}
+.compare-25{background:#EEF2FF;border:1px solid #C7D2FE}
+.compare-title{font-weight:700;font-size:14px;margin-bottom:8px}
+.sub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.sub-card{background:#fff;border-radius:10px;padding:14px;border:1px solid #E2E8F0}
+.sub-name{font-weight:700;font-size:13px}
+.sub-weight{font-size:20px;font-weight:800;color:#0B9B8A;margin:4px 0}
+.sub-desc{font-size:12px;color:#94A3B8}
+.footer{background:#0F172A;color:#94A3B8;padding:24px;text-align:center;font-size:12px}
+.footer-brand{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+.footer-brand span{font-weight:700;color:#E2E8F0}
+.footer-author{margin-top:8px;color:#5EEAD4;font-weight:600}
+.legend{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;font-size:12px}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:14px;height:14px;border-radius:3px;display:inline-block}
+.matrix-th{font-size:10px!important;padding:8px 4px!important;text-align:center!important;min-width:40px}
+.matrix-td{text-align:center;padding:6px 2px}
+.ar-rtl{text-align:right;direction:rtl;font-family:Tahoma,sans-serif}
+@media(max-width:700px){
+  .arch-grid,.compare-grid{grid-template-columns:1fr}
+  .rank-row{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="container">
+    <div class="header-top">
+      <svg width="52" height="52" viewBox="0 0 120 120" fill="none" id="logo-svg"></svg>
+      <div>
+        <div class="brand-label">Idaratech · إدارتك</div>
+        <h1>AI SQL Chat Benchmark Report</h1>
+      </div>
+    </div>
+    <div class="header-subtitle">v2 — Updated with MiniMax M2.5 · Evaluation of AI models for natural language-to-SQL generation</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">🤖 Models Tested</div><div class="kpi-value">7</div></div>
+      <div class="kpi-card"><div class="kpi-label">📊 Total Requests</div><div class="kpi-value">98</div></div>
+      <div class="kpi-card"><div class="kpi-label">💬 Prompts</div><div class="kpi-value">7 × 2 langs</div></div>
+      <div class="kpi-card"><div class="kpi-label">🏆 Top Score</div><div class="kpi-value">88/100</div></div>
+      <div class="kpi-card"><div class="kpi-label">✅ Best Pass Rate</div><div class="kpi-value">100%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="showTab('models')">Model Details</button>
+    <button class="tab-btn" onclick="showTab('arabic')">Arabic Audit</button>
+    <button class="tab-btn" onclick="showTab('matrix')">Pass/Fail Matrix</button>
+    <button class="tab-btn" onclick="showTab('issues')">Critical Issues</button>
+    <button class="tab-btn" onclick="showTab('recs')">Recommendations</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ==================== OVERVIEW ==================== -->
+<div class="tab-content active" id="tab-overview">
+
+<div class="section">
+  <h3>Executive Summary</h3>
+  <p>Seven AI models were benchmarked across <strong>98 natural language-to-SQL requests</strong> (7 prompts × 2 languages: English and Arabic) against a production HR tenant database. Each model was evaluated on SQL correctness, result accuracy, Arabic language handling, SQL quality, and token efficiency.</p>
+  <p><strong>Arabic content language compliance</strong> is the single biggest differentiator between the top-4 and bottom-3 models. All top-4 models achieve 7/7 Arabic content compliance, while the bottom-3 fail critically — making Arabic handling the key factor for production readiness in the Saudi market.</p>
+</div>
+
+<div class="section">
+  <h3>Rankings</h3>
+  <div id="rankings"></div>
+</div>
+
+<div class="section">
+  <h3>Scoring Methodology</h3>
+  <p style="font-size:13px">Each prompt is rated 0–10 on each dimension. Weighted score per prompt = <code>(SQL×0.30) + (Accuracy×0.25) + (Arabic×0.20) + (Quality×0.15) + (Tokens×0.10)</code>. Final score = average of all 14 prompts × 10, giving a 0–100 scale. Response time, retry count, and pass rate are tracked but <strong>not scored</strong>.</p>
+  <div class="dim-grid">
+    <div class="dim-card" style="border-left-color:#3B82F6"><div class="dim-name">SQL Correctness</div><div class="dim-weight" style="color:#3B82F6">30%</div><div class="dim-desc">Tables, joins, WHERE, GROUP BY</div></div>
+    <div class="dim-card" style="border-left-color:#8B5CF6"><div class="dim-name">Result Accuracy</div><div class="dim-weight" style="color:#8B5CF6">25%</div><div class="dim-desc">Row count, plausible values</div></div>
+    <div class="dim-card" style="border-left-color:#0B9B8A"><div class="dim-name">Arabic Handling</div><div class="dim-weight" style="color:#0B9B8A">20%</div><div class="dim-desc">Content, headers, _ar columns</div></div>
+    <div class="dim-card" style="border-left-color:#F59E0B"><div class="dim-name">SQL Quality</div><div class="dim-weight" style="color:#F59E0B">15%</div><div class="dim-desc">Efficiency, readability</div></div>
+    <div class="dim-card" style="border-left-color:#EF4444"><div class="dim-name">Token Efficiency</div><div class="dim-weight" style="color:#EF4444">10%</div><div class="dim-desc">Lower tokens = better</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Test Prompts</h3>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>#</th><th>Difficulty</th><th>English</th><th style="text-align:right">Arabic</th></tr></thead>
+      <tbody id="prompts-body"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ==================== MODEL DETAILS ==================== -->
+<div class="tab-content" id="tab-models">
+
+<div class="section">
+  <h3>Performance Comparison</h3>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Model</th><th>Score</th><th>Pass Rate</th><th>Avg Tokens</th><th>Avg Time</th><th>Retries</th></tr></thead>
+      <tbody id="perf-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="model-cards"></div>
+
+<div class="section">
+  <h3>Gemini 3.1 Pro vs Gemini 2.5 Pro — Score vs Reliability</h3>
+  <p style="font-size:13px">Gemini 3.1 Pro outperforms Gemini 2.5 Pro on operational metrics (100% pass rate, 0 retries, 23% fewer tokens) but scores 4 points lower. This is because pass rate, retry count, and response time are <strong>not scored</strong> — the difference comes from SQL quality polish: Gemini 2.5 Pro translates DB values to Arabic, uses more precise time functions, and produces richer output columns.</p>
+  <div class="compare-grid">
+    <div class="compare-card compare-31"><div class="compare-title" style="color:#0B9B8A">Gemini 3.1 Pro wins on:</div><div style="font-size:13px;color:#475569">Pass Rate (100% vs 93%), Retries (0 vs 1), Tokens (3,907 vs 4,803)</div></div>
+    <div class="compare-card compare-25"><div class="compare-title" style="color:#4F46E5">Gemini 2.5 Pro wins on:</div><div style="font-size:13px;color:#475569">Arabic value translation, TIMESTAMPDIFF precision, richer output columns, single-query elegance</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== ARABIC AUDIT ==================== -->
+<div class="tab-content" id="tab-arabic">
+
+<div class="section">
+  <h3>Arabic Response Compliance Audit</h3>
+  <div class="alert-box alert-danger"><strong style="color:#991B1B">⚠️ Critical Requirement:</strong> <span style="color:#7F1D1D">When a user asks in Arabic, the entire response (summary + column headers + aliases) MUST be in Arabic. English content = major production failure for the Saudi market.</span></div>
+
+  <h4>Content Language Compliance</h4>
+  <div style="overflow-x:auto;margin-bottom:24px">
+    <table>
+      <thead><tr><th>Model</th><th>AR Content ✓</th><th>AR Content ✗</th><th>AR Headers ✓</th><th>AR Headers ✗</th><th>Status</th></tr></thead>
+      <tbody id="arabic-body"></tbody>
+    </table>
+  </div>
+
+  <h4>Arabic Handling Sub-Criteria (20% weight)</h4>
+  <div class="sub-grid">
+    <div class="sub-card"><div class="sub-name">Response Content Language</div><div class="sub-weight">8%</div><div class="sub-desc">Summary MUST be in Arabic</div></div>
+    <div class="sub-card"><div class="sub-name">Column Header Language</div><div class="sub-weight">5%</div><div class="sub-desc">Aliases like 'القسم' not 'Department'</div></div>
+    <div class="sub-card"><div class="sub-name">_ar Column Usage</div><div class="sub-weight">4%</div><div class="sub-desc">Use name_ar, first_name_ar, etc.</div></div>
+    <div class="sub-card"><div class="sub-name">Arabic Value Translation</div><div class="sub-weight">3%</div><div class="sub-desc">Bonus: vacation-leave → إجازة سنوية</div></div>
+  </div>
+
+  <div style="margin-top:20px">
+    <h4>Detailed Failure Breakdown</h4>
+    <div class="failure-card failure-red" style="border-left-color:#DC2626"><div style="margin-bottom:6px"><strong>Gemma 3 27B</strong> <span class="badge badge-fail">CRITICAL</span></div><div style="font-size:13px;color:#7F1D1D">7/7 Arabic responses have English content. The model never generates Arabic summaries. 3/7 also have all-English column headers (Medium 1, Hard 1, Hard 2).</div></div>
+    <div class="failure-card failure-red" style="border-left-color:#F59E0B"><div style="margin-bottom:6px"><strong>Qwen 3 32B</strong> <span class="badge badge-fail">FAIL</span></div><div style="font-size:13px;color:#7F1D1D">4/7 Arabic responses in English. Hebrew character corruption in AR Medium 2 (الשם العائלي). Hard 2 has all-English column headers despite Arabic content.</div></div>
+    <div class="failure-card failure-red" style="border-left-color:#F59E0B"><div style="margin-bottom:6px"><strong>Qwen 3 235B</strong> <span class="badge badge-fail">FAIL</span></div><div style="font-size:13px;color:#7F1D1D">4/7 Arabic responses in English with snake_case English headers (department_name, employee_count). AR Hard 2 returned English error message with no SQL generated.</div></div>
+  </div>
+
+  <div style="margin-top:20px">
+    <h4>Quality Notes — Passing Models</h4>
+    <div class="failure-card failure-yellow" style="border-left-color:#06B6D4">
+      <div style="margin-bottom:6px"><strong>MiniMax M2.5</strong> <span class="badge badge-pass">PASS*</span></div>
+      <div style="font-size:13px;color:#92400E">Passes Arabic compliance overall but with caveats: (1) Chinese character "五种" appeared in AR Easy 2 summary — cross-language contamination from training data. (2) AR Medium 2 returned ALL English column aliases despite Arabic content body. Arabic headers score: 6/7.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== PASS/FAIL MATRIX ==================== -->
+<div class="tab-content" id="tab-matrix">
+
+<div class="section">
+  <h3>Pass/Fail Matrix (All 98 Requests)</h3>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:#10B981"></span> PASS</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span> PARTIAL</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span> FAIL</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#86EFAC"></span> PASS* (correct SQL, English summary)</div>
+  </div>
+  <div style="overflow-x:auto">
+    <table id="matrix-table"></table>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Token Usage & Response Time</h3>
+  <div class="compare-grid">
+    <div><h4 style="font-size:13px;color:#64748B;margin-bottom:10px">Average Tokens (lower = better)</h4><div id="token-bars"></div></div>
+    <div><h4 style="font-size:13px;color:#64748B;margin-bottom:10px">Average Response Time (lower = better)</h4><div id="time-bars"></div></div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== CRITICAL ISSUES ==================== -->
+<div class="tab-content" id="tab-issues">
+
+<div class="section">
+  <h3>Complete Failures (No Usable Results)</h3>
+  <div id="failures-complete"></div>
+</div>
+
+<div class="section">
+  <h3>Wrong Metric / Fundamental Misunderstanding</h3>
+  <div id="failures-metric"></div>
+</div>
+
+<div class="section">
+  <h3>Common Failure Patterns</h3>
+  <div id="patterns"></div>
+</div>
+
+<div class="section">
+  <h3>Data Source Inconsistency (Hard 2: Salary Breakdown)</h3>
+  <p style="font-size:13px">Several models used different tables (user_salaries vs payslips) depending on query language. user_salaries = current salary config; payslips = historical payroll — producing different totals.</p>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Model</th><th>EN Table</th><th>AR Table</th><th>Consistent?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Gemini 2.5 Pro</strong></td><td><code>user_salaries</code></td><td><code>payslips</code></td><td><span class="badge badge-fail">No</span></td></tr>
+        <tr><td><strong>MiniMax M2.5</strong></td><td><code>user_salaries</code></td><td><code>user_salaries</code></td><td><span class="badge badge-pass">Yes</span></td></tr>
+        <tr><td><strong>Gemini 3.1 Pro</strong></td><td><code>user_salaries</code></td><td><code>payslips</code></td><td><span class="badge badge-fail">No</span></td></tr>
+        <tr><td><strong>GPT 4.1</strong></td><td><code>user_salaries</code></td><td><code>user_salaries</code></td><td><span class="badge badge-pass">Yes</span></td></tr>
+        <tr><td><strong>Qwen 3 235B</strong></td><td><code>payslips</code></td><td><code>(no SQL)</code></td><td><span class="badge badge-partial">N/A</span></td></tr>
+        <tr><td><strong>Qwen 3 32B</strong></td><td><code>user_salaries</code></td><td><code>user_salaries</code></td><td><span class="badge badge-pass">Yes</span></td></tr>
+        <tr><td><strong>Gemma 3 27B</strong></td><td><code>user_salaries</code></td><td><code>user_salaries</code></td><td><span class="badge badge-pass">Yes</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ==================== RECOMMENDATIONS ==================== -->
+<div class="tab-content" id="tab-recs">
+
+<div class="section">
+  <h3>Model Selection Recommendations</h3>
+  <div class="rec-card" style="border-left-color:#10B981"><div class="rec-label">Production (accuracy-first)</div><div class="rec-model">Gemini 2.5 Pro</div><div class="rec-reason">Highest accuracy (88/100), best Arabic handling, translates leave types to Arabic</div></div>
+  <div class="rec-card" style="border-left-color:#0EA5E9"><div class="rec-label">Production (balanced)</div><div class="rec-model">Gemini 3.1 Pro</div><div class="rec-reason">100% first-pass rate, zero retries, good Arabic, moderate cost</div></div>
+  <div class="rec-card" style="border-left-color:#8B5CF6"><div class="rec-label">Cost-sensitive / high-volume</div><div class="rec-model">GPT 4.1</div><div class="rec-reason">6× faster, 42% cheaper tokens, but needs Arabic table-knowledge fixes</div></div>
+  <div class="rec-card" style="border-left-color:#06B6D4"><div class="rec-label">Production (API, near-top accuracy)</div><div class="rec-model">MiniMax M2.5</div><div class="rec-reason">87/100, 100% pass rate, strong Arabic, competitive API pricing via OpenRouter ($0.295/$1.20 per M tokens). No fine-tuning via API.</div></div>
+  <div class="not-rec"><div style="font-size:12px;color:#991B1B;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">❌ Not Recommended for Production</div><div style="font-size:14px;font-weight:700;margin-bottom:6px">Gemma 3 27B · Qwen 3 32B · Qwen 3 235B</div><div style="font-size:13px;color:#7F1D1D">Arabic content failures (0–3 out of 7), wrong metrics, slow response times, and Hebrew character hallucinations make these unsuitable for Saudi market deployment.</div></div>
+</div>
+
+<div class="section">
+  <h3>System Improvements</h3>
+  <div id="improvements"></div>
+</div>
+
+<div class="section">
+  <h3>Architecture: Two-Phase Pipeline</h3>
+  <div class="arch-grid">
+    <div class="arch-card phase1"><div class="arch-title">Phase 1: Table Selection</div><div class="arch-desc">User prompt → AI selects relevant tables → returns JSON array of table names</div></div>
+    <div class="arch-card phase2"><div class="arch-title">Phase 2: SQL Generation</div><div class="arch-desc">Schema + prompt → AI generates SQL → Validator (regex → AST → LIMIT) → Execute → Retry up to 3× → Summarize</div></div>
+  </div>
+  <div style="margin-top:16px"><div style="font-weight:700;font-size:14px;margin-bottom:8px">SQL Validator Layers</div>
+    <div class="layer-wrap">
+      <div class="layer-chip"><strong>Layer 1:</strong> Regex pre-check (rejects non-SELECT, dangerous keywords)</div>
+      <div class="layer-chip"><strong>Layer 2:</strong> AST validation (phpmyadmin/sql-parser, table allowlist)</div>
+      <div class="layer-chip"><strong>Layer 3:</strong> LIMIT enforcement (must exist, ≤ 1000)</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Known Limitations</h3>
+  <div class="limit-row"><span class="limit-icon">⚠</span> Non-deterministic — Same prompt may produce different SQL on re-run</div>
+  <div class="limit-row"><span class="limit-icon">⚠</span> Single-tenant — Results may vary across tenants with different data</div>
+  <div class="limit-row"><span class="limit-icon">⚠</span> Schema visibility — Phase 1 table selection limits Phase 2 scope</div>
+  <div class="limit-row"><span class="limit-icon">⚠</span> CTE not supported — SQL validator rejects WITH...AS expressions</div>
+  <div class="limit-row"><span class="limit-icon">⚠</span> Date column ambiguity — hr_requests has date, from, to, created_at</div>
+</div>
+</div>
+
+</div><!-- end content -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-brand">
+    <svg width="24" height="24" viewBox="0 0 120 120" fill="none" class="footer-logo"></svg>
+    <span>Idaratech · إدارتك</span>
+  </div>
+  <div>AI SQL Chat Benchmark Report — v2</div>
+  <div class="footer-author">Prepared by Bilal Elhalawaty</div>
+</div>
+
+<script>
+// DATA
+const models=[
+  {rank:1,name:"Gemini 2.5 Pro",id:"google/gemini-2.5-pro",score:88,pass:"93%",passNum:13,tokens:4803,time:"29.8s",timeNum:29.8,retries:1,arContent:"7/7",arHeaders:"7/7",arCompliance:"PASS",color:"#10B981",
+   strengths:"Best SQL quality — uses proper TIMESTAMPDIFF, CASE expressions, subqueries. Only model that translates leave type DB values to Arabic (vacation-leave → إجازة سنوية). Consistently uses _ar columns. Rich column output.",
+   weaknesses:"Highest token usage (~4,800 avg) due to thinking model. AR Hard 2 used payslips instead of user_salaries. AR Medium 1 MONTHNAME() returns English month names."},
+  {rank:2,name:"MiniMax M2.5",id:"minimax/minimax-m2.5",score:87,pass:"100%",passNum:14,tokens:3359,time:"24.7s",timeNum:24.7,retries:1,arContent:"7/7",arHeaders:"6/7",arCompliance:"PASS*",color:"#06B6D4",
+   strengths:"Second-highest score (87/100) with 100% pass rate. Strong Arabic content compliance (7/7). Consistent use of user_salaries table. MoE architecture gives good inference speed despite 230B total parameters.",
+   weaknesses:"Chinese character '五种' contamination in AR Easy 2 summary. AR Medium 2 uses ALL English column aliases despite Arabic content. AR Hard 1 required 1 retry. 6/7 Arabic headers (not 7/7)."},
+  {rank:3,name:"Gemini 3.1 Pro",id:"google/gemini-3.1-pro-preview",score:84,pass:"100%",passNum:14,tokens:3907,time:"32.4s",timeNum:32.4,retries:0,arContent:"7/7",arHeaders:"7/7",arCompliance:"PASS",color:"#0EA5E9",
+   strengths:"Zero retries across all 14 queries — best reliability. Uses shift_id join pattern (more precise). Consistent Arabic support with proper _ar columns. Includes extra context columns.",
+   weaknesses:"AR Hard 2 switches from user_salaries to payslips. AR Hard 1 includes non-active employees (18 rows vs 16). No Arabic value translation of DB values."},
+  {rank:4,name:"GPT 4.1",id:"openai/gpt-4.1",score:80,pass:"79%",passNum:11,tokens:2796,time:"5.2s",timeNum:5.2,retries:0,arContent:"7/7",arHeaders:"7/7",arCompliance:"PASS",color:"#8B5CF6",
+   strengths:"Fastest model (5.2s avg, 6× faster than Gemini 2.5 Pro). Lowest token usage (2,796). Only model that masks Saudi ID numbers. Includes position info. Hard 2 perfectly consistent EN/AR.",
+   weaknesses:"AR Easy 2 complete failure — used non-existent leaves table. Medium 1 absent/leave counts all zeros. Hard 1 COUNT(DISTINCT) missing inflates employee counts to 7,977."},
+  {rank:5,name:"Qwen 3 235B",id:"qwen/qwen3-235b-a22b",score:63,pass:"71%",passNum:10,tokens:3966,time:"85.7s",timeNum:85.7,retries:2,arContent:"3/7",arHeaders:"3/7",arCompliance:"FAIL",color:"#F59E0B",
+   strengths:"English queries are generally correct. AR Medium 2 masks Saudi ID numbers. Uses BETWEEN for clean date filtering.",
+   weaknesses:"4/7 Arabic responses have English content — critical production failure. Slowest model at 85.7s average. AR Hard 2 produced no SQL. English snake_case aliases in Arabic queries."},
+  {rank:6,name:"Qwen 3 32B",id:"qwen/qwen3-32b",score:55,pass:"64%",passNum:9,tokens:3559,time:"59.7s",timeNum:59.7,retries:1,arContent:"3/7",arHeaders:"3/7",arCompliance:"FAIL",color:"#F97316",
+   strengths:"Good EN Hard 1 with subquery approach + COALESCE. Good EN Medium 1 CASE pivot. Includes employee number in Medium 3.",
+   weaknesses:"4/7 Arabic responses in English. Hebrew character corruption (الשם العائلي). EN Easy 2 returns only 1 row. AR Hard 1 missing late hours column entirely. Very slow (59.7s)."},
+  {rank:7,name:"Gemma 3 27B",id:"google/gemma-3-27b-it",score:44,pass:"50%",passNum:7,tokens:3157,time:"8.3s",timeNum:8.3,retries:2,arContent:"0/7",arHeaders:"4/7",arCompliance:"CRITICAL FAIL",color:"#EF4444",
+   strengths:"Fast execution (8.3s avg). Low token usage. Hard 2 SQL correct on both languages.",
+   weaknesses:"ALL 7 Arabic responses have English content — catastrophic failure. Uses wrong metrics (SUM(overtime) instead of late hours). Hard 1 measures shift duration, not lateness. AR Easy 2 falls back to wrong table."}
+];
+
+const prompts=[
+  {n:1,d:"Easy",en:"How many active employees are in each department?",ar:"كم عدد الموظفين النشطين في كل قسم؟"},
+  {n:2,d:"Easy",en:"Show me the total approved leave requests by type for 2025",ar:"أظهر لي إجمالي طلبات الإجازة المعتمدة حسب النوع لعام 2025"},
+  {n:3,d:"Medium",en:"Give me a monthly breakdown of attendance statuses for 2025",ar:"أعطني تفصيل شهري لحالات الحضور لعام 2025"},
+  {n:4,d:"Medium",en:"Who are the top 10 employees with the most late hours in 2025?",ar:"من هم أكثر 10 موظفين لديهم ساعات تأخير في 2025؟"},
+  {n:5,d:"Medium",en:"Show me the remaining leave balance for each active employee in 2025",ar:"أظهر لي رصيد الإجازات المتبقي لكل موظف نشط في 2025"},
+  {n:6,d:"Hard",en:"Compare employee count per department vs total late hours (2025)",ar:"مقارنة عدد الموظفين وساعات التأخير لكل قسم 2025"},
+  {n:7,d:"Hard",en:"Salary cost breakdown per department (basic, housing, transport, avg)",ar:"تفاصيل تكلفة الرواتب لكل قسم"}
+];
+
+const pLabels=["E1 EN","E1 AR","E2 EN","E2 AR","M1 EN","M1 AR","M2 EN","M2 AR","M3 EN","M3 AR","H1 EN","H1 AR","H2 EN","H2 AR"];
+const pMatrix={
+  "Gemini 2.5 Pro":["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "MiniMax M2.5":["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "Gemini 3.1 Pro":["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "GPT 4.1":["PASS","PASS","PASS","FAIL","PARTIAL","PARTIAL","PASS","PASS","PASS","PASS","PARTIAL","PARTIAL","PASS","PASS"],
+  "Qwen 3 235B":["PASS","PASS","PASS","PASS","PASS","PARTIAL","PASS","PARTIAL","PASS","PASS","PASS","FAIL","PASS","FAIL"],
+  "Qwen 3 32B":["PASS","PASS","FAIL","FAIL","PASS","FAIL","PASS","PARTIAL","PASS","PASS","PASS","FAIL","PASS","PARTIAL"],
+  "Gemma 3 27B":["PASS","PASS*","PARTIAL","FAIL","PARTIAL","PARTIAL","FAIL","PARTIAL","PASS","PARTIAL","FAIL","FAIL","PASS","PARTIAL"]
+};
+
+const completeFails=[
+  {m:"GPT 4.1",p:"AR Easy 2",i:"Used non-existent 'leaves' table instead of hr_requests"},
+  {m:"Qwen 3 235B",p:"AR Hard 2",i:"Claimed salary columns don't exist; produced no SQL"},
+  {m:"Qwen 3 32B",p:"AR Easy 2",i:"Used date column for year filter; returned 0 rows"},
+  {m:"Gemma 3 27B",p:"AR Easy 2",i:"Fell back to leave_balances table; wrong data entirely"}
+];
+const metricFails=[
+  {m:"Gemma 3 27B",p:"EN Medium 2",i:"Used SUM(overtime) — wrong metric (overtime ≠ late hours)"},
+  {m:"Gemma 3 27B",p:"Hard 1 (both)",i:"Measured shift duration instead of late hours"},
+  {m:"GPT 4.1",p:"Hard 1 (both)",i:"Missing COUNT(DISTINCT) — employee counts inflated to 7977"}
+];
+const patterns=[
+  {icon:"🗄️",t:"Wrong table for leave queries",d:"Models guess 'leaves' or 'leave_requests' instead of hr_requests"},
+  {icon:"🔍",t:"Missing group='leave' filter",d:"hr_requests table needs group filtering to isolate leave records"},
+  {icon:"⏰",t:"Wrong metric for late hours",d:"Some models use overtime or shift duration instead of clock_in − start_at"},
+  {icon:"🌐",t:"English content in Arabic responses",d:"Column headers, summaries, or aliases remain in English"},
+  {icon:"🔢",t:"COUNT inflation with JOINs",d:"Missing COUNT(DISTINCT) when joining multiple tables"},
+  {icon:"🇨🇳",t:"Cross-language contamination (MiniMax)",d:"Chinese characters appearing in Arabic responses (五种 in AR Easy 2)"}
+];
+const improvements=[
+  {t:"Schema Hint Enrichment",d:"Add table descriptions to system prompt (e.g., hr_requests for leaves, not 'leaves')"},
+  {t:"CTE Support",d:"Update SQL validator to accept WITH...AS — currently forces less readable subqueries"},
+  {t:"Arabic Month Names",d:"Instruct models to use Arabic month names instead of MONTHNAME()"},
+  {t:"COUNT(DISTINCT) Hint",d:"Add to prompt: 'When counting with JOINs, always use COUNT(DISTINCT u.id)'"},
+  {t:"Table Consistency Rule",d:"Add rule: 'Use the same tables for the same question regardless of language'"}
+];
+
+// LOGO SVG
+function drawLogo(el){
+  const R=56,r=33,cx=60,cy=60;
+  const ang=i=>(i*60-90)*Math.PI/180;
+  const ox=i=>cx+R*Math.cos(ang(i));
+  const oy=i=>cy+R*Math.sin(ang(i));
+  const ix=i=>cx+r*Math.cos(ang(i));
+  const iy=i=>cy+r*Math.sin(ang(i));
+  const colors=["#E8792F","#C73A3A","#8C8C8C","#2980B9","#1DA8A0","#7B5EA7"];
+  const bg=el.closest('.footer')?'#0F172A':(el.closest('.header')?'#0d2420':'#0F172A');
+  let paths='';
+  for(let i=0;i<6;i++){const j=(i+1)%6;paths+=`<path d="M${ox(i)},${oy(i)} L${ox(j)},${oy(j)} L${ix(j)},${iy(j)} L${ix(i)},${iy(i)} Z" fill="${colors[i]}"/>`;}
+  let inner=`M${ix(0)},${iy(0)}`;for(let i=1;i<6;i++)inner+=` L${ix(i)},${iy(i)}`;inner+=' Z';
+  paths+=`<path d="${inner}" fill="${bg}"/>`;
+  el.innerHTML=paths;
+}
+document.querySelectorAll('#logo-svg, .footer-logo').forEach(drawLogo);
+
+// TAB SWITCHING
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// BADGE HELPER
+function badge(text,type){return `<span class="badge badge-${type}">${text}</span>`;}
+function dotHtml(s){
+  const cls=s==='PASS'?'dot-pass':s==='FAIL'?'dot-fail':s==='PARTIAL'?'dot-partial':'dot-passstar';
+  const ch=s==='FAIL'?'✗':s==='PASS'?'✓':s==='PARTIAL'?'~':'✓';
+  return `<div class="status-dot ${cls}" title="${s}">${ch}</div>`;
+}
+
+// RENDER RANKINGS
+document.getElementById('rankings').innerHTML=models.map(m=>`
+  <div class="rank-row">
+    <div class="rank-circle" style="background:${m.rank<=3?m.color:'#94A3B8'}">${m.rank}</div>
+    <div class="rank-info"><div class="rank-name">${m.name}</div><div class="rank-id">${m.id}</div></div>
+    <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:${m.score}%;background:${m.color}"></div></div><span class="score-val" style="color:${m.color}">${m.score}</span></div>
+    <div class="rank-meta"><span title="Pass Rate">✅ ${m.pass}</span><span title="Avg Tokens">🔤 ${m.tokens.toLocaleString()}</span><span title="Avg Time">⏱️ ${m.time}</span>${badge(m.arCompliance,m.arCompliance==='PASS'||m.arCompliance==='PASS*'?'pass':m.arCompliance==='FAIL'?'fail':'fail')}</div>
+  </div>`).join('');
+
+// RENDER PROMPTS
+document.getElementById('prompts-body').innerHTML=prompts.map(p=>`
+  <tr><td><strong>${p.n}</strong></td><td>${badge(p.d,p.d.toLowerCase())}</td><td>${p.en}</td><td class="ar-rtl">${p.ar}</td></tr>`).join('');
+
+// RENDER PERF TABLE
+document.getElementById('perf-body').innerHTML=models.map(m=>`
+  <tr><td><strong>${m.name}</strong></td><td><span style="font-weight:800;color:${m.color};font-size:16px">${m.score}</span>/100</td><td>${m.pass} (${m.passNum}/14)</td><td>${m.tokens.toLocaleString()}</td><td>${m.time}</td><td>${m.retries}</td></tr>`).join('');
+
+// RENDER MODEL CARDS
+document.getElementById('model-cards').innerHTML=models.map(m=>`
+  <div class="section"><div class="model-card">
+    <h4 style="color:${m.color}">#${m.rank} ${m.name} — ${m.score}/100</h4>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-label">Score</div><div class="stat-value" style="color:${m.color}">${m.score}/100</div></div>
+      <div class="stat-box"><div class="stat-label">Pass Rate</div><div class="stat-value" style="color:${m.color}">${m.pass}</div></div>
+      <div class="stat-box"><div class="stat-label">Avg Tokens</div><div class="stat-value" style="color:${m.color}">${m.tokens.toLocaleString()}</div></div>
+      <div class="stat-box"><div class="stat-label">Avg Time</div><div class="stat-value" style="color:${m.color}">${m.time}</div></div>
+      <div class="stat-box"><div class="stat-label">Retries</div><div class="stat-value" style="color:${m.color}">${m.retries}</div></div>
+      <div class="stat-box"><div class="stat-label">AR Content</div><div class="stat-value" style="color:${m.color}">${m.arContent}</div></div>
+    </div>
+    <div style="font-size:13px;color:#475569;line-height:1.7">
+      <p style="margin-bottom:8px"><span class="strength">Strengths:</span> ${m.strengths}</p>
+      <p><span class="weakness">Weaknesses:</span> ${m.weaknesses}</p>
+    </div>
+  </div></div>`).join('');
+
+// ARABIC AUDIT TABLE
+document.getElementById('arabic-body').innerHTML=models.map(m=>{
+  const ok=parseInt(m.arContent),fail=7-ok,hOk=parseInt(m.arHeaders),hFail=7-hOk;
+  return `<tr><td><strong>${m.name}</strong></td>
+    <td style="color:#059669;font-weight:700">${ok}/7</td>
+    <td style="color:${fail>0?'#DC2626':'#059669'};font-weight:700">${fail}/7</td>
+    <td style="color:#059669;font-weight:700">${hOk}/7</td>
+    <td style="color:${hFail>0?'#DC2626':'#059669'};font-weight:700">${hFail}/7</td>
+    <td>${badge(m.arCompliance,m.arCompliance==='PASS'||m.arCompliance==='PASS*'?'pass':'fail')}</td></tr>`;
+}).join('');
+
+// MATRIX
+let mHtml='<thead><tr><th style="min-width:110px">Model</th>'+pLabels.map(l=>`<th class="matrix-th">${l}</th>`).join('')+'</tr></thead><tbody>';
+models.forEach(m=>{mHtml+=`<tr><td style="font-weight:600;font-size:12px">${m.name}</td>`+pMatrix[m.name].map(s=>`<td class="matrix-td">${dotHtml(s)}</td>`).join('')+'</tr>';});
+mHtml+='</tbody>';
+document.getElementById('matrix-table').innerHTML=mHtml;
+
+// BARS
+const sortedTokens=[...models].sort((a,b)=>a.tokens-b.tokens);
+document.getElementById('token-bars').innerHTML=sortedTokens.map(m=>`
+  <div class="bar-row"><span class="bar-label">${m.name}</span><div class="bar-track"><div class="bar-fill" style="width:${(m.tokens/5000)*100}%;background:${m.color}"></div></div><span class="bar-val">${m.tokens.toLocaleString()}</span></div>`).join('');
+const sortedTime=[...models].sort((a,b)=>a.timeNum-b.timeNum);
+document.getElementById('time-bars').innerHTML=sortedTime.map(m=>`
+  <div class="bar-row"><span class="bar-label">${m.name}</span><div class="bar-track"><div class="bar-fill" style="width:${(m.timeNum/90)*100}%;background:${m.color}"></div></div><span class="bar-val">${m.time}</span></div>`).join('');
+
+// FAILURES
+document.getElementById('failures-complete').innerHTML=completeFails.map(f=>`
+  <div class="failure-card failure-red"><div style="margin-bottom:4px"><strong style="font-size:14px">${f.m}</strong> ${badge(f.p,'fail')}</div><div style="font-size:13px;color:#7F1D1D">${f.i}</div></div>`).join('');
+document.getElementById('failures-metric').innerHTML=metricFails.map(f=>`
+  <div class="failure-card failure-yellow"><div style="margin-bottom:4px"><strong style="font-size:14px">${f.m}</strong> ${badge(f.p,'medium')}</div><div style="font-size:13px;color:#92400E">${f.i}</div></div>`).join('');
+
+// PATTERNS
+document.getElementById('patterns').innerHTML=patterns.map(p=>`
+  <div class="pattern-row"><span class="pattern-icon">${p.icon}</span><div><div class="pattern-title">${p.t}</div><div class="pattern-desc">${p.d}</div></div></div>`).join('');
+
+// IMPROVEMENTS
+document.getElementById('improvements').innerHTML=improvements.map((s,i)=>`
+  <div class="improve-row"><div class="improve-num">${i+1}</div><div><div style="font-weight:700;font-size:14px;margin-bottom:2px">${s.t}</div><div style="font-size:13px;color:#64748B">${s.d}</div></div></div>`).join('');
+</script>
+</body>
+</html>

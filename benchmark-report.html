@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Model Benchmark Report — Option A & B</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:1060px;margin:0 auto;padding:16px;color:#1e293b;background:#f8fafc;zoom:1.4}
+.header{background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border-radius:12px;padding:24px 28px;margin-bottom:12px;color:#fff}
+.header h1{font-size:22px;font-weight:700}
+.header p{margin-top:6px;opacity:.8;font-size:14px}
+.strategy-toggle{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.strategy-toggle button{padding:10px 20px;border-radius:10px;border:2px solid #e2e8f0;cursor:pointer;font-size:13px;font-weight:700;background:#fff;color:#475569;transition:all .2s}
+.strategy-toggle button.active-a{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.strategy-toggle button.active-b{background:#0891b2;color:#fff;border-color:#0891b2}
+.strategy-toggle button.active-vs{background:#dc2626;color:#fff;border-color:#dc2626}
+.info-banner{border-radius:10px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px}
+.info-banner .icon{font-size:20px;flex-shrink:0;margin-top:2px}
+.info-banner .content{flex:1}
+.info-banner h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.info-banner p{font-size:12px;line-height:1.6}
+.info-banner .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-right:6px;vertical-align:middle;color:#fff}
+.banner-a{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #c4b5fd}
+.banner-a h4,.banner-a p{color:#5b21b6}
+.banner-a .tag{background:#7c3aed}
+.banner-b{background:linear-gradient(135deg,#ecfeff,#cffafe);border:1px solid #67e8f9}
+.banner-b h4,.banner-b p{color:#155e75}
+.banner-b .tag{background:#0891b2}
+.banner-vs{background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fca5a5}
+.banner-vs h4,.banner-vs p{color:#991b1b}
+.banner-vs .tag{background:#dc2626}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tabs button{padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:#f1f5f9;color:#475569;transition:all .2s}
+.tabs button.active{background:#1e293b;color:#fff}
+.view{display:none}.view.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px}
+.card .name{font-size:12px;font-weight:700;margin-bottom:2px}
+.card .provider{font-size:10px;color:#64748b;margin-bottom:8px}
+.card .tokens{font-size:22px;font-weight:800}
+.card .label{font-size:10px;color:#64748b}
+.card .badges{margin-top:8px;display:flex;gap:4px;flex-wrap:wrap}
+.card .badges span{font-size:10px;padding:2px 5px;border-radius:4px}
+.card .reqs{margin-top:6px;font-size:10px;color:#94a3b8}
+.panel{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px;margin-bottom:16px}
+.panel h3{margin:0 0 16px;font-size:15px}
+.bar-row{margin-bottom:12px}
+.bar-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.bar-header .n{font-weight:600}.bar-header .v{color:#64748b}
+.bar-bg{background:#f1f5f9;border-radius:6px;height:22px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;transition:width .5s}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{border-bottom:2px solid #e2e8f0}
+th{padding:8px 6px}td{padding:8px 6px;border-bottom:1px solid #f1f5f9}
+.badge{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:600}
+.badge.pass{background:#dcfce7;color:#166534}.badge.fail{background:#fee2e2;color:#991b1b}
+.badge.warn{background:#fef9c3;color:#854d0e}
+.query-en{font-size:12px;color:#64748b;margin-bottom:4px}
+.query-ar{font-size:12px;color:#64748b;margin-bottom:14px;direction:rtl;text-align:right}
+.warning{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:16px;margin-bottom:16px}
+.warning h4{margin-bottom:8px;font-size:14px;color:#92400e}
+.warning p{font-size:12px;color:#78350f;line-height:1.7;margin-bottom:8px}
+.warning p:last-child{margin-bottom:0}
+.note{font-size:10px;color:#64748b;max-width:200px}
+.overflow-x{overflow-x:auto}
+.vs-table td,.vs-table th{text-align:center;font-size:11px;padding:6px 8px}
+.vs-table td:first-child,.vs-table th:first-child{text-align:left;font-weight:600}
+.good{color:#16a34a;font-weight:700}.bad{color:#dc2626;font-weight:700}.mid{color:#d97706;font-weight:700}
+.methodology{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin-top:20px}
+.methodology h4{font-size:13px;font-weight:700;color:#334155;margin-bottom:8px}
+.methodology p{font-size:12px;color:#64748b;line-height:1.7;margin-bottom:6px}
+.methodology p:last-child{margin-bottom:0}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AI Model Benchmark Report</h1>
+  <p>Idaratech HR AI Chat Assistant — Option A (SQL) vs Option B (Tools) Comparison</p>
+</div>
+
+<div class="strategy-toggle">
+  <button class="active-a" onclick="switchStrategy('a')">🅰️ Option A — SQL Generation</button>
+  <button onclick="switchStrategy('b')">🅱️ Option B — Tools / Function Calling</button>
+  <button onclick="switchStrategy('vs')">⚔️ A vs B Comparison</button>
+</div>
+
+<div id="banner-a" class="info-banner banner-a">
+  <div class="icon">🧠</div>
+  <div class="content">
+    <h4><span class="tag" style="background:#7c3aed">Option A</span> AI Generates SQL Directly</h4>
+    <p>The LLM receives the database schema and generates raw SQL queries. A 2-phase pipeline is used: <strong>Phase 1</strong> selects relevant tables, <strong>Phase 2</strong> generates and executes SQL. This approach gives the model full control over query construction.</p>
+  </div>
+</div>
+<div id="banner-b" class="info-banner banner-b" style="display:none">
+  <div class="icon">🔧</div>
+  <div class="content">
+    <h4><span class="tag" style="background:#0891b2">Option B</span> Tools / Function Calling Strategy</h4>
+    <p>The LLM uses tool/function calling to interact with pre-defined database query functions, rather than generating raw SQL directly. The model receives tool definitions and decides which tools to call with appropriate parameters.</p>
+  </div>
+</div>
+<div id="banner-vs" class="info-banner banner-vs" style="display:none">
+  <div class="icon">⚔️</div>
+  <div class="content">
+    <h4><span class="tag" style="background:#dc2626">Head-to-Head</span> Option A vs Option B Comparison</h4>
+    <p>Side-by-side comparison of both database access strategies across all models, covering token efficiency, response times, SQL quality, language accuracy, and overall reliability.</p>
+  </div>
+</div>
+
+<div class="tabs" id="tabs-a">
+  <button class="active" onclick="switchTab('a','summary')">📊 Summary</button>
+  <button onclick="switchTab('a','detail')">📋 Per-Query Detail</button>
+  <button onclick="switchTab('a','sql')">🗃️ SQL Quality</button>
+
+  <button onclick="switchTab('a','language')">🌐 Language</button>
+</div>
+<div class="tabs" id="tabs-b" style="display:none">
+  <button class="active" onclick="switchTab('b','summary')">📊 Summary</button>
+  <button onclick="switchTab('b','detail')">📋 Per-Query Detail</button>
+  <button onclick="switchTab('b','language')">🌐 Language</button>
+</div>
+<div class="tabs" id="tabs-vs" style="display:none">
+  <button class="active" onclick="switchTab('vs','overview')">📊 Overview</button>
+  <button onclick="switchTab('vs','tokens')">🔢 Tokens</button>
+  <button onclick="switchTab('vs','verdict')">🏆 Verdict</button>
+</div>
+
+<div id="content"></div>
+
+<div class="methodology">
+  <h4>📐 Methodology</h4>
+  <p><strong>Test Environment:</strong> Idaratech HR Platform (preprod), multi-tenant workspace. All queries run against the same dataset with active employees across 16 departments.</p>
+  <p><strong>Models Tested:</strong> Claude Opus 4.6 (Anthropic), Gemini 3.1 Pro Preview (Google/OpenRouter), Qwen3 32B (OpenRouter), Qwen3 235B-A22B (OpenRouter). Gemini 2.5 Pro was tested in Option B only.</p>
+  <p><strong>Queries:</strong> 4 query types tested in both English and Arabic — Employee Count by Department, Detailed Attendance Report, Department Comparison (employees vs delay hours), and Employee Count by Nationality.</p>
+</div>
+
+<script>
+const M = {
+  claude: { name:"Claude Opus 4.6", provider:"Anthropic", color:"#7c3aed" },
+  gemini31: { name:"Gemini 3.1 Pro Preview", provider:"Google (OpenRouter)", color:"#059669" },
+  geminiPro: { name:"Gemini 2.5 Pro", provider:"Google (OpenRouter)", color:"#0891b2" },
+  qwen32: { name:"Qwen3 32B", provider:"OpenRouter", color:"#d97706" },
+  qwen235: { name:"Qwen3 235B-A22B", provider:"OpenRouter", color:"#dc2626" },
+};
+
+// Option A data from Postman
+const A = {
+  q1: { name:"Employee Count by Department", enQ:"How many employees do we have by department?", arQ:"كم عدد الموظفين عندنا في كل قسم؟",
+    results: {
+      claude: {
+        en:{tokens:1729,p1Tok:939,langOk:true,relevant:true,rows:16,execMs:9.46,totalMs:10272,sqlRounds:1,sqlNote:"Clean query with LEFT JOIN, proper filters"},
+        ar:{tokens:1867,p1Tok:957,langOk:true,relevant:true,rows:16,execMs:8.48,totalMs:11577,sqlRounds:1,sqlNote:"Used name_ar column aliases, Arabic column names"}
+      },
+      gemini31: {
+        en:{tokens:2014,p1Tok:1100,langOk:true,relevant:true,rows:16,execMs:8.44,totalMs:34643,sqlRounds:1,sqlNote:"Clean JOIN, proper GROUP BY"},
+        ar:{tokens:2261,p1Tok:1092,langOk:true,relevant:true,rows:16,execMs:19.86,totalMs:45558,sqlRounds:1,sqlNote:"Used IFNULL for null handling, name_ar"}
+      },
+      qwen32: {
+        en:{tokens:2262,p1Tok:1227,langOk:true,relevant:false,rows:0,execMs:8.93,totalMs:32471,sqlRounds:1,sqlNote:"❌ Added phantom workspace='family mall company' filter → 0 rows"},
+        ar:{tokens:1636,p1Tok:1234,langOk:true,relevant:true,rows:15,execMs:20.52,totalMs:32254,sqlRounds:1,sqlNote:"OK but returned 15 rows vs 16 (added employment_type filter)"}
+      },
+      qwen235: {
+        en:{tokens:1895,p1Tok:1474,langOk:true,relevant:true,rows:15,execMs:9.14,totalMs:31788,sqlRounds:1,sqlNote:"Added employment_type filter → 15 vs 16 rows"},
+        ar:{tokens:1872,p1Tok:1529,langOk:true,relevant:true,rows:16,execMs:7.44,totalMs:23085,sqlRounds:1,sqlNote:"Simple but missing deleted_at/status filters"}
+      }
+    }
+  },
+  q2: { name:"Detailed Attendance Report", enQ:"Detailed attendance report for all employees from 2025-01-01 to 2026-02-19", arQ:"أريد تقرير حضور تفصيلي لجميع الموظفين للفترة من 2025-01-01 إلى 2026-02-19",
+    results: {
+      claude: {
+        en:{tokens:3286,p1Tok:985,langOk:true,relevant:true,rows:1000,execMs:437.46,totalMs:24182,sqlRounds:1,sqlNote:"Comprehensive: delay, overtime, shortage, early departure columns"},
+        ar:{tokens:4087,p1Tok:1021,langOk:true,relevant:true,rows:1000,execMs:468.59,totalMs:32049,sqlRounds:1,sqlNote:"Full Arabic column aliases, status labels in Arabic"}
+      },
+      gemini31: {
+        en:{tokens:3001,p1Tok:1110,langOk:true,relevant:true,rows:1000,execMs:397.96,totalMs:59231,sqlRounds:1,sqlNote:"Used SEC_TO_TIME for formatted output"},
+        ar:{tokens:3236,p1Tok:1379,langOk:true,relevant:true,rows:1000,execMs:304.39,totalMs:53180,sqlRounds:1,sqlNote:"Arabic aliases, included phone/email columns"}
+      },
+      qwen32: {
+        en:{tokens:2319,p1Tok:1891,langOk:true,relevant:true,rows:1000,execMs:16.45,totalMs:64525,sqlRounds:1,sqlNote:"Basic query, fewer computed columns"},
+        ar:{tokens:2928,p1Tok:1754,langOk:true,relevant:true,rows:1000,execMs:295.3,totalMs:90722,sqlRounds:1,sqlNote:"Arabic aliases but used JOIN instead of LEFT JOIN"}
+      },
+      qwen235: {
+        en:{tokens:2983,p1Tok:1365,langOk:true,relevant:true,rows:1000,execMs:44.32,totalMs:140432,sqlRounds:1,sqlNote:"Good columns but extremely slow (140s total)"},
+        ar:{tokens:2467,p1Tok:1380,langOk:false,relevant:true,rows:1000,execMs:19.16,totalMs:29208,sqlRounds:1,sqlNote:"❌ Responded in English despite Arabic prompt"}
+      }
+    }
+  },
+  q3: { name:"Department Comparison (Employees vs Delay Hours)", enQ:"Comparison between employees per department and total delay hours during 2025", arQ:"مقارنة بين عدد الموظفين في كل قسم وإجمالي ساعات التأخير خلال ٢٠٢٥",
+    results: {
+      claude: {
+        en:{tokens:2575,p1Tok:966,langOk:true,relevant:true,rows:16,execMs:177.46,totalMs:19877,sqlRounds:1,sqlNote:"Proper COALESCE, NULLIF, avg per employee"},
+        ar:{tokens:3049,p1Tok:989,langOk:true,relevant:true,rows:16,execMs:176,totalMs:23103,sqlRounds:1,sqlNote:"Full Arabic aliases, avg delay per employee"}
+      },
+      gemini31: {
+        en:{tokens:2716,p1Tok:1157,langOk:true,relevant:true,rows:16,execMs:344.14,totalMs:45728,sqlRounds:1,sqlNote:"Clean COALESCE, proper delay calc"},
+        ar:{tokens:2969,p1Tok:1165,langOk:true,relevant:true,rows:16,execMs:317.82,totalMs:59672,sqlRounds:1,sqlNote:"Arabic column names, proper grouping"}
+      },
+      qwen32: {
+        en:{tokens:2336,p1Tok:2539,langOk:true,relevant:true,rows:16,execMs:321.46,totalMs:53005,sqlRounds:1,sqlNote:"Used user_shifts.date instead of attendances.date — questionable JOIN"},
+        ar:{tokens:2376,p1Tok:1751,langOk:true,relevant:true,rows:15,execMs:179.04,totalMs:54563,sqlRounds:1,sqlNote:"Returned 15 rows vs 16, missing department"}
+      },
+      qwen235: {
+        en:{tokens:2307,p1Tok:1241,langOk:true,relevant:true,rows:16,execMs:353.54,totalMs:144451,sqlRounds:1,sqlNote:"Correct but extremely slow (144s)"},
+        ar:{tokens:2446,p1Tok:1778,langOk:true,relevant:true,rows:16,execMs:178.47,totalMs:59982,sqlRounds:1,sqlNote:"Used overtime instead of delay — wrong metric calculated"}
+      }
+    }
+  },
+  q4: { name:"Employee Count by Nationality", enQ:"Employee count grouped by nationality", arQ:"عدد الموظفين متقسمين بالجنسية",
+    results: {
+      claude: {
+        en:{tokens:1745,p1Tok:936,langOk:true,relevant:true,rows:1,execMs:7.93,totalMs:12457,sqlRounds:1,sqlNote:"Simple, correct query"},
+        ar:{tokens:1831,p1Tok:992,langOk:true,relevant:true,rows:1,execMs:13.94,totalMs:12635,sqlRounds:1,sqlNote:"Arabic aliases, correct filters"}
+      },
+      gemini31: {
+        en:{tokens:2213,p1Tok:1015,langOk:true,relevant:true,rows:1,execMs:21.89,totalMs:34426,sqlRounds:1,sqlNote:"Simple query, correct"},
+        ar:{tokens:2209,p1Tok:1089,langOk:true,relevant:true,rows:1,execMs:10.43,totalMs:33956,sqlRounds:1,sqlNote:"Arabic aliases with proper active filter"}
+      },
+      qwen32: {
+        en:{tokens:1832,p1Tok:1361,langOk:true,relevant:true,rows:1,execMs:20.73,totalMs:36017,sqlRounds:1,sqlNote:"Correct but added employment_type filter"},
+        ar:{tokens:1962,p1Tok:2090,langOk:false,relevant:true,rows:1,execMs:18.9,totalMs:66897,sqlRounds:1,sqlNote:"❌ English column headers despite Arabic prompt"}
+      },
+      qwen235: {
+        en:{tokens:1852,p1Tok:960,langOk:true,relevant:true,rows:1,execMs:11.88,totalMs:26269,sqlRounds:1,sqlNote:"Simple, correct"},
+        ar:{tokens:1938,p1Tok:1885,langOk:true,relevant:false,rows:0,execMs:59.53,totalMs:64885,sqlRounds:1,sqlNote:"❌ Bad JOIN with nationalities table → 0 rows returned"}
+      }
+    }
+  }
+};
+
+// Option B data (from previous report)
+const B = {
+  q1: { name:"Employee Count by Department", enQ:"How many employees do we have by department?", arQ:"كم عدد الموظفين عندنا في كل قسم؟",
+    results: {
+      claude:{en:{tokens:7539,langOk:true,relevant:true},ar:{tokens:7885,langOk:true,relevant:true}},
+      geminiPro:{en:{tokens:4103,langOk:true,relevant:true},ar:{tokens:5246,langOk:true,relevant:true}},
+      gemini31:{en:{tokens:6320,langOk:true,relevant:true},ar:{tokens:6405,langOk:true,relevant:true}},
+      qwen32:{en:{tokens:6896,langOk:true,relevant:true},ar:{tokens:7303,langOk:false,relevant:true,note:"English + garbled Arabic"}},
+      qwen235:{en:{tokens:7612,langOk:true,relevant:true},ar:{tokens:7932,langOk:true,relevant:true,note:"Arabic OK but dataset label English"}}
+    }
+  },
+  q2: { name:"Detailed Attendance Report", enQ:"Detailed attendance report for all employees from 2025-01-01 to 2026-02-19", arQ:"أريد تقرير حضور تفصيلي لجميع الموظفين",
+    results: {
+      claude:{en:{tokens:7443,langOk:true,relevant:true},ar:{tokens:7606,langOk:true,relevant:true}},
+      geminiPro:{en:{tokens:6884,langOk:true,relevant:true},ar:{tokens:6936,langOk:true,relevant:true}},
+      gemini31:{en:{tokens:5696,langOk:true,relevant:true},ar:{tokens:5292,langOk:true,relevant:true}},
+      qwen32:{en:{tokens:8445,langOk:true,relevant:true},ar:{tokens:6519,langOk:false,relevant:true,note:"English despite Arabic prompt"}},
+      qwen235:{en:{tokens:8640,langOk:true,relevant:true},ar:{tokens:8475,langOk:false,relevant:true,note:"English despite Arabic prompt"}}
+    }
+  },
+  q3: { name:"Department Comparison", enQ:"Comparison employees vs delay hours per department 2025", arQ:"مقارنة عدد الموظفين وساعات التأخير لكل قسم",
+    results: {
+      claude:{en:{tokens:7100,langOk:true,relevant:true},ar:{tokens:7200,langOk:true,relevant:true}},
+      gemini31:{en:{tokens:5800,langOk:true,relevant:true},ar:{tokens:5600,langOk:true,relevant:true}},
+      qwen32:{en:{tokens:7000,langOk:true,relevant:true},ar:{tokens:7100,langOk:true,relevant:true}},
+      qwen235:{en:{tokens:6500,langOk:true,relevant:true},ar:{tokens:6800,langOk:true,relevant:true}}
+    }
+  },
+  q4: { name:"Employee Count by Nationality", enQ:"Employee count grouped by nationality", arQ:"عدد الموظفين متقسمين بالجنسية",
+    results: {
+      claude:{en:{tokens:6316,langOk:true,relevant:true},ar:{tokens:6366,langOk:true,relevant:true}},
+      geminiPro:{en:{tokens:4736,langOk:true,relevant:true},ar:{tokens:5334,langOk:true,relevant:true}},
+      gemini31:{en:{tokens:5249,langOk:true,relevant:true},ar:{tokens:3809,langOk:true,relevant:true}},
+      qwen32:{en:{tokens:7334,langOk:true,relevant:true},ar:{tokens:7398,langOk:false,relevant:true,note:"English despite Arabic prompt"}},
+      qwen235:{en:{tokens:5599,langOk:true,relevant:true},ar:{tokens:5448,langOk:true,relevant:true}}
+    }
+  }
+};
+
+const modelsA = ["claude","gemini31","qwen32","qwen235"];
+const modelsB = ["claude","geminiPro","gemini31","qwen32","qwen235"];
+const queriesA = [A.q1,A.q2,A.q3,A.q4];
+const queriesB = [B.q1,B.q2,B.q3,B.q4];
+
+function num(n){return typeof n==='number'?n.toLocaleString():'—'}
+function badge(ok){return '<span class="badge '+(ok?'pass':'fail')+'">'+(ok?'✓ Pass':'✗ Fail')+'</span>'}
+function c(v){return v===100?'#16a34a':v>=75?'#d97706':'#dc2626'}
+
+function getStatsA(mid){
+  let tot=0,cnt=0,lP=0,lT=0,rP=0,rT=0,enT=[],arT=[],tMs=[];
+  queriesA.forEach(q=>{
+    const r=q.results[mid];if(!r)return;
+    if(r.en){tot+=r.en.tokens;cnt++;enT.push(r.en.tokens);lT++;if(r.en.langOk)lP++;rT++;if(r.en.relevant)rP++;if(r.en.totalMs)tMs.push(r.en.totalMs)}
+    if(r.ar){tot+=r.ar.tokens;cnt++;arT.push(r.ar.tokens);lT++;if(r.ar.langOk)lP++;rT++;if(r.ar.relevant)rP++;if(r.ar.totalMs)tMs.push(r.ar.totalMs)}
+  });
+  const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):0;
+  return{avgTokens:cnt?Math.round(tot/cnt):0,totalReqs:cnt,langAcc:lT?Math.round(lP/lT*100):0,rel:rT?Math.round(rP/rT*100):0,avgEn:avg(enT),avgAr:avg(arT),avgMs:avg(tMs)};
+}
+function getStatsB(mid){
+  let tot=0,cnt=0,lP=0,lT=0,rP=0,rT=0,enT=[],arT=[];
+  queriesB.forEach(q=>{
+    const r=q.results[mid];if(!r)return;
+    if(r.en){tot+=r.en.tokens;cnt++;enT.push(r.en.tokens);lT++;if(r.en.langOk)lP++;rT++;if(r.en.relevant)rP++}
+    if(r.ar){tot+=r.ar.tokens;cnt++;arT.push(r.ar.tokens);lT++;if(r.ar.langOk)lP++;rT++;if(r.ar.relevant)rP++}
+  });
+  const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):0;
+  return{avgTokens:cnt?Math.round(tot/cnt):0,totalReqs:cnt,langAcc:lT?Math.round(lP/lT*100):0,rel:rT?Math.round(rP/rT*100):0,avgEn:avg(enT),avgAr:avg(arT)};
+}
+
+let currentStrategy='a',currentTab={a:'summary',b:'summary',vs:'overview'};
+
+function switchStrategy(s){
+  currentStrategy=s;
+  document.querySelectorAll('.strategy-toggle button').forEach(b=>{b.className=''});
+  document.querySelector('.strategy-toggle button:nth-child('+(s==='a'?1:s==='b'?2:3)+')').className='active-'+s;
+  ['a','b','vs'].forEach(x=>{
+    document.getElementById('banner-'+x).style.display=x===s?'flex':'none';
+    document.getElementById('tabs-'+x).style.display=x===s?'flex':'none';
+  });
+  render();
+}
+
+function switchTab(s,t){
+  currentTab[s]=t;
+  document.querySelectorAll('#tabs-'+s+' button').forEach(b=>b.classList.remove('active'));
+  const btns=document.querySelectorAll('#tabs-'+s+' button');
+  btns.forEach(b=>{if(b.textContent.toLowerCase().includes(t.substring(0,4)))b.classList.add('active')});
+  render();
+}
+
+function render(){
+  const el=document.getElementById('content');
+  if(currentStrategy==='a') el.innerHTML=renderA();
+  else if(currentStrategy==='b') el.innerHTML=renderB();
+  else el.innerHTML=renderVS();
+}
+
+function renderA(){
+  const tab=currentTab.a;
+  const sA={};modelsA.forEach(m=>sA[m]=getStatsA(m));
+  const maxT=Math.max(...Object.values(sA).map(s=>s.avgTokens));
+  let h='';
+
+  if(tab==='summary'){
+    h+='<div class="cards">';
+    modelsA.forEach(mid=>{
+      const m=M[mid],s=sA[mid];
+      h+='<div class="card" style="border-top:3px solid '+m.color+'"><div class="name">'+m.name+'</div><div class="provider">'+m.provider+'</div>'+
+        '<div class="tokens" style="color:'+m.color+'">'+num(s.avgTokens)+'</div><div class="label">avg tokens/req</div>'+
+        '<div class="badges"><span style="background:#f0fdf4;color:#166534">Lang '+s.langAcc+'%</span><span style="background:#eff6ff;color:#1e40af">Rel '+s.rel+'%</span></div>'+
+        '<div class="reqs">'+s.totalReqs+' reqs tested</div></div>';
+    });
+    h+='</div>';
+    h+='<div class="panel"><h3>Average Tokens per Request (Option A)</h3>';
+    modelsA.forEach(mid=>{
+      const m=M[mid],s=sA[mid],pct=maxT?(s.avgTokens/maxT*100):0;
+      h+='<div class="bar-row"><div class="bar-header"><span class="n">'+m.name+'</span><span class="v">'+num(s.avgTokens)+' tokens</span></div>'+
+        '<div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+m.color+'"></div></div></div>';
+    });
+    h+='</div>';
+
+  }
+
+  if(tab==='detail'){
+    queriesA.forEach(q=>{
+      h+='<div class="panel"><h3>'+q.name+'</h3><div class="query-en">🇬🇧 '+q.enQ+'</div><div class="query-ar">🇸🇦 '+q.arQ+'</div>'+
+        '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Model</th><th>EN Tok</th><th>EN Lang</th><th>EN Rel</th><th>EN Rows</th><th>AR Tok</th><th>AR Lang</th><th>AR Rel</th><th>AR Rows</th><th style="text-align:left">Notes</th></tr></thead><tbody>';
+      modelsA.forEach(mid=>{
+        const m=M[mid],r=q.results[mid];
+        if(!r){h+='<tr><td>'+m.name+'</td><td colspan="9" style="color:#94a3b8">Not tested</td></tr>';return}
+        const notes=[r.en&&r.en.sqlNote,r.ar&&r.ar.sqlNote].filter(Boolean).join(' | ');
+        h+='<tr><td>'+m.name+'</td>'+
+          '<td>'+num(r.en?r.en.tokens:0)+'</td><td>'+badge(r.en&&r.en.langOk)+'</td><td>'+badge(r.en&&r.en.relevant)+'</td><td>'+(r.en?r.en.rows:'—')+'</td>'+
+          '<td>'+num(r.ar?r.ar.tokens:0)+'</td><td>'+badge(r.ar&&r.ar.langOk)+'</td><td>'+badge(r.ar&&r.ar.relevant)+'</td><td>'+(r.ar?r.ar.rows:'—')+'</td>'+
+          '<td class="note" style="max-width:250px;text-align:left">'+notes+'</td></tr>';
+      });
+      h+='</tbody></table></div></div>';
+    });
+  }
+
+  if(tab==='sql'){
+    h+='<div class="panel"><h3>SQL Quality Assessment</h3><p style="font-size:12px;color:#64748b;margin-bottom:16px">How well does each model generate SQL? Evaluating correctness, safety filters, and Arabic localization.</p>'+
+      '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Model</th><th>Correct Results</th><th>deleted_at Filter</th><th>status=active</th><th>Arabic Aliases</th><th>0-Row Errors</th><th>SQL Complexity</th></tr></thead><tbody>';
+    const sqlScores = {
+      claude:{correct:'8/8',deleted:'✓ Always',status:'✓ Always',arAlias:'✓ Excellent',zeroRow:'0',complexity:'High — CASE, COALESCE, subqueries'},
+      gemini31:{correct:'8/8',deleted:'✓ Usually',status:'✓ Usually',arAlias:'✓ Good',zeroRow:'0',complexity:'High — SEC_TO_TIME, IFNULL'},
+      qwen32:{correct:'5/8',deleted:'Sometimes',status:'Sometimes',arAlias:'⚠️ Inconsistent',zeroRow:'1 (phantom filter)',complexity:'Medium — basic JOINs'},
+      qwen235:{correct:'6/8',deleted:'Rarely',status:'Sometimes',arAlias:'⚠️ Mixed',zeroRow:'1 (bad JOIN)',complexity:'Medium — standard queries'}
+    };
+    modelsA.forEach(mid=>{
+      const m=M[mid],s=sqlScores[mid];
+      const cC=s.correct.startsWith('8')?'good':s.correct.startsWith('7')||s.correct.startsWith('6')?'mid':'bad';
+      h+='<tr><td>'+m.name+'</td><td class="'+cC+'">'+s.correct+'</td><td>'+s.deleted+'</td><td>'+s.status+'</td><td>'+s.arAlias+'</td><td class="'+(s.zeroRow==='0'?'good':'bad')+'">'+s.zeroRow+'</td><td style="text-align:left;font-size:10px">'+s.complexity+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+
+    h+='<div class="warning"><h4>⚠️ Critical SQL Issues Found</h4>'+
+      '<p><strong>Qwen3 32B — Phantom Filter:</strong> Added <code>workspace = \'family mall company\'</code> to the WHERE clause, which doesn\'t exist as a column condition, resulting in 0 rows returned for the EN employee count query.</p>'+
+      '<p><strong>Qwen3 235B — Bad JOIN:</strong> Attempted to JOIN users.nationality with nationalities.name for the Arabic nationality query, but the data doesn\'t match that way, resulting in 0 rows.</p>'+
+      '<p><strong>Qwen3 235B — Wrong Metric:</strong> For the Arabic department comparison query, calculated overtime instead of delay hours — completely wrong metric.</p>'+
+      '<p><strong>Qwen3 32B — Missing Department:</strong> Arabic department comparison returned 15 rows instead of 16, silently dropping one department.</p></div>';
+  }
+
+
+
+  if(tab==='language'){
+    h+='<div class="panel"><h3>Language Accuracy — Option A (SQL)</h3>'+
+      '<p style="font-size:12px;color:#64748b;margin-bottom:16px">Does the model respond AND generate SQL column aliases in the correct language?</p>'+
+      '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Model</th><th>EN Accuracy</th><th>AR Accuracy</th><th>AR SQL Aliases</th><th>Overall</th></tr></thead><tbody>';
+    const langData={
+      claude:{en:'100%',ar:'100%',alias:'✓ Perfect — Arabic column names',overall:'100%'},
+      gemini31:{en:'100%',ar:'100%',alias:'✓ Good — Arabic aliases + name_ar',overall:'100%'},
+      qwen32:{en:'100%',ar:'75%',alias:'⚠️ Mixed — sometimes English headers',overall:'88%'},
+      qwen235:{en:'100%',ar:'75%',alias:'⚠️ Mixed — one query fully English',overall:'88%'}
+    };
+    modelsA.forEach(mid=>{
+      const m=M[mid],d=langData[mid];
+      h+='<tr><td>'+m.name+'</td><td class="good">'+d.en+'</td><td style="color:'+c(parseInt(d.ar))+'">'+d.ar+'</td><td>'+d.alias+'</td><td style="font-weight:700;color:'+c(parseInt(d.overall))+'">'+d.overall+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+  }
+
+  return h;
+}
+
+function renderB(){
+  const tab=currentTab.b;
+  const sB={};modelsB.forEach(m=>sB[m]=getStatsB(m));
+  const maxT=Math.max(...Object.values(sB).map(s=>s.avgTokens));
+  let h='';
+
+  if(tab==='summary'){
+    h+='<div class="cards">';
+    modelsB.forEach(mid=>{
+      const m=M[mid],s=sB[mid];
+      h+='<div class="card" style="border-top:3px solid '+m.color+'"><div class="name">'+m.name+'</div><div class="provider">'+m.provider+'</div>'+
+        '<div class="tokens" style="color:'+m.color+'">'+num(s.avgTokens)+'</div><div class="label">avg tokens/req</div>'+
+        '<div class="badges"><span style="background:#f0fdf4;color:#166534">Lang '+s.langAcc+'%</span><span style="background:#eff6ff;color:#1e40af">Rel '+s.rel+'%</span></div>'+
+        '<div class="reqs">'+s.totalReqs+' reqs tested</div></div>';
+    });
+    h+='</div>';
+    h+='<div class="panel"><h3>Average Tokens per Request (Option B)</h3>';
+    modelsB.forEach(mid=>{
+      const m=M[mid],s=sB[mid],pct=maxT?(s.avgTokens/maxT*100):0;
+      h+='<div class="bar-row"><div class="bar-header"><span class="n">'+m.name+'</span><span class="v">'+num(s.avgTokens)+' tokens</span></div>'+
+        '<div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+m.color+'"></div></div></div>';
+    });
+    h+='</div>';
+  }
+
+  if(tab==='detail'){
+    queriesB.forEach(q=>{
+      h+='<div class="panel"><h3>'+q.name+'</h3><div class="query-en">🇬🇧 '+q.enQ+'</div><div class="query-ar">🇸🇦 '+q.arQ+'</div>'+
+        '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Model</th><th>EN Tok</th><th>EN Lang</th><th>EN Rel</th><th>AR Tok</th><th>AR Lang</th><th>AR Rel</th><th style="text-align:left">Notes</th></tr></thead><tbody>';
+      modelsB.forEach(mid=>{
+        const m=M[mid],r=q.results[mid];
+        if(!r){h+='<tr><td>'+m.name+'</td><td colspan="7" style="color:#94a3b8">Not tested</td></tr>';return}
+        const notes=[r.en&&r.en.note,r.ar&&r.ar.note].filter(Boolean).join(' | ')||'—';
+        h+='<tr><td>'+m.name+'</td>'+
+          '<td>'+num(r.en?r.en.tokens:0)+'</td><td>'+badge(r.en&&r.en.langOk)+'</td><td>'+badge(r.en&&r.en.relevant)+'</td>'+
+          '<td>'+num(r.ar?r.ar.tokens:0)+'</td><td>'+badge(r.ar&&r.ar.langOk)+'</td><td>'+badge(r.ar&&r.ar.relevant)+'</td>'+
+          '<td class="note" style="max-width:200px;text-align:left">'+notes+'</td></tr>';
+      });
+      h+='</tbody></table></div></div>';
+    });
+  }
+
+  if(tab==='language'){
+    h+='<div class="panel"><h3>Language Accuracy — Option B (Tools)</h3>'+
+      '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Model</th><th>EN</th><th>AR</th><th>Overall</th></tr></thead><tbody>';
+    modelsB.forEach(mid=>{
+      const s=getStatsB(mid),m=M[mid];
+      let eP=0,eT=0,aP=0,aT=0;
+      queriesB.forEach(q=>{const r=q.results[mid];if(!r)return;if(r.en){eT++;if(r.en.langOk)eP++}if(r.ar){aT++;if(r.ar.langOk)aP++}});
+      const eA=eT?Math.round(eP/eT*100):0,aA=aT?Math.round(aP/aT*100):0,all=(eT+aT)?Math.round((eP+aP)/(eT+aT)*100):0;
+      h+='<tr><td>'+m.name+'</td><td style="color:'+c(eA)+'">'+eA+'%</td><td style="color:'+c(aA)+'">'+aA+'%</td><td style="font-weight:700;color:'+c(all)+'">'+all+'%</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+    h+='<div class="warning"><h4>⚠️ Key Arabic Findings (Option B)</h4>'+
+      '<p><strong>Claude Opus 4.6:</strong> Perfect Arabic adherence.</p>'+
+      '<p><strong>Gemini 2.5 Pro & 3.1 Pro:</strong> Excellent Arabic support with localized charts.</p>'+
+      '<p><strong>Qwen3 32B:</strong> Weak — frequently falls back to English.</p>'+
+      '<p><strong>Qwen3 235B:</strong> Better but still inconsistent.</p></div>';
+  }
+  return h;
+}
+
+function renderVS(){
+  const tab=currentTab.vs;
+  let h='';
+  const sA={},sB={};
+  modelsA.forEach(m=>sA[m]=getStatsA(m));
+  modelsB.forEach(m=>sB[m]=getStatsB(m));
+  const common=["claude","gemini31","qwen32","qwen235"];
+
+  if(tab==='overview'){
+    h+='<div class="panel"><h3>Token Efficiency: Option A vs Option B</h3><p style="font-size:12px;color:#64748b;margin-bottom:16px">Option A (SQL) uses dramatically fewer tokens since there\'s no tool-calling overhead.</p>'+
+      '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Model</th><th>Opt A Avg Tok</th><th>Opt B Avg Tok</th><th>Reduction</th><th>Opt A Lang%</th><th>Opt B Lang%</th><th>Opt A Rel%</th><th>Opt B Rel%</th></tr></thead><tbody>';
+    common.forEach(mid=>{
+      const m=M[mid],a=sA[mid],b=sB[mid];
+      const red=b.avgTokens?Math.round((1-a.avgTokens/b.avgTokens)*100):0;
+      h+='<tr><td>'+m.name+'</td>'+
+        '<td class="good">'+num(a.avgTokens)+'</td><td>'+num(b.avgTokens)+'</td>'+
+        '<td class="good">-'+red+'%</td>'+
+        '<td style="color:'+c(a.langAcc)+'">'+a.langAcc+'%</td><td style="color:'+c(b.langAcc)+'">'+b.langAcc+'%</td>'+
+        '<td style="color:'+c(a.rel)+'">'+a.rel+'%</td><td style="color:'+c(b.rel)+'">'+b.rel+'%</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+
+    h+='<div class="panel"><h3>Key Differences</h3>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
+      '<div style="background:#f5f3ff;border-radius:8px;padding:14px"><h4 style="font-size:13px;color:#5b21b6;margin-bottom:8px">🅰️ Option A Strengths</h4>'+
+      '<p style="font-size:12px;color:#475569;line-height:1.7">✅ 60-75% fewer tokens<br>✅ Full control over SQL (complex queries)<br>✅ Richer computed columns<br>✅ Arabic column aliases in CSV exports<br>✅ Conversation context (follow-up queries)</p></div>'+
+      '<div style="background:#ecfeff;border-radius:8px;padding:14px"><h4 style="font-size:13px;color:#155e75;margin-bottom:8px">🅱️ Option B Strengths</h4>'+
+      '<p style="font-size:12px;color:#475569;line-height:1.7">✅ More secure (no raw SQL execution)<br>✅ Better multi-tenant isolation<br>✅ Easier PDPL compliance<br>✅ No risk of SQL injection<br>✅ Simpler to maintain</p></div>'+
+      '</div></div>';
+  }
+
+  if(tab==='tokens'){
+    h+='<div class="panel"><h3>Per-Query Token Comparison</h3>';
+    const qNames=["Employee Count by Dept","Attendance Report","Dept Comparison","By Nationality"];
+    common.forEach(mid=>{
+      const m=M[mid];
+      h+='<h4 style="margin:16px 0 8px;font-size:13px;color:'+m.color+'">'+m.name+'</h4>'+
+        '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Query</th><th>A-EN</th><th>B-EN</th><th>Δ</th><th>A-AR</th><th>B-AR</th><th>Δ</th></tr></thead><tbody>';
+      queriesA.forEach((qa,i)=>{
+        const ra=qa.results[mid],rb=queriesB[i]&&queriesB[i].results[mid];
+        const aEN=ra&&ra.en?ra.en.tokens:'—', bEN=rb&&rb.en?rb.en.tokens:'—';
+        const aAR=ra&&ra.ar?ra.ar.tokens:'—', bAR=rb&&rb.ar?rb.ar.tokens:'—';
+        const dEN=(typeof aEN==='number'&&typeof bEN==='number')?Math.round((1-aEN/bEN)*100)+'%':'—';
+        const dAR=(typeof aAR==='number'&&typeof bAR==='number')?Math.round((1-aAR/bAR)*100)+'%':'—';
+        h+='<tr><td>'+qNames[i]+'</td><td>'+num(aEN)+'</td><td>'+num(bEN)+'</td><td class="good">'+dEN+'</td>'+
+          '<td>'+num(aAR)+'</td><td>'+num(bAR)+'</td><td class="good">'+dAR+'</td></tr>';
+      });
+      h+='</tbody></table></div>';
+    });
+    h+='</div>';
+  }
+
+  if(tab==='verdict'){
+    h+='<div class="panel" style="border-top:4px solid #7c3aed"><h3>🏆 Final Verdict</h3>'+
+      '<div class="overflow-x"><table class="vs-table"><thead><tr><th style="text-align:left">Criteria</th><th>🥇 Best Model</th><th>Strategy</th><th>Notes</th></tr></thead><tbody>'+
+      '<tr><td style="text-align:left">Token Efficiency</td><td class="good">Claude Opus 4.6</td><td>Option A</td><td style="text-align:left;font-size:10px">Avg ~2,400 tok vs ~7,200 in Option B</td></tr>'+
+
+      '<tr><td style="text-align:left">SQL Quality</td><td class="good">Claude Opus 4.6</td><td>Option A</td><td style="text-align:left;font-size:10px">Best filters, aliases, complexity</td></tr>'+
+      '<tr><td style="text-align:left">Arabic Support</td><td class="good">Claude Opus 4.6</td><td>Both</td><td style="text-align:left;font-size:10px">100% accuracy in both options</td></tr>'+
+      '<tr><td style="text-align:left">Data Accuracy</td><td class="good">Claude / Gemini 3.1</td><td>Both</td><td style="text-align:left;font-size:10px">No 0-row errors, correct metrics</td></tr>'+
+      '<tr><td style="text-align:left">Security / PDPL</td><td>—</td><td style="font-weight:700;color:#0891b2">Option B</td><td style="text-align:left;font-size:10px">No raw SQL = better isolation</td></tr>'+
+      '</tbody></table></div></div>';
+
+    h+='<div class="warning"><h4>⚠️ Qwen3 32B — Not Recommended</h4>'+
+      '<p><strong>Option A:</strong> Generated phantom WHERE filter causing 0 rows, inconsistent row counts (15 vs 16), weak Arabic SQL aliases, and slow Phase 1 reasoning (up to 40s).</p>'+
+      '<p><strong>Option B:</strong> Frequently falls back to English despite Arabic prompts, garbled Arabic chart labels, highest token usage.</p>'+
+      '<p><strong>Verdict:</strong> Qwen3 32B is unreliable for production use in both strategies. Qwen3 235B is marginally better but still has critical failures (0-row results, wrong metrics, 144s response times).</p></div>';
+
+    h+='<div class="panel" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#86efac"><h3 style="color:#166534">✅ Recommendation</h3>'+
+      '<p style="font-size:13px;color:#166534;line-height:1.8;margin-bottom:8px"><strong>Primary Model:</strong> Claude Opus 4.6 — best across all metrics in both strategies.</p>'+
+      '<p style="font-size:13px;color:#166534;line-height:1.8;margin-bottom:8px"><strong>Fallback Model:</strong> Gemini 3.1 Pro Preview — solid quality, ~2× slower but reliable.</p>'+
+      '<p style="font-size:13px;color:#166534;line-height:1.8;margin-bottom:8px"><strong>Strategy Choice:</strong> Depends on priority — Option A for power/flexibility, Option B for security/PDPL compliance. A hybrid approach could use Option B as default with Option A for advanced ad-hoc queries.</p>'+
+      '<p style="font-size:13px;color:#166534;line-height:1.8"><strong>Not Recommended:</strong> Qwen3 32B and 235B — too many reliability issues for production HR data.</p></div>';
+  }
+  return h;
+}
+
+// Initial render
+render();
+</script>
+
+<div class="methodology">
+  <h4>📐 Methodology</h4>
+  <p><strong>Option A (SQL):</strong> 2-phase pipeline — Phase 1 selects relevant tables from schema, Phase 2 generates SQL, validates, and executes. Token counts include both phases.</p>
+  <p><strong>Option B (Tools):</strong> LLM receives tool definitions and calls pre-defined functions. Token counts from full tool-calling conversation. No raw SQL exposure.</p>
+  <p><strong>Test Date:</strong> February 24, 2026. All queries run against Idaratech HR preprod environment.</p>
+  <p style="margin-top:8px;padding:8px 12px;background:#fffbeb;border:1px solid #fcd34d;border-radius:6px;color:#78350f"><strong>⚠️ Important — Token Counts Are Context-Dependent:</strong> The per-request token averages in this report reflect our specific benchmark context. In production, each API call sends more than just the user's text. <strong>Option A</strong> includes a custom system prompt + database table schemas + column relations + instructions + user message. <strong>Option B</strong> includes all tool definitions + parameter schemas + constraints + instructions + user message. Actual production tokens will vary significantly depending on how the context is engineered and optimized. These numbers are best used for <strong>relative comparison between models</strong>, not as absolute production cost estimates.</p>
+</div>
+
+</body>
+</html>

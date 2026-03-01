@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Idaratech — AI SQL Chat · Reports Hub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0F172A;color:#E2E8F0;min-height:100vh}
+
+.hero{background:linear-gradient(160deg,#0F172A 0%,#0B3B34 40%,#1E1B4B 70%,#0F172A 100%);padding:60px 24px 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-120px;right:-120px;width:400px;height:400px;background:radial-gradient(circle,rgba(94,234,212,.08) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-100px;left:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(167,139,250,.06) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:1}
+.logo-wrap{display:flex;justify-content:center;margin-bottom:20px}
+.logo-hex{width:72px;height:72px}
+.brand{font-size:13px;color:#5EEAD4;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.hero h1{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:8px;background:linear-gradient(135deg,#F0FDFA,#5EEAD4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-ar{font-size:22px;font-weight:700;color:#A78BFA;font-family:Tahoma,sans-serif;direction:rtl;margin-bottom:16px}
+.hero p{font-size:15px;color:#94A3B8;line-height:1.7;max-width:600px;margin:0 auto 28px}
+.hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-v{font-size:28px;font-weight:800;color:#F0FDFA}
+.hero-stat-l{font-size:11px;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+.cards-section{max-width:960px;margin:0 auto;padding:0 24px 40px}
+.section-label{font-size:12px;color:#5EEAD4;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;padding-top:40px}
+.section-title{font-size:22px;font-weight:800;color:#F0FDFA;margin-bottom:6px}
+.section-desc{font-size:13px;color:#64748B;margin-bottom:24px}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+
+.report-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px 24px;text-decoration:none;color:#E2E8F0;transition:all .3s ease;position:relative;overflow:hidden;display:flex;flex-direction:column;cursor:pointer}
+.report-card:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.report-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
+
+.card-num{font-size:11px;font-weight:800;color:#334155;margin-bottom:8px}
+.card-icon{font-size:32px;margin-bottom:14px}
+.card-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;width:fit-content}
+.card-title{font-size:18px;font-weight:800;margin-bottom:6px;line-height:1.3}
+.card-desc{font-size:13px;color:#94A3B8;line-height:1.6;flex:1;margin-bottom:16px}
+.card-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#64748B;margin-bottom:16px}
+.card-meta-item{display:flex;align-items:center;gap:4px}
+.card-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#5EEAD4;transition:gap .2s}
+.report-card:hover .card-link{gap:10px}
+.card-link-arrow{font-size:16px;transition:transform .2s}
+.report-card:hover .card-link-arrow{transform:translateX(2px)}
+
+.card-old-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(148,163,184,.15);color:#94A3B8;letter-spacing:0.5px;text-transform:uppercase;margin-left:6px}
+.card-new-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(94,234,212,.15);color:#5EEAD4;letter-spacing:0.5px;text-transform:uppercase;margin-left:6px}
+
+/* Accent colors */
+.card-c1::before{background:linear-gradient(90deg,#0EA5E9,#0284C7)}
+.card-c1 .card-badge{background:rgba(14,165,233,.15);color:#7DD3FC}
+
+.card-c2::before{background:linear-gradient(90deg,#10B981,#059669)}
+.card-c2 .card-badge{background:rgba(16,185,129,.15);color:#6EE7B7}
+
+.card-c3::before{background:linear-gradient(90deg,#8B5CF6,#7C3AED)}
+.card-c3 .card-badge{background:rgba(139,92,246,.15);color:#C4B5FD}
+
+.card-c4::before{background:linear-gradient(90deg,#F59E0B,#D97706)}
+.card-c4 .card-badge{background:rgba(245,158,11,.15);color:#FCD34D}
+
+.card-c5::before{background:linear-gradient(90deg,#EF4444,#DC2626)}
+.card-c5 .card-badge{background:rgba(239,68,68,.15);color:#FCA5A5}
+
+.card-c6::before{background:linear-gradient(90deg,#64748B,#475569)}
+.card-c6 .card-badge{background:rgba(100,116,139,.15);color:#94A3B8}
+
+/* v2 accent — cyan/teal */
+.card-c7::before{background:linear-gradient(90deg,#06B6D4,#0891B2)}
+.card-c7 .card-badge{background:rgba(6,182,212,.15);color:#67E8F9}
+
+.card-v2-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(6,182,212,.2);color:#22D3EE;letter-spacing:0.5px;text-transform:uppercase;margin-left:6px}
+
+/* Divider */
+.divider{max-width:960px;margin:0 auto;padding:0 24px}
+.divider-line{border:none;border-top:1px dashed rgba(255,255,255,.1);margin:8px 0 0}
+
+/* Reading order */
+.reading-order{max-width:960px;margin:0 auto;padding:32px 24px 48px}
+.flow-label{font-size:12px;color:#64748B;text-align:center;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.flow-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.flow-step{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;font-size:11px;font-weight:600;color:#CBD5E1}
+.flow-arrow{color:#334155;font-size:16px}
+
+.footer{border-top:1px solid rgba(255,255,255,.06);padding:32px 24px;text-align:center}
+.footer-brand{font-size:13px;color:#64748B;margin-bottom:4px}
+.footer-brand strong{color:#94A3B8}
+.footer-author{font-size:12px;color:#5EEAD4;font-weight:600}
+
+@media(max-width:600px){
+  .hero h1{font-size:24px}
+  .hero-ar{font-size:18px}
+  .hero-stats{gap:20px}
+  .cards-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="logo-wrap">
+      <svg class="logo-hex" viewBox="0 0 120 120" fill="none" id="main-logo"></svg>
+    </div>
+    <div class="brand">Idaratech · إدارتك</div>
+    <h1>AI SQL Chat — Report Hub</h1>
+    <div class="hero-ar">مركز تقارير الذكاء الاصطناعي</div>
+    <p>All research, benchmarks, and recommendations for building production-grade natural language-to-SQL for Idaratech's HR platform. These reports cover model evaluation, cost analysis, fine-tuning strategy, and implementation planning.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-v">10</div><div class="hero-stat-l">Reports</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">7</div><div class="hero-stat-l">Models Evaluated</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">196</div><div class="hero-stat-l">Test Queries</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">95%+</div><div class="hero-stat-l">Target Accuracy</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="cards-section">
+  <div class="section-label" style="color:#22D3EE">Latest Reports (v2)</div>
+  <div class="section-title">Updated Reports — With MiniMax M2.5</div>
+  <div class="section-desc">Start here — 7 models benchmarked including MiniMax M2.5 (87/100, rank #2)</div>
+
+  <div class="cards-grid">
+
+    <!-- 1. Exec Cost Brief v2 -->
+    <a href="exec-cost-report-v2.html" class="report-card card-c7">
+      <div class="card-num">#1</div>
+      <div class="card-icon">💼</div>
+      <div class="card-badge">Executive · C-Level</div>
+      <div class="card-title">Executive Cost Brief <span class="card-v2-tag">v2</span></div>
+      <div class="card-desc">Updated with MiniMax M2.5 (87/100). Top 5 model options with simple cost breakdowns, side-by-side comparison, and clear decision framework. 7 models benchmarked.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">💰 Cost Focused</div>
+        <div class="card-meta-item">📋 5 Options</div>
+        <div class="card-meta-item">🤖 7 Models</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <!-- 2. Benchmark v2 -->
+    <a href="idaratech-AI SQL Chat Benchmark Report-v2.html" class="report-card card-c7">
+      <div class="card-num">#2</div>
+      <div class="card-icon">📊</div>
+      <div class="card-badge">Technical · Engineering</div>
+      <div class="card-title">AI SQL Chat Benchmark Report <span class="card-v2-tag">v2</span></div>
+      <div class="card-desc">Full benchmark of 7 AI models across 98 test queries. MiniMax M2.5 at rank #2 (87/100, 100% pass rate). Updated Arabic audit, pass/fail matrix, and recommendations.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">📄 6 Tabs</div>
+        <div class="card-meta-item">🤖 7 Models</div>
+        <div class="card-meta-item">🎯 98 Queries</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <!-- 3. Fine-Tuning Report v2 -->
+    <a href="idaratech-finetuning-report-v2.html" class="report-card card-c7">
+      <div class="card-num">#3</div>
+      <div class="card-icon">🧠</div>
+      <div class="card-badge">Strategy · Cost Analysis</div>
+      <div class="card-title">Fine-Tuning Recommendation <span class="card-v2-tag">v2</span></div>
+      <div class="card-desc">Updated with MiniMax M2.5 infrastructure costs ($4,351+/mo self-hosted). Includes self-hosting vs API analysis, updated strategy, and 2 self-hosted model options.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">💰 $2 – $250 Training</div>
+        <div class="card-meta-item">🖥️ 2 Self-Hosted</div>
+        <div class="card-meta-item">🏗️ Architecture</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <!-- 4. Practical Guide v2 -->
+    <a href="fine-tuning-practical-guide-v2.html" class="report-card card-c7">
+      <div class="card-num">#4</div>
+      <div class="card-icon">🔧</div>
+      <div class="card-badge">Implementation · How-To</div>
+      <div class="card-title">Fine-Tuning Practical Guide <span class="card-v2-tag">v2</span></div>
+      <div class="card-desc">Updated with MiniMax M2.5 self-hosted setup (4-GPU, tensor parallelism). vLLM deployment commands, QLoRA feasibility, and full model comparison table.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">⚙️ Step-by-Step</div>
+        <div class="card-meta-item">🖥️ 4-GPU Setup</div>
+        <div class="card-meta-item">📝 vLLM Guide</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+  </div>
+</div>
+
+<!-- Divider -->
+<div class="divider"><hr class="divider-line"></div>
+
+<!-- v1 Reports -->
+<div class="cards-section" style="padding-bottom:20px">
+  <div class="section-label">Previous Version</div>
+  <div class="section-title" style="font-size:18px">v1 Reports — 6 Models</div>
+  <div class="section-desc">Original reports with 6 models (before MiniMax M2.5)</div>
+
+  <div class="cards-grid">
+
+    <a href="exec-cost-report.html" class="report-card card-c1" style="opacity:.75">
+      <div class="card-num">#1</div>
+      <div class="card-icon">💼</div>
+      <div class="card-badge">Executive · C-Level</div>
+      <div class="card-title">Executive Cost Brief <span class="card-old-tag">v1</span></div>
+      <div class="card-desc">Non-technical summary. Top 4 model options with cost breakdowns. 6 models evaluated.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">📋 4 Options</div>
+        <div class="card-meta-item">🤖 6 Models</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <a href="idaratech-AI SQL Chat Benchmark Report.html" class="report-card card-c2" style="opacity:.75">
+      <div class="card-num">#2</div>
+      <div class="card-icon">📊</div>
+      <div class="card-badge">Technical · Engineering</div>
+      <div class="card-title">Benchmark Report <span class="card-old-tag">v1</span></div>
+      <div class="card-desc">6 AI models, 84 test queries. Pass/fail matrix, Arabic compliance audit.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">🤖 6 Models</div>
+        <div class="card-meta-item">📊 84 Queries</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <a href="idaratech-finetuning-report.html" class="report-card card-c3" style="opacity:.75">
+      <div class="card-num">#3</div>
+      <div class="card-icon">🧠</div>
+      <div class="card-badge">Strategy · Cost Analysis</div>
+      <div class="card-title">Fine-Tuning Recommendation <span class="card-old-tag">v1</span></div>
+      <div class="card-desc">Fine-tuning strategy with cost breakdowns. Qwen 3 32B self-hosted analysis.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">💰 $2 – $38</div>
+        <div class="card-meta-item">🖥️ 1 Self-Hosted</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <a href="fine-tuning-practical-guide.html" class="report-card card-c4" style="opacity:.75">
+      <div class="card-num">#4</div>
+      <div class="card-icon">🔧</div>
+      <div class="card-badge">Implementation · How-To</div>
+      <div class="card-title">Practical Guide <span class="card-old-tag">v1</span></div>
+      <div class="card-desc">Step-by-step implementation guide. Provider setup, validation, deployment.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">⚙️ Step-by-Step</div>
+        <div class="card-meta-item">📝 Code Examples</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+  </div>
+</div>
+
+<!-- Divider -->
+<div class="divider"><hr class="divider-line"></div>
+
+<!-- Archive -->
+<div class="cards-section" style="padding-bottom:20px">
+  <div class="section-label" style="color:#64748B">Archive</div>
+  <div class="section-title" style="color:#94A3B8;font-size:18px">Earlier Versions</div>
+  <div class="section-desc">Previous iterations — kept for reference</div>
+
+  <div class="cards-grid">
+
+    <!-- 5. Model Selection (Old) -->
+    <a href="model-selection-report.html" class="report-card card-c5" style="opacity:.7">
+      <div class="card-num">#5</div>
+      <div class="card-icon">🏆</div>
+      <div class="card-badge">Decision · Comparison</div>
+      <div class="card-title">Model Selection Report <span class="card-old-tag">Earlier Version</span></div>
+      <div class="card-desc">Earlier model comparison and selection rationale. Capability matrix, Arabic language readiness, cost-per-query projections, and vendor lock-in analysis.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">⚖️ Trade-off Analysis</div>
+        <div class="card-meta-item">🗺️ Rollout Plan</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <!-- 6. Benchmark (Old) -->
+    <a href="benchmark-report.html" class="report-card card-c6" style="opacity:.7">
+      <div class="card-num">#6</div>
+      <div class="card-icon">📊</div>
+      <div class="card-badge">Technical · Engineering</div>
+      <div class="card-title">Benchmark Report <span class="card-old-tag">Earlier Version</span></div>
+      <div class="card-desc">Initial benchmark iteration. Superseded by the new AI SQL Chat Benchmark Report (#2) which includes updated scoring, expanded Arabic audit, and refined pass/fail matrix.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">📄 Earlier Data</div>
+        <div class="card-meta-item">🤖 6 Models</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+  </div>
+</div>
+
+<!-- Reading order -->
+<div class="reading-order">
+  <div class="flow-label">Suggested Reading Order (v2 — 7 Models)</div>
+  <div class="flow-row">
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">💼 Exec Brief v2</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">📊 Benchmark v2</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">🧠 Fine-Tuning v2</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">🔧 Practical Guide v2</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand"><strong>Idaratech · إدارتك</strong> — AI SQL Chat Report Hub</div>
+  <div class="footer-author">Prepared by Bilal Elhalawaty</div>
+</div>
+
+<script>
+(function(){
+  const el=document.getElementById('main-logo');
+  const R=56,r=33,cx=60,cy=60;
+  const colors=["#E8792F","#C73A3A","#8C8C8C","#2980B9","#1DA8A0","#7B5EA7"];
+  const ang=i=>(i*60-90)*Math.PI/180;
+  const ox=i=>cx+R*Math.cos(ang(i)),oy=i=>cy+R*Math.sin(ang(i));
+  const ix=i=>cx+r*Math.cos(ang(i)),iy=i=>cy+r*Math.sin(ang(i));
+  let p='';
+  for(let i=0;i<6;i++){const j=(i+1)%6;p+=`<path d="M${ox(i)},${oy(i)} L${ox(j)},${oy(j)} L${ix(j)},${iy(j)} L${ix(i)},${iy(i)} Z" fill="${colors[i]}"/>`;}
+  let inner=`M${ix(0)},${iy(0)}`;for(let i=1;i<6;i++)inner+=` L${ix(i)},${iy(i)}`;inner+=' Z';
+  p+=`<path d="${inner}" fill="#0F172A"/>`;
+  el.innerHTML=p;
+})();
+</script>
+</body>
+</html>
