@@ -105,7 +105,6 @@ td.money{font-variant-numeric:tabular-nums;text-align:right;font-weight:700;colo
   <button class="tb" onclick="showTab('costs')">Cost Analysis</button>
   <button class="tb" onclick="showTab('tokens')">Token Analysis</button>
   <button class="tb" onclick="showTab('providers')">Providers</button>
-  <button class="tb" onclick="showTab('timeline')">Timeline</button>
   <button class="tb" onclick="showTab('performance')">Performance</button>
 </div></div>
 
@@ -419,45 +418,7 @@ td.money{font-variant-numeric:tabular-nums;text-align:right;font-weight:700;colo
 </div>
 </div>
 
-<!-- ==================== TAB 6: TIMELINE ==================== -->
-<div class="tc" id="timeline">
-<h2>Timeline</h2>
-
-<div class="card">
-  <div class="card-title">Requests per Day</div>
-  <div class="chart-container"><canvas id="dailyReqsChart"></canvas></div>
-</div>
-
-<div class="card">
-  <div class="card-title">Daily Breakdown</div>
-  <div style="overflow-x:auto">
-  <table>
-    <thead><tr><th>Date</th><th style="text-align:right">Requests</th><th style="text-align:right">Cost</th><th style="text-align:right">Tokens</th><th>Models Tested</th></tr></thead>
-    <tbody>
-      <tr><td>Feb 23 (Sun)</td><td class="num">139</td><td class="money">$1.81</td><td class="num">780,862</td><td>Gemini 2.5 Pro, Gemini 3.1 Pro, Qwen 235B, Qwen 32B</td></tr>
-      <tr><td>Feb 24 (Mon)</td><td class="num">143</td><td class="money">$1.27</td><td class="num">395,097</td><td>Gemini 3.1 Pro, Qwen 235B, Qwen 32B</td></tr>
-      <tr><td>Feb 27 (Thu)</td><td class="num">141</td><td class="money">$0.56</td><td class="num">304,957</td><td>Gemini 3.1 Pro, Gemma 27B, Qwen 32B</td></tr>
-      <tr><td>Feb 28 (Fri)</td><td class="num">270</td><td class="money">$2.47</td><td class="num">685,979</td><td>Gemini 2.5 Pro, Gemini 3.1 Pro, GPT 4.1, Qwen 235B, Qwen 32B</td></tr>
-      <tr><td>Mar 1 (Sat)</td><td class="num">43</td><td class="money">$0.03</td><td class="num">82,275</td><td>MiniMax M2.5</td></tr>
-    </tbody>
-    <tfoot style="font-weight:700;border-top:2px solid #E2E8F0">
-      <tr><td>Total</td><td class="num">736</td><td class="money">$6.15</td><td class="num">2,249,170</td><td>7 unique models</td></tr>
-    </tfoot>
-  </table>
-  </div>
-</div>
-
-<div class="card">
-  <div class="card-title">Hourly Activity Distribution</div>
-  <div class="chart-container"><canvas id="hourlyChart"></canvas></div>
-</div>
-
-<div class="note note-info">
-  <strong>Peak Activity:</strong> Feb 28 was the busiest day (270 requests, $2.47) with 5 models tested simultaneously. The late-night hours (23:00–01:00) saw the heaviest activity with 385 requests (52% of total).
-</div>
-</div>
-
-<!-- ==================== TAB 7: PERFORMANCE ==================== -->
+<!-- ==================== TAB 6: PERFORMANCE ==================== -->
 <div class="tc" id="performance">
 <h2>Performance Analysis</h2>
 
@@ -575,20 +536,6 @@ new Chart(document.getElementById('tokensPerModel'),{type:'bar',data:{labels:nam
 
 // Provider chart
 new Chart(document.getElementById('providerChart'),{type:'bar',data:{labels:['Google','Google AI Studio','Alibaba','OpenAI','Nebius','DeepInfra','Novita','Parasail','SiliconFlow','AtlasCloud','Phala','Minimax','Together','Inceptron','Friendli','Clarifai','Fireworks','SambaNova','Groq'],datasets:[{data:[215,183,115,52,41,38,19,14,13,12,8,6,4,4,3,3,2,2,2],backgroundColor:'#8B5CF6',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#F1F5F9'}},y:{grid:{display:false}}}}});
-
-// Daily requests
-new Chart(document.getElementById('dailyReqsChart'),{type:'bar',data:{labels:['Feb 23','Feb 24','Feb 27','Feb 28','Mar 1'],datasets:[
-  {label:'Gemini 3.1 Pro',data:[59,87,42,93,0],backgroundColor:'#8B5CF6'},
-  {label:'Gemini 2.5 Pro',data:[41,0,0,76,0],backgroundColor:'#3B82F6'},
-  {label:'Qwen 3 235B',data:[15,26,0,43,0],backgroundColor:'#F59E0B'},
-  {label:'GPT 4.1',data:[0,0,0,52,0],backgroundColor:'#10B981'},
-  {label:'Qwen 3 32B',data:[24,30,40,6,0],backgroundColor:'#EF4444'},
-  {label:'MiniMax M2.5',data:[0,0,0,0,43],backgroundColor:'#06B6D4'},
-  {label:'Gemma 3 27B',data:[0,0,59,0,0],backgroundColor:'#94A3B8'}
-]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'#F1F5F9'}}}}});
-
-// Hourly
-new Chart(document.getElementById('hourlyChart'),{type:'bar',data:{labels:['00:00','01:00','02:00','10:00','11:00','12:00','13:00','14:00','18:00','20:00','22:00','23:00'],datasets:[{data:[130,111,29,6,85,37,91,35,17,12,39,144],backgroundColor:colors.map((_,i)=>'#8B5CF6'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F1F5F9'}}}}});
 
 // Latency bar
 new Chart(document.getElementById('latencyChart'),{type:'bar',data:{labels:['GPT 4.1','Gemma 27B','MiniMax M2.5','Gemini 3.1','Gemini 2.5','Qwen 32B','Qwen 235B'],datasets:[{data:[1318,2650,7532,11470,11887,17201,23724],backgroundColor:['#10B981','#94A3B8','#06B6D4','#8B5CF6','#3B82F6','#EF4444','#F59E0B'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>(v/1000).toFixed(1)+'s'},grid:{color:'#F1F5F9'}},y:{grid:{display:false}}}}});
