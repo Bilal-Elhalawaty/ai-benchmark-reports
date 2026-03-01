@@ -210,7 +210,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 [data-theme="dark"] .callout-yellow,[data-theme="dark"] .callout-orange{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 
 /* Failure/result cards */
-[data-theme="dark"] .failure-card,.failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
+[data-theme="dark"] .failure-card,[data-theme="dark"] .failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
 [data-theme="dark"] .failure-card.failure-yellow{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 [data-theme="dark"] .improve-num{background:#0D1F18!important;color:#34D399!important}
 
@@ -363,34 +363,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div class="hero-stat"><div class="hero-stat-v">196</div><div class="hero-stat-l">Test Queries</div></div>
       <div class="hero-stat"><div class="hero-stat-v">95%+</div><div class="hero-stat-l">Target Accuracy</div></div>
     </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:24px">
+      <div style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:10px 16px;font-size:13px;color:#6EE7B7;font-weight:600">Gemini 2.5 Pro recommended for production (88/100)</div>
+      <div style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:10px 16px;font-size:13px;color:#C4B5FD;font-weight:600">Fine-tuning can boost accuracy to 93-97%</div>
+      <div style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:10px 16px;font-size:13px;color:#FCD34D;font-weight:600">Self-hosting viable with Qwen 3 32B at ~$1K/mo</div>
+    </div>
   </div>
 </div>
 
 <div class="cards-section">
-  <div class="section-label" style="color:#A78BFA">API Analytics</div>
-  <div class="section-title">OpenRouter Usage Analytics</div>
-  <div class="section-desc">Cost, token, and performance analysis of all 736 API requests across 7 models and 19 providers</div>
-  <div class="cards-grid">
-    <a href="openrouter-analytics.html" class="report-card" style="border-color:#A78BFA">
-      <div class="card-num">NEW</div>
-      <div class="card-icon">📊</div>
-      <div class="card-badge">Analytics · Data</div>
-      <div class="card-title">API Usage Analytics</div>
-      <div class="card-desc">Complete breakdown of OpenRouter API usage during benchmarking. Cost per model, token analysis, provider comparison, daily timeline, and performance metrics.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">💰 $6.15 Total</div>
-        <div class="card-meta-item">📡 736 Requests</div>
-        <div class="card-meta-item">🔢 2.25M Tokens</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-  </div>
-</div>
-
-<div class="cards-section">
-  <div class="section-label" style="color:#22D3EE">Latest Reports (v2)</div>
-  <div class="section-title">Updated Reports — With MiniMax M2.5</div>
-  <div class="section-desc">Start here — 7 models benchmarked including MiniMax M2.5 (87/100, rank #2)</div>
+  <div class="section-label" style="color:#22D3EE">Reports (v2)</div>
+  <div class="section-desc">7 models benchmarked including MiniMax M2.5 (87/100, rank #2)</div>
 
   <div class="cards-grid">
 
@@ -400,41 +383,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div class="card-icon">💼</div>
       <div class="card-badge">Executive · C-Level</div>
       <div class="card-title">Executive Cost Brief <span class="card-v2-tag">v2</span></div>
-      <div class="card-desc">Updated with MiniMax M2.5 (87/100). Top 5 model options with simple cost breakdowns, side-by-side comparison, and clear decision framework. 7 models benchmarked.</div>
+      <div class="card-desc">Start here — model costs and recommendations for decision makers. Top 4 model options with cost breakdowns, side-by-side comparison, and clear decision framework.</div>
       <div class="card-meta">
         <div class="card-meta-item">💰 Cost Focused</div>
-        <div class="card-meta-item">📋 5 Options</div>
+        <div class="card-meta-item">📋 4 Options</div>
         <div class="card-meta-item">🤖 7 Models</div>
       </div>
       <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
     </a>
 
-    <!-- 2. Benchmark v2 -->
-    <a href="idaratech-AI SQL Chat Benchmark Report-v2.html" class="report-card card-c7">
-      <div class="card-num">#2</div>
-      <div class="card-icon">📊</div>
-      <div class="card-badge">Technical · Engineering</div>
-      <div class="card-title">AI SQL Chat Benchmark Report <span class="card-v2-tag">v2</span></div>
-      <div class="card-desc">Full benchmark of 7 AI models across 98 test queries. MiniMax M2.5 at rank #2 (87/100, 100% pass rate). Updated Arabic audit, pass/fail matrix, and recommendations.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">📄 6 Tabs</div>
-        <div class="card-meta-item">🤖 7 Models</div>
-        <div class="card-meta-item">🎯 98 Queries</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- 3. Fine-Tuning Report v2 -->
+    <!-- 2. Fine-Tuning Report v2 -->
     <a href="idaratech-finetuning-report-v2.html" class="report-card card-c7">
-      <div class="card-num">#3</div>
+      <div class="card-num">#2</div>
       <div class="card-icon">🧠</div>
       <div class="card-badge">Strategy · Cost Analysis</div>
       <div class="card-title">Fine-Tuning Recommendation <span class="card-v2-tag">v2</span></div>
-      <div class="card-desc">Updated with MiniMax M2.5 infrastructure costs ($4,351+/mo self-hosted). Includes self-hosting vs API analysis, updated strategy, and 2 self-hosted model options.</div>
+      <div class="card-desc">Deeper technical cost analysis and training strategy. Self-hosting vs API analysis, infrastructure costs, and 2 self-hosted model options.</div>
       <div class="card-meta">
         <div class="card-meta-item">💰 $2 – $250 Training</div>
         <div class="card-meta-item">🖥️ 2 Self-Hosted</div>
         <div class="card-meta-item">🏗️ Architecture</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <!-- 3. Benchmark v2 -->
+    <a href="idaratech-AI SQL Chat Benchmark Report-v2.html" class="report-card card-c7">
+      <div class="card-num">#3</div>
+      <div class="card-icon">📊</div>
+      <div class="card-badge">Technical · Engineering</div>
+      <div class="card-title">AI SQL Chat Benchmark Report <span class="card-v2-tag">v2</span></div>
+      <div class="card-desc">Full benchmark results across 7 models and 98 test queries. Pass/fail matrix, Arabic compliance audit, and detailed model analysis.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">📄 5 Tabs</div>
+        <div class="card-meta-item">🤖 7 Models</div>
+        <div class="card-meta-item">🎯 98 Queries</div>
       </div>
       <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
     </a>
@@ -445,11 +428,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div class="card-icon">🔧</div>
       <div class="card-badge">Implementation · How-To</div>
       <div class="card-title">Fine-Tuning Practical Guide <span class="card-v2-tag">v2</span></div>
-      <div class="card-desc">Updated with MiniMax M2.5 self-hosted setup (4-GPU, tensor parallelism). vLLM deployment commands, QLoRA feasibility, and full model comparison table.</div>
+      <div class="card-desc">Step-by-step fine-tuning implementation. Knowledge base format, dataset tiers, provider setup, and deployment commands.</div>
       <div class="card-meta">
         <div class="card-meta-item">⚙️ Step-by-Step</div>
         <div class="card-meta-item">🖥️ 4-GPU Setup</div>
         <div class="card-meta-item">📝 vLLM Guide</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+    </a>
+
+    <!-- 5. OpenRouter Analytics -->
+    <a href="openrouter-analytics.html" class="report-card" style="border-color:#A78BFA">
+      <div class="card-num">#5</div>
+      <div class="card-icon">📡</div>
+      <div class="card-badge">Analytics · Data</div>
+      <div class="card-title">OpenRouter Usage Analytics</div>
+      <div class="card-desc">API usage data — costs, tokens, and provider breakdown. Complete analysis of all 736 API requests across 7 models and 19 providers.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">💰 $6.15 Total</div>
+        <div class="card-meta-item">📡 736 Requests</div>
+        <div class="card-meta-item">🔢 2.25M Tokens</div>
       </div>
       <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
     </a>
@@ -569,13 +567,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="reading-order">
   <div class="flow-label">Suggested Reading Order (v2 — 7 Models)</div>
   <div class="flow-row">
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">💼 Exec Brief v2</div>
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">1.</span>💼 Exec Brief</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">📊 Benchmark v2</div>
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">2.</span>🧠 Fine-Tuning Rec</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">🧠 Fine-Tuning v2</div>
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">3.</span>📊 Benchmark</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)">🔧 Practical Guide v2</div>
+    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">4.</span>🔧 Practical Guide</div>
   </div>
 </div>
 

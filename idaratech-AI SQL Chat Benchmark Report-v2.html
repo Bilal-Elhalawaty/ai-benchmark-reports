@@ -240,7 +240,7 @@ tr{border-bottom:1px solid #F1F5F9}
 [data-theme="dark"] .callout-yellow,[data-theme="dark"] .callout-orange{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 
 /* Failure/result cards */
-[data-theme="dark"] .failure-card,.failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
+[data-theme="dark"] .failure-card,[data-theme="dark"] .failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
 [data-theme="dark"] .failure-card.failure-yellow{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 [data-theme="dark"] .improve-num{background:#0D1F18!important;color:#34D399!important}
 
@@ -381,8 +381,7 @@ tr{border-bottom:1px solid #F1F5F9}
   <div class="tab-nav-inner">
     <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
     <button class="tab-btn" onclick="showTab('models')">Model Details</button>
-    <button class="tab-btn" onclick="showTab('arabic')">Arabic Audit</button>
-    <button class="tab-btn" onclick="showTab('matrix')">Pass/Fail Matrix</button>
+    <button class="tab-btn" onclick="showTab('results')">Test Results</button>
     <button class="tab-btn" onclick="showTab('issues')">Critical Issues</button>
     <button class="tab-btn" onclick="showTab('recs')">Recommendations</button>
   </div>
@@ -435,7 +434,7 @@ tr{border-bottom:1px solid #F1F5F9}
   <h3>Performance Comparison</h3>
   <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>Model</th><th>Score</th><th>Pass Rate</th><th>Avg Tokens</th><th>Avg Time</th><th>Retries</th></tr></thead>
+      <thead><tr><th>Model</th><th>Score</th><th>Pass Rate</th><th>Avg Tokens</th><th>Retries</th></tr></thead>
       <tbody id="perf-body"></tbody>
     </table>
   </div>
@@ -453,8 +452,27 @@ tr{border-bottom:1px solid #F1F5F9}
 </div>
 </div>
 
-<!-- ==================== ARABIC AUDIT ==================== -->
-<div class="tab-content" id="tab-arabic">
+<!-- ==================== TEST RESULTS (merged Arabic + Matrix) ==================== -->
+<div class="tab-content" id="tab-results">
+
+<div class="section">
+  <h3>Pass/Fail Matrix (All 98 Requests)</h3>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:#10B981"></span> PASS</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span> PARTIAL</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span> FAIL</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#86EFAC"></span> PASS* (correct SQL, English summary)</div>
+  </div>
+  <div style="overflow-x:auto">
+    <table id="matrix-table"></table>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Token Usage</h3>
+  <h4 style="font-size:13px;color:#64748B;margin-bottom:10px">Average Tokens (lower = better)</h4>
+  <div id="token-bars"></div>
+</div>
 
 <div class="section">
   <h3>Arabic Response Compliance Audit</h3>
@@ -493,30 +511,6 @@ tr{border-bottom:1px solid #F1F5F9}
 </div>
 </div>
 
-<!-- ==================== PASS/FAIL MATRIX ==================== -->
-<div class="tab-content" id="tab-matrix">
-
-<div class="section">
-  <h3>Pass/Fail Matrix (All 98 Requests)</h3>
-  <div class="legend">
-    <div class="legend-item"><span class="legend-dot" style="background:#10B981"></span> PASS</div>
-    <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span> PARTIAL</div>
-    <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span> FAIL</div>
-    <div class="legend-item"><span class="legend-dot" style="background:#86EFAC"></span> PASS* (correct SQL, English summary)</div>
-  </div>
-  <div style="overflow-x:auto">
-    <table id="matrix-table"></table>
-  </div>
-</div>
-
-<div class="section">
-  <h3>Token Usage & Response Time</h3>
-  <div class="compare-grid">
-    <div><h4 style="font-size:13px;color:#64748B;margin-bottom:10px">Average Tokens (lower = better)</h4><div id="token-bars"></div></div>
-    <div><h4 style="font-size:13px;color:#64748B;margin-bottom:10px">Average Response Time (lower = better)</h4><div id="time-bars"></div></div>
-  </div>
-</div>
-</div>
 
 <!-- ==================== CRITICAL ISSUES ==================== -->
 <div class="tab-content" id="tab-issues">
@@ -706,7 +700,7 @@ document.getElementById('rankings').innerHTML=models.map(m=>`
     <div class="rank-circle" style="background:${m.rank<=3?m.color:'#94A3B8'}">${m.rank}</div>
     <div class="rank-info"><div class="rank-name">${m.name}</div><div class="rank-id">${m.id}</div></div>
     <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:${m.score}%;background:${m.color}"></div></div><span class="score-val" style="color:${m.color}">${m.score}</span></div>
-    <div class="rank-meta"><span title="Pass Rate">✅ ${m.pass}</span><span title="Avg Tokens">🔤 ${m.tokens.toLocaleString()}</span><span title="Avg Time">⏱️ ${m.time}</span>${badge(m.arCompliance,m.arCompliance==='PASS'||m.arCompliance==='PASS*'?'pass':m.arCompliance==='FAIL'?'fail':'fail')}</div>
+    <div class="rank-meta"><span title="Pass Rate">✅ ${m.pass}</span><span title="Avg Tokens">🔤 ${m.tokens.toLocaleString()}</span>${badge(m.arCompliance,m.arCompliance==='PASS'||m.arCompliance==='PASS*'?'pass':m.arCompliance==='FAIL'?'fail':'fail')}</div>
   </div>`).join('');
 
 // RENDER PROMPTS
@@ -715,7 +709,7 @@ document.getElementById('prompts-body').innerHTML=prompts.map(p=>`
 
 // RENDER PERF TABLE
 document.getElementById('perf-body').innerHTML=models.map(m=>`
-  <tr><td><strong>${m.name}</strong></td><td><span style="font-weight:800;color:${m.color};font-size:16px">${m.score}</span>/100</td><td>${m.pass} (${m.passNum}/14)</td><td>${m.tokens.toLocaleString()}</td><td>${m.time}</td><td>${m.retries}</td></tr>`).join('');
+  <tr><td><strong>${m.name}</strong></td><td><span style="font-weight:800;color:${m.color};font-size:16px">${m.score}</span>/100</td><td>${m.pass} (${m.passNum}/14)</td><td>${m.tokens.toLocaleString()}</td><td>${m.retries}</td></tr>`).join('');
 
 // RENDER MODEL CARDS
 document.getElementById('model-cards').innerHTML=models.map(m=>`
@@ -725,7 +719,6 @@ document.getElementById('model-cards').innerHTML=models.map(m=>`
       <div class="stat-box"><div class="stat-label">Score</div><div class="stat-value" style="color:${m.color}">${m.score}/100</div></div>
       <div class="stat-box"><div class="stat-label">Pass Rate</div><div class="stat-value" style="color:${m.color}">${m.pass}</div></div>
       <div class="stat-box"><div class="stat-label">Avg Tokens</div><div class="stat-value" style="color:${m.color}">${m.tokens.toLocaleString()}</div></div>
-      <div class="stat-box"><div class="stat-label">Avg Time</div><div class="stat-value" style="color:${m.color}">${m.time}</div></div>
       <div class="stat-box"><div class="stat-label">Retries</div><div class="stat-value" style="color:${m.color}">${m.retries}</div></div>
       <div class="stat-box"><div class="stat-label">AR Content</div><div class="stat-value" style="color:${m.color}">${m.arContent}</div></div>
     </div>
@@ -756,9 +749,6 @@ document.getElementById('matrix-table').innerHTML=mHtml;
 const sortedTokens=[...models].sort((a,b)=>a.tokens-b.tokens);
 document.getElementById('token-bars').innerHTML=sortedTokens.map(m=>`
   <div class="bar-row"><span class="bar-label">${m.name}</span><div class="bar-track"><div class="bar-fill" style="width:${(m.tokens/5000)*100}%;background:${m.color}"></div></div><span class="bar-val">${m.tokens.toLocaleString()}</span></div>`).join('');
-const sortedTime=[...models].sort((a,b)=>a.timeNum-b.timeNum);
-document.getElementById('time-bars').innerHTML=sortedTime.map(m=>`
-  <div class="bar-row"><span class="bar-label">${m.name}</span><div class="bar-track"><div class="bar-fill" style="width:${(m.timeNum/90)*100}%;background:${m.color}"></div></div><span class="bar-val">${m.time}</span></div>`).join('');
 
 // FAILURES
 document.getElementById('failures-complete').innerHTML=completeFails.map(f=>`

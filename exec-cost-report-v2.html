@@ -192,7 +192,7 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
 [data-theme="dark"] .callout-yellow,[data-theme="dark"] .callout-orange{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 
 /* Failure/result cards */
-[data-theme="dark"] .failure-card,.failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
+[data-theme="dark"] .failure-card,[data-theme="dark"] .failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
 [data-theme="dark"] .failure-card.failure-yellow{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 [data-theme="dark"] .improve-num{background:#0D1F18!important;color:#34D399!important}
 
@@ -310,7 +310,7 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
   <div class="sub">v2 — Updated with MiniMax M2.5 · Top models for AI SQL Chat · Cost & performance summary for decision makers · March 2026</div>
   <div class="kpi-row">
     <div class="kpi"><div class="kpi-l">Models Evaluated</div><div class="kpi-v">7</div></div>
-    <div class="kpi"><div class="kpi-l">Recommended</div><div class="kpi-v">5</div></div>
+    <div class="kpi"><div class="kpi-l">Recommended</div><div class="kpi-v">4</div></div>
     <div class="kpi"><div class="kpi-l">Training Cost</div><div class="kpi-v">$2 – $38</div></div>
     <div class="kpi"><div class="kpi-l">Target Accuracy</div><div class="kpi-v">95%+</div></div>
   </div>
@@ -319,11 +319,8 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
 <!-- TABS -->
 <div class="tab-nav"><div class="tab-inner" id="tab-bar">
   <button class="tb active" onclick="showTab('summary')">Summary</button>
-  <button class="tb" onclick="showTab('gemini25')">Gemini 2.5 Pro</button>
-  <button class="tb" onclick="showTab('gemini31')">Gemini 3.1 Pro</button>
-  <button class="tb" onclick="showTab('gpt41')">GPT 4.1</button>
-  <button class="tb" onclick="showTab('qwen')">Qwen 3 32B</button>
-  <button class="tb" onclick="showTab('minimax')">MiniMax M2.5</button>
+  <button class="tb" onclick="showTab('production')">Production-Ready</button>
+  <button class="tb" onclick="showTab('selfhosted')">Future Self-Hosted</button>
   <button class="tb" onclick="showTab('compare')">Compare</button>
   <button class="tb" onclick="showTab('decision')">Decision</button>
 </div></div>
@@ -337,8 +334,8 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
   <p>Each answer was scored on: <strong>Did it get the right data?</strong> and <strong>Did it respond in the correct language?</strong> For our Saudi market, Arabic support is critical — if a user asks in Arabic, everything must come back in Arabic.</p>
 
   <div class="note note-info">
-    <div class="note-title" style="color:#0B9B8A">Why these 5 models?</div>
-    <div class="note-body">Out of 7 models tested, <strong>2 were eliminated</strong> because they cannot respond properly in Arabic. Gemma 3 returned English for every Arabic question. Qwen 3 235B returned English for 4 of 7 Arabic questions. The remaining 5 are the viable options.</div>
+    <div class="note-title" style="color:#0B9B8A">Why these 4 options?</div>
+    <div class="note-body">Out of 7 models tested, <strong>2 were eliminated</strong> (Gemma 3, Qwen 3 235B) due to critical Arabic failures. A third, <strong>Gemini 3.1 Pro</strong>, passes all tests but <strong>does not support fine-tuning</strong> — its score of 84 cannot be improved through training. It's shown in the scores for reference but is not presented as a recommended option. The remaining <strong>4 models</strong> all support fine-tuning and can reach 90%+ accuracy.</div>
   </div>
 
   <h2>Scores (Out of 100)</h2>
@@ -365,12 +362,15 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
   </table>
 </div>
 
-<!-- ============ GEMINI 2.5 PRO ============ -->
-<div class="tc" id="tab-gemini25">
+<!-- ============ PRODUCTION-READY ============ -->
+<div class="tc" id="tab-production">
+  <h2>Production-Ready Models</h2>
+  <p>These models run on the provider's cloud — no server management needed. Both support fine-tuning through managed services.</p>
+
   <div class="model-card" style="border-left-color:#10B981">
-    <div class="model-rank" style="color:#10B981">Option 1 — Highest Accuracy</div>
+    <div class="model-rank" style="color:#10B981">Recommended — Highest Accuracy</div>
     <div class="model-name">Gemini 2.5 Pro</div>
-    <div class="model-tag">Best overall quality · Best Arabic handling · Recommended for accuracy-first approach</div>
+    <div class="model-tag">Best overall quality · Best Arabic handling · Highest ceiling after fine-tuning</div>
     <div class="metrics">
       <div class="metric"><div class="metric-l">Score</div><div class="metric-v" style="color:#10B981">88<span style="font-size:13px;color:#94A3B8">/100</span></div></div>
       <div class="metric"><div class="metric-l">Tests Passed</div><div class="metric-v" style="color:#10B981">13<span style="font-size:13px;color:#94A3B8">/14</span></div></div>
@@ -390,7 +390,6 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
     <div class="bench-row">
       <div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div>
     </div>
-    <p style="font-size:13px;color:#64748B;margin-top:10px">All 14 tests passed. Minor issue: one Arabic query used a slightly different data source, but still returned correct results. Highest quality model overall.</p>
 
     <h3>Cost Breakdown</h3>
     <table class="cost-tbl">
@@ -402,63 +401,14 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
 
     <div class="note note-info">
       <div class="note-title" style="color:#0B9B8A">💡 Why this model?</div>
-      <div class="note-body">Already scores 88/100 without training. It's the only model that translates internal database values into Arabic (e.g., "vacation-leave" → "إجازة سنوية"). After training with 500 examples, we expect 93–97/100 — the highest ceiling of all options.</div>
+      <div class="note-body">Already scores 88/100 without training. The only model that translates internal database values into Arabic (e.g., "vacation-leave" → "إجازة سنوية"). After training with 500 examples, we expect 93–97/100 — the highest ceiling of all options.</div>
     </div>
   </div>
-</div>
 
-<!-- ============ GEMINI 3.1 PRO ============ -->
-<div class="tc" id="tab-gemini31">
-  <div class="model-card" style="border-left-color:#0EA5E9">
-    <div class="model-rank" style="color:#0EA5E9">Option 2 — Most Reliable (Base Model Only)</div>
-    <div class="model-name">Gemini 3.1 Pro</div>
-    <div class="model-tag">100% first-try success · Zero retries · Excellent reliability without fine-tuning</div>
-    <div class="metrics">
-      <div class="metric"><div class="metric-l">Score</div><div class="metric-v" style="color:#0EA5E9">84<span style="font-size:13px;color:#94A3B8">/100</span></div></div>
-      <div class="metric"><div class="metric-l">Tests Passed</div><div class="metric-v" style="color:#0EA5E9">14<span style="font-size:13px;color:#94A3B8">/14</span></div></div>
-      <div class="metric"><div class="metric-l">Arabic Support</div><div class="metric-v" style="color:#0EA5E9">7/7 ✓</div></div>
-      <div class="metric"><div class="metric-l">Training Cost</div><div class="metric-v" style="color:#94A3B8">N/A</div></div>
-      <div class="metric"><div class="metric-l">After Training</div><div class="metric-v" style="color:#94A3B8">84 (no FT)</div></div>
-      <div class="metric"><div class="metric-l">Fine-Tuning</div><div class="metric-sm" style="color:#DC2626">Not Available ✗</div></div>
-    </div>
-
-    <div class="note note-warn">
-      <div class="note-title" style="color:#92400E">⚠️ Important: No Fine-Tuning Support</div>
-      <div class="note-body">Gemini 3.1 Pro <strong>does not currently support fine-tuning</strong>. If we choose this model, we use it as-is (base model) with no ability to train it on our data. Its score of 84/100 is what we get — it <strong>cannot be improved through training</strong>. It can only be improved through better prompt engineering (instructions we send with each question).</div>
-    </div>
-
-    <h3>14-Test Results</h3>
-    <div class="legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#10B981"></span> Correct</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span> Partial</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span> Failed</div>
-    </div>
-    <div class="bench-labels"><div class="bench-lbl">E1 EN</div><div class="bench-lbl">E1 AR</div><div class="bench-lbl">E2 EN</div><div class="bench-lbl">E2 AR</div><div class="bench-lbl">M1 EN</div><div class="bench-lbl">M1 AR</div><div class="bench-lbl">M2 EN</div><div class="bench-lbl">M2 AR</div><div class="bench-lbl">M3 EN</div><div class="bench-lbl">M3 AR</div><div class="bench-lbl">H1 EN</div><div class="bench-lbl">H1 AR</div><div class="bench-lbl">H2 EN</div><div class="bench-lbl">H2 AR</div></div>
-    <div class="bench-row">
-      <div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div>
-    </div>
-    <p style="font-size:13px;color:#64748B;margin-top:10px">All 14 passed with zero retries — the only model to achieve this. Scores 4 points lower than Gemini 2.5 Pro because Arabic responses are slightly less polished (doesn't translate internal values), but it never fails on first attempt.</p>
-
-    <h3>Cost Breakdown</h3>
-    <table class="cost-tbl">
-      <tr><td>One-time training</td><td>Not applicable — fine-tuning not supported</td></tr>
-      <tr><td>Per-use cost</td><td>Similar to Gemini 2.5 Pro pricing</td></tr>
-      <tr><td>Monthly server cost</td><td><strong>$0</strong> — runs on Google's servers</td></tr>
-    </table>
-
-    <div class="note note-info">
-      <div class="note-title" style="color:#0B9B8A">💡 When to choose this model?</div>
-      <div class="note-body">Choose Gemini 3.1 Pro if you want maximum reliability with zero failures and don't need the extra accuracy that fine-tuning provides. Good option if speed-to-market matters more than reaching 95%+ accuracy, since no training data preparation is needed.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ============ GPT 4.1 ============ -->
-<div class="tc" id="tab-gpt41">
   <div class="model-card" style="border-left-color:#8B5CF6">
-    <div class="model-rank" style="color:#8B5CF6">Option 3 — Cheapest per Query</div>
+    <div class="model-rank" style="color:#8B5CF6">Cost Alternative — Cheapest per Query</div>
     <div class="model-name">GPT 4.1</div>
-    <div class="model-tag">Lowest cost per query · Learnable mistakes that training fixes · Good Arabic support</div>
+    <div class="model-tag">Lowest cost per query · Fastest response time (5.2s) · Learnable mistakes that training fixes</div>
     <div class="metrics">
       <div class="metric"><div class="metric-l">Score</div><div class="metric-v" style="color:#8B5CF6">80<span style="font-size:13px;color:#94A3B8">/100</span></div></div>
       <div class="metric"><div class="metric-l">Tests Passed</div><div class="metric-v" style="color:#8B5CF6">11<span style="font-size:13px;color:#94A3B8">/14</span></div></div>
@@ -478,7 +428,7 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
     <div class="bench-row">
       <div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-fail">✗</div><div class="bench-cell bc-partial">~</div><div class="bench-cell bc-partial">~</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-partial">~</div><div class="bench-cell bc-partial">~</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div>
     </div>
-    <p style="font-size:13px;color:#64748B;margin-top:10px">1 failure (looked for a table that doesn't exist), 4 partial (correct approach but some data gaps). These are <strong>learnable mistakes</strong> — the model just needs to learn our specific table names and rules through training.</p>
+    <p style="font-size:13px;color:#64748B;margin-top:10px">1 failure (wrong table name), 4 partial (correct approach, minor data gaps). All <strong>learnable mistakes</strong> that fine-tuning fixes perfectly.</p>
 
     <h3>Cost Breakdown</h3>
     <table class="cost-tbl">
@@ -488,157 +438,89 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
       <tr><td>Cost change after training</td><td><span class="b b-yellow">1.5× more per query than base model</span></td></tr>
     </table>
 
-    <div class="note note-warn">
-      <div class="note-title" style="color:#92400E">⚠️ Note on GPT 4.1 pricing after training</div>
-      <div class="note-body">After training, OpenAI charges <strong>50% more per query</strong> compared to the untrained version. Even with this premium, GPT 4.1 is still cheaper per query than Gemini 2.5 Pro because its base price is lower and it uses fewer tokens.</div>
-    </div>
-
     <div class="note note-info">
       <div class="note-title" style="color:#0B9B8A">💡 Why consider this model?</div>
-      <div class="note-body">GPT 4.1 has the lowest per-query cost and its failures are all pattern-based mistakes (wrong table name, missing filter) that fine-tuning fixes perfectly. After training, it could match Gemini's accuracy while being significantly cheaper to operate at scale.</div>
+      <div class="note-body">6× faster than Gemini (5.2s vs 29.8s). Lowest per-query cost. All failures are pattern-based mistakes that fine-tuning fixes perfectly. After training, could match Gemini's accuracy while being significantly cheaper at scale.</div>
     </div>
   </div>
 </div>
 
-<!-- ============ QWEN 3 32B ============ -->
-<div class="tc" id="tab-qwen">
+<!-- ============ FUTURE SELF-HOSTED ============ -->
+<div class="tc" id="tab-selfhosted">
+  <h2>Future Self-Hosted Models</h2>
+  <p>Open-source models you can self-host for zero per-query fees. Best as a long-term strategic investment — start with production-ready models above, then migrate when query volume justifies the infrastructure.</p>
+
   <div class="model-card" style="border-left-color:#F59E0B">
-    <div class="model-rank" style="color:#D97706">Option 4 — Future Investment / Self-Hosted Potential</div>
+    <div class="model-rank" style="color:#D97706">Open-Source — Best Self-Hosted Economics</div>
     <div class="model-name">Qwen 3 32B</div>
-    <div class="model-tag">Open-source · Can self-host for zero per-query cost · Needs more training but high potential</div>
+    <div class="model-tag">Apache 2.0 · $0/query when self-hosted · ~$1,015/mo server · High improvement potential</div>
     <div class="metrics">
       <div class="metric"><div class="metric-l">Current Score</div><div class="metric-v" style="color:#F59E0B">55<span style="font-size:13px;color:#94A3B8">/100</span></div></div>
-      <div class="metric"><div class="metric-l">Tests Passed</div><div class="metric-v" style="color:#F59E0B">9<span style="font-size:13px;color:#94A3B8">/14</span></div></div>
-      <div class="metric"><div class="metric-l">Arabic Support</div><div class="metric-v" style="color:#DC2626">3/7</div></div>
       <div class="metric"><div class="metric-l">After Training</div><div class="metric-v" style="color:#EA580C">82–88</div></div>
-      <div class="metric"><div class="metric-l">License</div><div class="metric-sm" style="color:#059669">Free (Apache 2.0)</div></div>
+      <div class="metric"><div class="metric-l">Arabic Support</div><div class="metric-v" style="color:#DC2626">3/7</div></div>
+      <div class="metric"><div class="metric-l">Training Cost</div><div class="metric-v" style="color:#F59E0B">$2.25</div></div>
+      <div class="metric"><div class="metric-l">Monthly Server</div><div class="metric-v" style="color:#F59E0B">~$1,015</div></div>
       <div class="metric"><div class="metric-l">Fine-Tuning</div><div class="metric-sm" style="color:#F59E0B">Supported ✓</div></div>
     </div>
 
     <div class="note note-purple">
-      <div class="note-title" style="color:#7C3AED">📌 Why is this model listed despite a low score?</div>
-      <div class="note-body">Qwen 3 32B scores low today (55/100) mainly because of Arabic language issues — <strong>not because it can't generate correct queries</strong>. Its English queries are mostly correct. With proper Arabic training data, this model has high improvement potential (+27–33 points). More importantly, it can be <strong>self-hosted</strong>, meaning zero per-query fees at scale and full data control — a strategic advantage for the future.</div>
+      <div class="note-title" style="color:#7C3AED">📌 Why listed despite low score?</div>
+      <div class="note-body">Scores low (55/100) mainly due to Arabic language issues — <strong>not inability to generate correct queries</strong>. English queries are mostly correct. With proper Arabic training data, expect +27–33 points. Self-hosted means zero per-query fees and full data control.</div>
     </div>
-
-    <h3>14-Test Results</h3>
-    <div class="legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#10B981"></span> Correct</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span> Partial</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span> Failed</div>
-    </div>
-    <div class="bench-labels"><div class="bench-lbl">E1 EN</div><div class="bench-lbl">E1 AR</div><div class="bench-lbl">E2 EN</div><div class="bench-lbl">E2 AR</div><div class="bench-lbl">M1 EN</div><div class="bench-lbl">M1 AR</div><div class="bench-lbl">M2 EN</div><div class="bench-lbl">M2 AR</div><div class="bench-lbl">M3 EN</div><div class="bench-lbl">M3 AR</div><div class="bench-lbl">H1 EN</div><div class="bench-lbl">H1 AR</div><div class="bench-lbl">H2 EN</div><div class="bench-lbl">H2 AR</div></div>
-    <div class="bench-row">
-      <div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-fail">✗</div><div class="bench-cell bc-fail">✗</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-fail">✗</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-partial">~</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-fail">✗</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-partial">~</div>
-    </div>
-    <p style="font-size:13px;color:#64748B;margin-top:10px">English queries mostly correct. Arabic queries are the main weakness — 4 of 7 returned in English, one had character corruption. Fine-tuning with Arabic examples directly addresses these failures.</p>
 
     <h3>Two Ways to Use This Model</h3>
-
     <div class="path-card path-a">
       <div class="path-title" style="color:#0B9B8A">Path A: Self-Hosted (Future Phase)</div>
-      <p style="font-size:13px;color:#475569;margin-bottom:10px;line-height:1.7">Run the model on our own server. <strong>Zero per-query cost</strong> — we only pay for server rental. Best for high-volume usage in the future.</p>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px;line-height:1.7">Run on our own server. <strong>Zero per-query cost</strong> — only pay for server rental.</p>
       <table class="cost-tbl">
         <tr><td>One-time training</td><td><strong>~$1.39</strong> (1 hour GPU rental)</td></tr>
         <tr><td>Per-query cost</td><td><strong>$0</strong> — included in server cost</td></tr>
         <tr><td>Monthly server</td><td><strong>~$1,015/month</strong> (A100 GPU on RunPod)</td></tr>
-        <tr><td>Best for</td><td>High query volume · Full data control · No vendor dependency</td></tr>
       </table>
     </div>
-
     <div class="path-card path-b">
-      <div class="path-title" style="color:#4F46E5">Path B: Managed Provider (Available Now — No Self-Hosting Needed)</div>
-      <p style="font-size:13px;color:#475569;margin-bottom:10px;line-height:1.7">Use a cloud provider to train and run the model. <strong>No server management needed.</strong> Cheaper training than Gemini/GPT. May not reach the same accuracy as self-hosted (less control over parameters), but still produces good results and is very cost-effective.</p>
+      <div class="path-title" style="color:#4F46E5">Path B: Managed Provider (Available Now)</div>
+      <p style="font-size:13px;color:#475569;margin-bottom:10px;line-height:1.7">Use a cloud provider to train and run the model. <strong>No server management needed.</strong></p>
       <table class="cost-tbl">
-        <tr><td>Training on Together AI</td><td><strong>$2.25</strong> one-time (cheapest managed option)</td></tr>
-        <tr><td>Training on Fireworks AI</td><td><strong>$4.50</strong> one-time</td></tr>
-        <tr><td>Training on Vertex AI (Google)</td><td><strong>$9.86</strong> one-time</td></tr>
-        <tr><td>Per-query cost</td><td>~$1.20 / million tokens (Together AI)</td></tr>
+        <tr><td>Training on Together AI</td><td><strong>$2.25</strong> one-time</td></tr>
+        <tr><td>Per-query cost</td><td>~$1.20 / million tokens</td></tr>
         <tr><td>Monthly server</td><td><strong>$0</strong> — runs on provider's servers</td></tr>
       </table>
     </div>
-
-    <div class="note note-info">
-      <div class="note-title" style="color:#0B9B8A">💡 Recommendation for Qwen 3 32B</div>
-      <div class="note-body"><strong>Not for immediate production use</strong> — but a strong candidate for Phase 2. Start with Gemini 2.5 Pro or GPT 4.1 for production, then run a parallel fine-tuning experiment with Qwen 3 32B on a managed provider (Together AI at $2.25). If results are promising (82–88 target), consider self-hosting later for long-term savings.</div>
-    </div>
   </div>
-</div>
 
-<!-- ============ MINIMAX M2.5 ============ -->
-<div class="tc" id="tab-minimax">
   <div class="model-card" style="border-left-color:#06B6D4">
-    <div class="model-rank" style="color:#06B6D4">Option 5 — Highest Base Score for Self-Hosted (API Recommended)</div>
+    <div class="model-rank" style="color:#06B6D4">Open Weights — Highest Base Score for Self-Hosted</div>
     <div class="model-name">MiniMax M2.5</div>
-    <div class="model-tag">87/100 base score · 100% pass rate · MoE architecture (230B total, ~10B active) · Open weights</div>
+    <div class="model-tag">87/100 base · 100% pass rate · MoE architecture (230B total, ~10B active) · Expensive to self-host</div>
     <div class="metrics">
       <div class="metric"><div class="metric-l">Score</div><div class="metric-v" style="color:#06B6D4">87<span style="font-size:13px;color:#94A3B8">/100</span></div></div>
       <div class="metric"><div class="metric-l">Tests Passed</div><div class="metric-v" style="color:#06B6D4">14<span style="font-size:13px;color:#94A3B8">/14</span></div></div>
       <div class="metric"><div class="metric-l">Arabic Support</div><div class="metric-v" style="color:#06B6D4">7/7 ✓</div></div>
-      <div class="metric"><div class="metric-l">Training Cost</div><div class="metric-v" style="color:#94A3B8">Self-Host Only</div></div>
-      <div class="metric"><div class="metric-l">After Training</div><div class="metric-v" style="color:#0891B2">90–95</div></div>
+      <div class="metric"><div class="metric-l">Training Cost</div><div class="metric-v" style="color:#06B6D4">$25–$250</div></div>
+      <div class="metric"><div class="metric-l">Monthly Server</div><div class="metric-v" style="color:#06B6D4">~$4,351+</div></div>
       <div class="metric"><div class="metric-l">Fine-Tuning</div><div class="metric-sm" style="color:#F59E0B">Self-Host Only ⚠</div></div>
     </div>
 
-    <div class="note note-purple">
-      <div class="note-title" style="color:#7C3AED">📌 MoE Architecture Explained</div>
-      <div class="note-body">MiniMax M2.5 uses a <strong>Mixture-of-Experts (MoE)</strong> architecture: 230 billion total parameters but only ~10 billion are active per token. This means the full model requires large GPU memory (4x A100 80GB minimum) but inference speed is competitive because only a fraction of parameters process each token.</div>
-    </div>
-
-    <h3>14-Test Results</h3>
-    <div class="legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#10B981"></span> Correct</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span> Partial</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span> Failed</div>
-    </div>
-    <div class="bench-labels"><div class="bench-lbl">E1 EN</div><div class="bench-lbl">E1 AR</div><div class="bench-lbl">E2 EN</div><div class="bench-lbl">E2 AR</div><div class="bench-lbl">M1 EN</div><div class="bench-lbl">M1 AR</div><div class="bench-lbl">M2 EN</div><div class="bench-lbl">M2 AR</div><div class="bench-lbl">M3 EN</div><div class="bench-lbl">M3 AR</div><div class="bench-lbl">H1 EN</div><div class="bench-lbl">H1 AR</div><div class="bench-lbl">H2 EN</div><div class="bench-lbl">H2 AR</div></div>
-    <div class="bench-row">
-      <div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div><div class="bench-cell bc-pass">✓</div>
-    </div>
-    <p style="font-size:13px;color:#64748B;margin-top:10px">All 14 tests passed (100% pass rate, 1 retry on AR Hard 1). Minor quality issues: Chinese character "五种" appeared in AR Easy 2 summary, and AR Medium 2 used all English column aliases. Despite these, all queries returned correct data.</p>
-
-    <h3>Three Ways to Use This Model</h3>
-
+    <h3>Best Option: API via OpenRouter (Recommended)</h3>
     <div class="path-card path-a">
-      <div class="path-title" style="color:#0B9B8A">Path A: API via OpenRouter (Recommended)</div>
-      <p style="font-size:13px;color:#475569;margin-bottom:10px;line-height:1.7">Use MiniMax M2.5 through OpenRouter's API. <strong>Simplest option</strong> — no server management, no GPU costs. Best for most use cases.</p>
+      <div class="path-title" style="color:#0B9B8A">Use via API — No infrastructure needed</div>
       <table class="cost-tbl">
         <tr><td>Per-use cost (input)</td><td><strong>$0.295</strong> / million tokens</td></tr>
         <tr><td>Per-use cost (output)</td><td><strong>$1.20</strong> / million tokens</td></tr>
-        <tr><td>Monthly server cost</td><td><strong>$0</strong> — runs on OpenRouter's infrastructure</td></tr>
+        <tr><td>Monthly server cost</td><td><strong>$0</strong></td></tr>
         <tr><td>Fine-tuning available?</td><td><span class="b b-red">No — API does not support fine-tuning</span></td></tr>
-      </table>
-    </div>
-
-    <div class="path-card path-b">
-      <div class="path-title" style="color:#4F46E5">Path B: Self-Hosted Inference (High Cost)</div>
-      <p style="font-size:13px;color:#475569;margin-bottom:10px;line-height:1.7">Run the model on your own GPU servers. Requires <strong>4x A100 80GB GPUs minimum</strong> with tensor parallelism. Only justifiable for extremely high query volumes.</p>
-      <table class="cost-tbl">
-        <tr><td>Monthly server (RunPod, cheapest)</td><td><strong>~$4,351/mo</strong> (4x A100 80GB)</td></tr>
-        <tr><td>Monthly server (Lambda Labs)</td><td><strong>~$6,015/mo</strong> (4x A100 80GB)</td></tr>
-        <tr><td>Monthly server (H100 option)</td><td><strong>~$7,857–$10,051/mo</strong></td></tr>
-        <tr><td>Per-query cost</td><td><strong>$0</strong> — included in server cost</td></tr>
-      </table>
-    </div>
-
-    <div class="path-card" style="background:#FDF4FF;border:1px solid #E9D5FF">
-      <div class="path-title" style="color:#7C3AED">Path C: Self-Hosted + Fine-Tuning (Expert Level)</div>
-      <p style="font-size:13px;color:#475569;margin-bottom:10px;line-height:1.7">Same infrastructure as Path B, plus fine-tuning capability. <strong>No managed fine-tuning providers</strong> (no Together AI, no Vertex AI, no OpenAI) — must self-host training.</p>
-      <table class="cost-tbl">
-        <tr><td>Training method</td><td>QLoRA 4-bit (~115-140 GB VRAM)</td></tr>
-        <tr><td>Training GPUs needed</td><td>2–4x A100 80GB</td></tr>
-        <tr><td>Training cost per run</td><td><strong>$25–$250</strong> (8–24+ hours)</td></tr>
-        <tr><td>Fine-tuning providers</td><td><span class="b b-red">None — self-host only</span></td></tr>
       </table>
     </div>
 
     <div class="note note-warn">
       <div class="note-title" style="color:#92400E">⚠️ Self-Hosting: 4× More Expensive Than Qwen 3 32B</div>
-      <div class="note-body">MiniMax M2.5 requires <strong>4x A100 80GB GPUs</strong> (~$4,351/mo) vs Qwen 3 32B's <strong>1x A100 80GB</strong> (~$1,088/mo). That's 4× the monthly cost for self-hosting. Unless your query volume is massive, <strong>we recommend using MiniMax via API</strong> and reserving self-hosting for Qwen 3 32B where the economics are better.</div>
+      <div class="note-body">MiniMax M2.5 requires <strong>4x A100 80GB GPUs</strong> (~$4,351/mo) vs Qwen's <strong>1x A100 80GB</strong> (~$1,015/mo). Unless query volume is massive, <strong>use MiniMax via API</strong> and reserve self-hosting for Qwen where the economics are better.</div>
     </div>
 
     <div class="note note-info">
-      <div class="note-title" style="color:#0B9B8A">💡 When to choose MiniMax M2.5?</div>
-      <div class="note-body">Choose MiniMax M2.5 via API if you want <strong>near-top accuracy (87/100) with zero infrastructure</strong>. At $0.295/$1.20 per million tokens, it's cheaper than Gemini 2.5 Pro for input tokens. Best as a <strong>production alternative when you don't need fine-tuning</strong> — the base model already scores 87/100 which may be sufficient without training.</div>
+      <div class="note-title" style="color:#0B9B8A">💡 MiniMax training cost: $25–$250 (self-host compute)</div>
+      <div class="note-body">MiniMax M2.5 training cost = GPU server rental for 8–24 hours. No vendor fee — you run training yourself on rented hardware (2–4x A100 80GB). No managed fine-tuning providers currently support this model.</div>
     </div>
   </div>
 </div>
@@ -651,22 +533,21 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
     <thead><tr>
       <th></th>
       <th style="color:#10B981;text-align:center">Gemini 2.5 Pro</th>
-      <th style="color:#0EA5E9;text-align:center">Gemini 3.1 Pro</th>
       <th style="color:#8B5CF6;text-align:center">GPT 4.1</th>
       <th style="color:#F59E0B;text-align:center">Qwen 3 32B</th>
       <th style="color:#06B6D4;text-align:center">MiniMax M2.5</th>
     </tr></thead>
     <tbody>
-      <tr><td><strong>Score</strong></td><td style="text-align:center"><span class="num" style="color:#10B981">88</span></td><td style="text-align:center"><span class="num" style="color:#0EA5E9">84</span></td><td style="text-align:center"><span class="num" style="color:#8B5CF6">80</span></td><td style="text-align:center"><span class="num" style="color:#F59E0B">55</span></td><td style="text-align:center"><span class="num" style="color:#06B6D4">87</span></td></tr>
-      <tr><td><strong>Tests Passed</strong></td><td style="text-align:center">13/14</td><td style="text-align:center">14/14</td><td style="text-align:center">11/14</td><td style="text-align:center">9/14</td><td style="text-align:center">14/14</td></tr>
-      <tr><td><strong>Arabic</strong></td><td style="text-align:center"><span class="b b-green">7/7 ✓</span></td><td style="text-align:center"><span class="b b-green">7/7 ✓</span></td><td style="text-align:center"><span class="b b-green">7/7 ✓</span></td><td style="text-align:center"><span class="b b-red">3/7 ✗</span></td><td style="text-align:center"><span class="b b-green">7/7 ✓</span></td></tr>
-      <tr><td><strong>Fine-Tuning</strong></td><td style="text-align:center"><span class="b b-green">Supported</span></td><td style="text-align:center"><span class="b b-red">Not available</span></td><td style="text-align:center"><span class="b b-green">Supported</span></td><td style="text-align:center"><span class="b b-green">Supported</span></td><td style="text-align:center"><span class="b b-yellow">Self-Host Only</span></td></tr>
-      <tr><td><strong>After Training</strong></td><td style="text-align:center"><strong style="color:#059669">93–97</strong></td><td style="text-align:center"><span style="color:#94A3B8">84 (no change)</span></td><td style="text-align:center"><strong style="color:#6D28D9">90–95</strong></td><td style="text-align:center"><strong style="color:#EA580C">82–88</strong></td><td style="text-align:center"><strong style="color:#0891B2">~90–95</strong></td></tr>
-      <tr><td><strong>Training Cost</strong></td><td style="text-align:center"><strong>$37.50</strong></td><td style="text-align:center">—</td><td style="text-align:center"><strong>$37.50</strong></td><td style="text-align:center"><strong>$2.25 – $9.86</strong></td><td style="text-align:center"><strong>$25–$250 (self-host)</strong></td></tr>
-      <tr><td><strong>Cost After Training</strong></td><td style="text-align:center"><span class="b b-green">Same price</span></td><td style="text-align:center">—</td><td style="text-align:center"><span class="b b-yellow">1.5× more/query</span></td><td style="text-align:center"><span class="b b-green">Same or $0</span></td><td style="text-align:center"><span class="b b-yellow">N/A (API) or Same (self)</span></td></tr>
-      <tr><td><strong>Monthly Server</strong></td><td style="text-align:center">$0</td><td style="text-align:center">$0</td><td style="text-align:center">$0</td><td style="text-align:center">$0 or ~$1,015</td><td style="text-align:center">$0 (API) or ~$4,351+</td></tr>
-      <tr><td><strong>Provider</strong></td><td style="text-align:center">Google</td><td style="text-align:center">Google</td><td style="text-align:center">OpenAI</td><td style="text-align:center">Multiple / Self</td><td style="text-align:center">OpenRouter / Self</td></tr>
-      <tr><td><strong>Best For</strong></td><td style="text-align:center;font-size:12px">Max accuracy</td><td style="text-align:center;font-size:12px">Max reliability</td><td style="text-align:center;font-size:12px">Cost savings</td><td style="text-align:center;font-size:12px">Future / scale</td><td style="text-align:center;font-size:12px">API accuracy</td></tr>
+      <tr><td><strong>Score</strong></td><td style="text-align:center"><span class="num" style="color:#10B981">88</span></td><td style="text-align:center"><span class="num" style="color:#8B5CF6">80</span></td><td style="text-align:center"><span class="num" style="color:#F59E0B">55</span></td><td style="text-align:center"><span class="num" style="color:#06B6D4">87</span></td></tr>
+      <tr><td><strong>Tests Passed</strong></td><td style="text-align:center">13/14</td><td style="text-align:center">11/14</td><td style="text-align:center">9/14</td><td style="text-align:center">14/14</td></tr>
+      <tr><td><strong>Arabic</strong></td><td style="text-align:center"><span class="b b-green">7/7 ✓</span></td><td style="text-align:center"><span class="b b-green">7/7 ✓</span></td><td style="text-align:center"><span class="b b-red">3/7 ✗</span></td><td style="text-align:center"><span class="b b-green">7/7 ✓</span></td></tr>
+      <tr><td><strong>Fine-Tuning</strong></td><td style="text-align:center"><span class="b b-green">Supported</span></td><td style="text-align:center"><span class="b b-green">Supported</span></td><td style="text-align:center"><span class="b b-green">Supported</span></td><td style="text-align:center"><span class="b b-yellow">Self-Host Only</span></td></tr>
+      <tr><td><strong>After Training</strong></td><td style="text-align:center"><strong style="color:#059669">93–97</strong></td><td style="text-align:center"><strong style="color:#6D28D9">90–95</strong></td><td style="text-align:center"><strong style="color:#EA580C">82–88</strong></td><td style="text-align:center"><strong style="color:#0891B2">~90–95</strong></td></tr>
+      <tr><td><strong>Training Cost</strong></td><td style="text-align:center"><strong>$37.50</strong></td><td style="text-align:center"><strong>$37.50</strong></td><td style="text-align:center"><strong>$2.25 – $9.86</strong></td><td style="text-align:center"><strong>$25–$250 (self-host)</strong></td></tr>
+      <tr><td><strong>Cost After Training</strong></td><td style="text-align:center"><span class="b b-green">Same price</span></td><td style="text-align:center"><span class="b b-yellow">1.5× more/query</span></td><td style="text-align:center"><span class="b b-green">Same or $0</span></td><td style="text-align:center"><span class="b b-yellow">N/A (API) or Same (self)</span></td></tr>
+      <tr><td><strong>Monthly Server</strong></td><td style="text-align:center">$0</td><td style="text-align:center">$0</td><td style="text-align:center">$0 or ~$1,015</td><td style="text-align:center">$0 (API) or ~$4,351+</td></tr>
+      <tr><td><strong>Provider</strong></td><td style="text-align:center">Google</td><td style="text-align:center">OpenAI</td><td style="text-align:center">Multiple / Self</td><td style="text-align:center">OpenRouter / Self</td></tr>
+      <tr><td><strong>Best For</strong></td><td style="text-align:center;font-size:12px">Max accuracy</td><td style="text-align:center;font-size:12px">Cost savings</td><td style="text-align:center;font-size:12px">Future / scale</td><td style="text-align:center;font-size:12px">API accuracy</td></tr>
     </tbody>
   </table>
   </div>
@@ -681,6 +562,11 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
       <tr><td><strong>Server Cost</strong></td><td>Only if self-hosting Qwen 3 32B or MiniMax M2.5</td><td>$0, ~$1,015 (Qwen), or ~$4,351+ (MiniMax)</td></tr>
     </tbody>
   </table>
+
+  <div class="note note-info" style="margin-top:16px">
+    <div class="note-title" style="color:#0B9B8A">💡 MiniMax training cost: $25–$250 (self-host compute)</div>
+    <div class="note-body">MiniMax M2.5 training cost = GPU server rental for 8–24 hours. No vendor fee — you run training yourself on rented hardware (2–4x A100 80GB). No managed fine-tuning providers currently support this model.</div>
+  </div>
 
   <div class="note note-info">
     <div class="note-title" style="color:#0B9B8A">💡 Key Point</div>
@@ -703,16 +589,7 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
     </div>
 
     <div class="opt-row">
-      <div class="opt-num" style="background:#0EA5E9">2</div>
-      <div>
-        <div><strong style="color:#7DD3FC">If reliability with zero setup is the priority →</strong> <span style="color:#E2E8F0;font-weight:700">Gemini 3.1 Pro</span></div>
-        <div style="color:#CBD5E1;font-size:13px;margin-top:4px;line-height:1.6">Never fails on first try. Good Arabic. <strong style="color:#FCD34D">Does not support fine-tuning</strong> — we use it as-is at 84/100. No training needed, no training cost.</div>
-        <div style="color:#94A3B8;font-size:12px;margin-top:4px">Training: $0 (not available) · Running: same as today</div>
-      </div>
-    </div>
-
-    <div class="opt-row">
-      <div class="opt-num" style="background:#8B5CF6">3</div>
+      <div class="opt-num" style="background:#8B5CF6">2</div>
       <div>
         <div><strong style="color:#C4B5FD">If cost efficiency at scale is the priority →</strong> <span style="color:#E2E8F0;font-weight:700">GPT 4.1</span></div>
         <div style="color:#CBD5E1;font-size:13px;margin-top:4px;line-height:1.6">Cheapest per query. Fixable mistakes. Supports fine-tuning → can reach 90–95%. Slightly higher per-query cost after training.</div>
@@ -721,7 +598,7 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
     </div>
 
     <div class="opt-row">
-      <div class="opt-num" style="background:#F59E0B">4</div>
+      <div class="opt-num" style="background:#F59E0B">3</div>
       <div>
         <div><strong style="color:#FDE68A">For long-term strategic investment →</strong> <span style="color:#E2E8F0;font-weight:700">Qwen 3 32B</span></div>
         <div style="color:#CBD5E1;font-size:13px;margin-top:4px;line-height:1.6">Open-source, can self-host for $0/query. Low score today (55) but can reach 82–88 with training. Can use managed providers now (Together AI, $2.25), self-host later when volume justifies it.</div>
@@ -730,7 +607,7 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
     </div>
 
     <div class="opt-row">
-      <div class="opt-num" style="background:#06B6D4">5</div>
+      <div class="opt-num" style="background:#06B6D4">4</div>
       <div>
         <div><strong style="color:#67E8F9">For near-top accuracy via API →</strong> <span style="color:#E2E8F0;font-weight:700">MiniMax M2.5</span></div>
         <div style="color:#CBD5E1;font-size:13px;margin-top:4px;line-height:1.6">Second highest score (87/100), 100% pass rate, strong Arabic. Best used via API ($0.295/$1.20 per M tokens). <strong style="color:#FCD34D">Fine-tuning requires self-hosting (4x A100 GPUs)</strong> — not recommended unless volume justifies ~$4,351/mo infrastructure.</div>

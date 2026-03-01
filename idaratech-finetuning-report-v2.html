@@ -200,7 +200,7 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
 [data-theme="dark"] .callout-yellow,[data-theme="dark"] .callout-orange{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 
 /* Failure/result cards */
-[data-theme="dark"] .failure-card,.failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
+[data-theme="dark"] .failure-card,[data-theme="dark"] .failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
 [data-theme="dark"] .failure-card.failure-yellow{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
 [data-theme="dark"] .improve-num{background:#0D1F18!important;color:#34D399!important}
 
@@ -332,10 +332,10 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
 </div>
 
 <div class="tab-nav"><div class="tab-inner">
-  <button class="tb active" onclick="showTab('costs')">Cost Breakdown</button>
+  <button class="tb active" onclick="showTab('costs')">Cost Overview</button>
+  <button class="tb" onclick="showTab('selfhosted')">Self-Hosted Costs</button>
   <button class="tb" onclick="showTab('strategy')">Strategy</button>
   <button class="tb" onclick="showTab('candidates')">Model Analysis</button>
-  <button class="tb" onclick="showTab('training')">Training Data</button>
   <button class="tb" onclick="showTab('sources')">Sources</button>
 </div></div>
 
@@ -403,15 +403,15 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
 <p>This table shows the <strong>one-time cost to train each model</strong> with 500 examples (~1.5M effective tokens). You pay this once per training run &mdash; not monthly, not hourly.</p>
 <div style="overflow-x:auto">
 <table>
-  <thead><tr><th>Model</th><th>Provider</th><th>Method</th><th>One-Time Training Cost</th><th>What You're Paying For</th></tr></thead>
+  <thead><tr><th>Model</th><th>Provider</th><th>Method</th><th>Cost (500 ex.)</th><th>Cost (1,000 ex.)</th><th>Cost (10,000 ex.)</th><th>What You're Paying For</th></tr></thead>
   <tbody>
-    <tr><td><strong>Gemini 2.5 Pro</strong></td><td>Vertex AI</td><td><span class="b b-green">SFT</span></td><td><span class="num" style="color:#10B981">$37.50</span></td><td>Google trains the model for you on their GPUs</td></tr>
-    <tr><td><strong>GPT 4.1</strong></td><td>OpenAI</td><td><span class="b b-green">SFT</span></td><td><span class="num" style="color:#8B5CF6">$37.50</span></td><td>OpenAI trains the model for you on their GPUs</td></tr>
-    <tr><td><strong>Qwen 3 32B</strong></td><td>Together AI</td><td><span class="b b-blue">LoRA</span></td><td><span class="num" style="color:#F59E0B">$2.25</span></td><td>Together AI trains the model for you (managed)</td></tr>
-    <tr><td><strong>Qwen 3 32B</strong></td><td>Fireworks AI</td><td><span class="b b-green">SFT</span></td><td>$4.50</td><td>Fireworks trains the model for you (managed)</td></tr>
-    <tr><td><strong>Qwen 3 32B</strong></td><td>Vertex AI</td><td><span class="b b-green">SFT</span></td><td>$9.86</td><td>Google trains the model for you on Vertex AI</td></tr>
-    <tr><td><strong>Qwen 3 32B</strong></td><td>Self-hosted (RunPod)</td><td><span class="b b-purple">QLoRA</span></td><td><span class="num" style="color:#059669">~$1.39</span></td><td>You rent a GPU server for ~1 hour ($1.39/hr) and run the training yourself. The training itself is free &mdash; you only pay for the server time.</td></tr>
-    <tr><td><strong>MiniMax M2.5</strong></td><td>Self-hosted (RunPod)</td><td><span class="b b-cyan">QLoRA</span></td><td><span class="num" style="color:#06B6D4">~$25&ndash;$250</span></td><td>Requires 2-4x A100 80GB. Training is more complex due to MoE architecture. No managed providers available.</td></tr>
+    <tr><td><strong>Gemini 2.5 Pro</strong></td><td>Vertex AI</td><td><span class="b b-green">SFT</span></td><td><span class="num" style="color:#10B981">$37.50</span></td><td>$75.00</td><td>$750.00</td><td>Google trains the model for you on their GPUs</td></tr>
+    <tr><td><strong>GPT 4.1</strong></td><td>OpenAI</td><td><span class="b b-green">SFT</span></td><td><span class="num" style="color:#8B5CF6">$37.50</span></td><td>$75.00</td><td>$750.00</td><td>OpenAI trains the model for you on their GPUs</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Together AI</td><td><span class="b b-blue">LoRA</span></td><td><span class="num" style="color:#F59E0B">$2.25</span></td><td>$4.50</td><td>$45.00</td><td>Together AI trains the model for you (managed)</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Fireworks AI</td><td><span class="b b-green">SFT</span></td><td>$4.50</td><td>$9.00</td><td>$90.00</td><td>Fireworks trains the model for you (managed)</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Vertex AI</td><td><span class="b b-green">SFT</span></td><td>$9.86</td><td>$19.71</td><td>$197.10</td><td>Google trains the model for you on Vertex AI</td></tr>
+    <tr><td><strong>Qwen 3 32B</strong></td><td>Self-hosted (RunPod)</td><td><span class="b b-purple">QLoRA</span></td><td><span class="num" style="color:#059669">~$1.39</span></td><td>~$2.78</td><td>~$14</td><td>GPU server rental ($1.39/hr). Training software is free.</td></tr>
+    <tr><td><strong>MiniMax M2.5</strong></td><td>Self-hosted (RunPod)</td><td><span class="b b-cyan">QLoRA</span></td><td><span class="num" style="color:#06B6D4">~$25&ndash;$250</span></td><td>~$30&ndash;$300</td><td>~$100&ndash;$800</td><td>GPU server rental (2&ndash;4x A100 80GB for 8&ndash;24 hrs). No vendor fee.</td></tr>
   </tbody>
 </table>
 </div>
@@ -419,7 +419,16 @@ td{padding:10px 12px;color:#1E293B;border-bottom:1px solid #F1F5F9}
 <div class="alert alert-info">&#128161; <strong>Why is self-hosted Qwen $1.39?</strong> The Qwen 3 model is free and open-source (Apache 2.0 license). The training code (Unsloth) is also free. The only cost is <strong>renting a GPU server for ~1 hour</strong> to run the training. RunPod charges $1.39/hour for an A100 80GB GPU. So $1.39 = 1 hour of server rental, not a training fee.</div>
 
 <div class="alert alert-info">&#128161; <strong>Key finding:</strong> Gemini 2.5 Pro and GPT 4.1 have identical training cost ($25/M tokens). Difference: Gemini charges <strong>no inference premium</strong> after fine-tuning, while OpenAI charges <strong>1.5x</strong> more per token for the fine-tuned model.</div>
+
+<div class="alert alert-info">&#128161; <strong>MiniMax training cost ($25&ndash;$250) = GPU server rental.</strong> No vendor fee &mdash; you run training yourself on rented hardware (2&ndash;4x A100 80GB for 8&ndash;24 hours). Cost doesn't scale linearly with examples because training time is dominated by model size, not dataset size. No managed fine-tuning providers currently support this model.</div>
+
+<div class="alert alert-info">&#128218; <strong>Training data format &amp; examples:</strong> See the <a href="idaratech-finetuning-practical-guide-v2.html" style="color:#1D4ED8;text-decoration:underline">Fine-Tuning Practical Guide</a> for training data format, JSONL examples, dataset tiers, and Arabic-specific training patterns.</div>
 </div>
+
+</div>
+
+<!-- ===== SELF-HOSTED COSTS ===== -->
+<div class="tc" id="tab-selfhosted">
 
 <div class="sec">
 <h3>Per-Use Inference Cost (After Fine-Tuning)</h3>
@@ -701,9 +710,10 @@ Example: 500 examples on Gemini 2.5 Pro:
 </div>
 </div>
 
-<!-- ===== TRAINING DATA ===== -->
+<!-- ===== TRAINING DATA (removed — see Practical Guide) ===== -->
+<!-- Content moved to Fine-Tuning Practical Guide. Reference link in Cost Overview tab. -->
+<!--
 <div class="tc" id="tab-training">
-
 <div class="sec">
 <h3>What the Research Says</h3>
 <div class="g3">
@@ -843,8 +853,7 @@ Example: 500 examples on Gemini 2.5 Pro:
     <tr><td><strong>MiniMax M2.5</strong></td><td><span class="b b-cyan">N/A (use API)</span></td><td>N/A</td><td>$0.295/$1.20 per M tokens</td><td>Already at 87/100</td></tr>
   </tbody>
 </table>
-</div>
-</div>
+-->
 
 <!-- ===== SOURCES ===== -->
 <div class="tc" id="tab-sources">
