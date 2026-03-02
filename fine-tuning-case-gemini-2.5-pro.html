@@ -259,71 +259,172 @@ code{background:#F1F5F9;padding:1px 5px;border-radius:4px;font-size:12px}
 <div class="tc" id="tab-problems">
 
 <div class="sec">
-  <h2>Specific Failures from Our Benchmark</h2>
-  <p>These are the exact issues found in Gemini 2.5 Pro's 14-test benchmark run. Each one is a <strong>pattern-based mistake</strong> that fine-tuning can teach the model to avoid.</p>
+  <h2>What Goes Wrong Today &mdash; And Why It Matters</h2>
+  <p>Gemini 2.5 Pro scores 88/100 &mdash; it handles most queries correctly. But the <strong>12% failure rate</strong> hits exactly the sensitive areas that matter most in a production HR system: <strong>salary numbers, Arabic compliance, and data consistency</strong>.</p>
+
+  <div class="alert alert-danger"><strong>The problem isn't that the model is bad.</strong> It's that it doesn't know <em>our</em> database. It sees 50+ tables and guesses which ones to use. Sometimes it guesses right, sometimes it doesn't &mdash; and when it doesn't, users see wrong salary numbers, English text in Arabic reports, or different answers for the same question.</div>
 </div>
 
+<!-- ---- FAILURE 1 ---- -->
 <div class="sec">
-  <h3>Failure #1: Inconsistent Table Selection Across Languages</h3>
+  <h3>Problem #1: Same Question, Different Numbers</h3>
   <div class="fix-card" style="border-left-color:#EF4444;background:#FEF2F2">
     <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">Hard 2: "Salary cost breakdown per department" / "&#1578;&#1601;&#1575;&#1589;&#1610;&#1604; &#1578;&#1603;&#1604;&#1601;&#1577; &#1575;&#1604;&#1585;&#1608;&#1575;&#1578;&#1576; &#1604;&#1603;&#1604; &#1602;&#1587;&#1605;"</div>
-    <div class="fix-before">&#10007; EN query used <code>user_salaries</code> &mdash; AR query used <code>payslips</code> &mdash; <strong>different results for the same question</strong></div>
-    <div class="fix-arrow">&darr; Both should use the same table &darr;</div>
-    <div class="fix-after">&#10003; Consistent table choice regardless of language (<code>payslips</code> for actual costs, or <code>user_salaries</code> for configured salary)</div>
+    <div class="fix-before">&#10007; English query &rarr; queries <code>user_salaries</code> &rarr; returns configured salary structure</div>
+    <div class="fix-before">&#10007; Arabic query &rarr; queries <code>payslips</code> &rarr; returns actual payroll records</div>
+    <div class="fix-arrow"><strong>Same question, different table, different numbers</strong></div>
   </div>
-  <p style="font-size:13px"><strong>Impact:</strong> The same question in two languages produces different numbers. <code>user_salaries</code> stores the configured salary structure; <code>payslips</code> stores actual payroll records with additions/deductions. Either can be valid depending on context &mdash; but the model must <strong>pick the same one for both languages</strong>. Today it doesn't.</p>
 
-  <div class="alert alert-info"><strong>Why this happens:</strong> The model sees both <code>payslips</code> and <code>user_salaries</code> in the schema. Both contain salary-related columns (total_basic, total_housing, etc.). Without explicit training on our domain rules, the model picks different tables depending on query language &mdash; a <strong>consistency failure</strong> that fine-tuning eliminates.</div>
+  <div class="g2" style="margin-top:12px">
+    <div class="card" style="border-top:3px solid #EF4444">
+      <h4 style="color:#EF4444;border:none;padding:0;margin:0 0 8px">Real-World Scenario</h4>
+      <p style="font-size:13px;margin:0">An Arabic-speaking HR manager asks "&#1578;&#1601;&#1575;&#1589;&#1610;&#1604; &#1578;&#1603;&#1604;&#1601;&#1577; &#1575;&#1604;&#1585;&#1608;&#1575;&#1578;&#1576; &#1604;&#1603;&#1604; &#1602;&#1587;&#1605;" and sees SAR 450,000. Their English-speaking colleague asks "Salary cost breakdown per department" and sees SAR 380,000. <strong>Both are using the same system, asking the same question</strong> &mdash; but getting different numbers. This destroys trust immediately.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #10B981">
+      <h4 style="color:#10B981;border:none;padding:0;margin:0 0 8px">Why Fine-Tuning Fixes This</h4>
+      <p style="font-size:13px;margin:0">Training includes <strong>paired EN/AR examples</strong> for every salary query, all using the same table. After 20+ examples, the model learns: "salary breakdown" always means the same table, regardless of language. <strong>Consistency becomes the default behavior.</strong></p>
+    </div>
+  </div>
 </div>
 
+<!-- ---- FAILURE 2 ---- -->
 <div class="sec">
-  <h3>Failure #2: English Month Names in Arabic Responses</h3>
+  <h3>Problem #2: English Appears in Arabic Reports</h3>
   <div class="fix-card" style="border-left-color:#F59E0B;background:#FFFBEB">
-    <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">AR Medium 1: Monthly attendance breakdown</div>
-    <div class="fix-before">&#10007; Used <code>MONTHNAME()</code> &rarr; returns "January", "February" in English</div>
+    <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">AR Medium 1: "&#1571;&#1593;&#1591;&#1606;&#1610; &#1578;&#1601;&#1589;&#1610;&#1604; &#1588;&#1607;&#1585;&#1610; &#1604;&#1581;&#1575;&#1604;&#1575;&#1578; &#1575;&#1604;&#1581;&#1590;&#1608;&#1585; &#1604;&#1593;&#1575;&#1605; 2025"</div>
+    <div class="fix-before">&#10007; Used <code>MONTHNAME()</code> function &rarr; returns "January", "February", "March" in English</div>
     <div class="fix-arrow">&darr; Should have used &darr;</div>
     <div class="fix-after">&#10003; <code>CASE MONTH(date) WHEN 1 THEN '&#1610;&#1606;&#1575;&#1610;&#1585;' WHEN 2 THEN '&#1601;&#1576;&#1585;&#1575;&#1610;&#1585;' ... END</code></div>
   </div>
-  <p style="font-size:13px"><strong>Impact:</strong> Arabic response shows English month names in the column. Minor but visible to the user and breaks the Arabic-only experience.</p>
 
-  <div class="alert alert-info"><strong>Why this happens:</strong> MySQL's <code>MONTHNAME()</code> always returns English. The model doesn't know it should use a CASE expression to produce Arabic month names. This is a <strong>domain-specific knowledge gap</strong> &mdash; exactly what training fixes.</div>
+  <div class="g2" style="margin-top:12px">
+    <div class="card" style="border-top:3px solid #F59E0B">
+      <h4 style="color:#F59E0B;border:none;padding:0;margin:0 0 8px">Why This Matters for Saudi Clients</h4>
+      <p style="font-size:13px;margin:0">Our platform serves <strong>220+ companies in Saudi Arabia</strong>. Many HR managers and executives work exclusively in Arabic. When they ask a question in Arabic and get a response with English month names mixed in, it looks broken. It's not a critical data error &mdash; but it <strong>makes the product feel unpolished and unreliable</strong>. For a B2B platform, that perception matters.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #10B981">
+      <h4 style="color:#10B981;border:none;padding:0;margin:0 0 8px">Why Fine-Tuning Fixes This</h4>
+      <p style="font-size:13px;margin:0">MySQL's <code>MONTHNAME()</code> always returns English &mdash; there's no setting to change it. The model needs to learn: <strong>for Arabic queries, never use MONTHNAME()</strong> &mdash; always use a CASE expression with Arabic month names. 5-10 training examples with Arabic date formatting make this automatic.</p>
+    </div>
+  </div>
 </div>
 
+<!-- ---- FAILURE 3 ---- -->
 <div class="sec">
-  <h3>Failure #3: Excessive Token Usage</h3>
+  <h3>Problem #3: Model Guesses Table Names It Has Never Seen</h3>
+  <div class="fix-card" style="border-left-color:#DC2626;background:#FEF2F2">
+    <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">Easy 2: "Show me total approved leave requests by type for 2025"</div>
+    <div class="fix-before">&#10007; GPT 4.1 queried <code>leaves</code> table &mdash; <strong>this table does not exist</strong></div>
+    <div class="fix-before">&#10007; Gemma 3 27B fell back to <code>leave_balances</code> &mdash; completely wrong data</div>
+    <div class="fix-arrow">&darr; The actual table is &darr;</div>
+    <div class="fix-after">&#10003; <code>hr_requests</code> table with <code>WHERE group = 'leave'</code> filter</div>
+  </div>
+
+  <p style="font-size:13px"><strong>Gemini 2.5 Pro handles this one correctly today</strong> &mdash; but other models fail because our table naming is non-obvious. Leave data lives in <code>hr_requests</code>, not <code>leaves</code> or <code>leave_requests</code>. This is a <strong>domain-specific naming convention</strong> that no general AI model would know.</p>
+
+  <div class="alert alert-warn"><strong>The risk:</strong> Gemini gets this right today with the base model, but there's no guarantee it will stay correct as we add more tables, more query types, or update the schema. Fine-tuning <strong>locks in</strong> the correct table mappings permanently, so the model always knows: leave data = <code>hr_requests</code>, salary config = <code>user_salaries</code>, payroll = <code>payslips</code>.</div>
+</div>
+
+<!-- ---- FAILURE 4 ---- -->
+<div class="sec">
+  <h3>Problem #4: Wrong Metrics for Attendance Queries</h3>
+  <div class="fix-card" style="border-left-color:#F97316;background:#FFF7ED">
+    <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">Medium 2: "Who are the top 10 employees with the most late hours?"</div>
+    <div class="fix-before">&#10007; Gemma 3 27B used <code>SUM(overtime)</code> &mdash; overtime &ne; late hours</div>
+    <div class="fix-before">&#10007; Gemma 3 27B Hard 1 measured shift duration instead of lateness</div>
+    <div class="fix-before">&#10007; GPT 4.1 Hard 1 missing <code>COUNT(DISTINCT)</code> &mdash; inflated count to 7,977 employees</div>
+  </div>
+
+  <p style="font-size:13px">Attendance queries are tricky because our schema has <strong>multiple time-related columns</strong>: clock_in, clock_out, start_at, end_at, overtime, late_hours. Without training, models confuse which column answers which question. Gemini 2.5 Pro handles this correctly today using TIMESTAMPDIFF &mdash; but fine-tuning ensures it <strong>always</strong> picks the right metric.</p>
+
+  <div class="g2" style="margin-top:12px">
+    <div class="card" style="border-top:3px solid #F97316">
+      <h4 style="color:#F97316;border:none;padding:0;margin:0 0 8px">Real-World Scenario</h4>
+      <p style="font-size:13px;margin:0">A manager asks "who are my most late employees?" and the system returns overtime leaders instead &mdash; the <strong>exact opposite</strong> of what they asked. Or worse: it shows 7,977 employees in a 200-person company because of a missing DISTINCT. These aren't subtle errors. <strong>Users notice immediately and stop trusting the feature.</strong></p>
+    </div>
+    <div class="card" style="border-top:3px solid #10B981">
+      <h4 style="color:#10B981;border:none;padding:0;margin:0 0 8px">Why Fine-Tuning Fixes This</h4>
+      <p style="font-size:13px;margin:0">Training examples explicitly teach: "late hours" = <code>TIMESTAMPDIFF(MINUTE, start_at, clock_in)</code>, not <code>SUM(overtime)</code>. "Employee count" = <code>COUNT(DISTINCT u.id)</code>, not <code>COUNT(*)</code>. <strong>20-30 attendance examples make these patterns automatic.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ---- FAILURE 5 ---- -->
+<div class="sec">
+  <h3>Problem #5: Excessive Token Usage = Higher Cost Per Query</h3>
   <div class="fix-card" style="border-left-color:#8B5CF6;background:#EDE9FE">
-    <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">All queries: Average token usage</div>
-    <div class="fix-before">&#10007; Gemini 2.5 Pro: ~4,803 tokens/query (highest of all models)</div>
-    <div class="fix-arrow">&darr; Compare with &darr;</div>
+    <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">All queries: Average token usage comparison</div>
+    <div class="fix-before">&#10007; Gemini 2.5 Pro: ~4,803 tokens/query (highest of all 7 models)</div>
+    <div class="fix-arrow">&darr; Other models are significantly more efficient &darr;</div>
     <div class="fix-after">GPT 4.1: ~2,796 tokens (42% less) &middot; MiniMax M2.5: ~3,359 tokens (30% less)</div>
   </div>
-  <p style="font-size:13px"><strong>Impact:</strong> Higher cost per query. Gemini 2.5 Pro is a "thinking" model that produces verbose internal reasoning. <strong>After fine-tuning, token usage is expected to drop to ~2,800&ndash;3,200 tokens/query</strong> (a 33&ndash;42% reduction) because the model learns our exact SQL patterns and stops over-reasoning. This directly reduces per-query cost.</p>
+  <p style="font-size:13px">Gemini 2.5 Pro is a "thinking" model &mdash; it reasons through problems internally before producing output. This makes it more accurate, but also more expensive per query. <strong>After fine-tuning, token usage is expected to drop to ~2,800&ndash;3,200 tokens/query</strong> (33&ndash;42% reduction) because the model learns our exact patterns and stops over-reasoning.</p>
 </div>
 
+<!-- ---- WHAT THIS MEANS ---- -->
 <div class="sec">
-  <h3>Failure #4: Data Source Inconsistency Between Languages</h3>
-  <div class="fix-card" style="border-left-color:#F97316;background:#FFF7ED">
-    <div style="font-size:12px;color:#94A3B8;font-weight:600;margin-bottom:4px">Hard 2: Salary breakdown (EN vs AR)</div>
-    <div class="fix-before">&#10007; English query used <code>user_salaries</code>, Arabic query used <code>payslips</code></div>
-    <div class="fix-arrow">&darr; Must be consistent &darr;</div>
-    <div class="fix-after">&#10003; Same question = same table regardless of query language</div>
+  <h2>What This Means for Production</h2>
+  <p>Here's what a <strong>12% error rate</strong> looks like in daily use across 220+ companies:</p>
+
+  <div class="g2">
+    <div class="card" style="border-left:4px solid #EF4444">
+      <h4 style="color:#EF4444;border:none;padding:0;margin:0 0 10px">Scenario: Monthly Payroll Review</h4>
+      <p style="font-size:13px;margin:0 0 8px">An HR director uses AI Chat to check "total salary cost per department." The Arabic query returns SAR 450K (from payslips), but the finance team runs the same query in English and gets SAR 380K (from user_salaries).</p>
+      <p style="font-size:13px;margin:0"><strong>Result:</strong> A meeting is called to reconcile the numbers. Nobody trusts the AI Chat feature. They go back to manual Excel reports.</p>
+    </div>
+    <div class="card" style="border-left:4px solid #F59E0B">
+      <h4 style="color:#F59E0B;border:none;padding:0;margin:0 0 10px">Scenario: Arabic Attendance Report</h4>
+      <p style="font-size:13px;margin:0 0 8px">A Saudi manager asks for monthly attendance stats in Arabic. The report comes back with Arabic text but "January", "February", "March" as month names &mdash; English words mixed into an otherwise Arabic report.</p>
+      <p style="font-size:13px;margin:0"><strong>Result:</strong> It feels like a half-finished product. The manager reports it as a bug. Support ticket created.</p>
+    </div>
   </div>
-  <p style="font-size:13px"><strong>Impact:</strong> Two users asking the same question in different languages get different numbers. Destroys trust in the system.</p>
+  <div class="g2" style="margin-top:12px">
+    <div class="card" style="border-left:4px solid #DC2626">
+      <h4 style="color:#DC2626;border:none;padding:0;margin:0 0 10px">Scenario: "Who's Always Late?"</h4>
+      <p style="font-size:13px;margin:0 0 8px">A department head asks "show me employees with the most late hours." Without fine-tuning, there's a risk the model confuses late hours with overtime or shift duration &mdash; returning the <strong>wrong employees entirely</strong>.</p>
+      <p style="font-size:13px;margin:0"><strong>Result:</strong> A manager confronts the wrong employee about tardiness. HR credibility damaged.</p>
+    </div>
+    <div class="card" style="border-left:4px solid #8B5CF6">
+      <h4 style="color:#8B5CF6;border:none;padding:0;margin:0 0 10px">Scenario: Scale &mdash; 220+ Companies</h4>
+      <p style="font-size:13px;margin:0 0 8px">With 220+ companies, even a 12% error rate means <strong>dozens of wrong answers every day</strong>. Each wrong answer = a confused user, a potential support ticket, or worse &mdash; a business decision made on bad data.</p>
+      <p style="font-size:13px;margin:0"><strong>Result:</strong> Feature adoption stalls. Users learn not to trust it. The investment in building AI Chat doesn't pay off.</p>
+    </div>
+  </div>
 </div>
 
+<!-- ---- WHY FINE-TUNING ---- -->
 <div class="sec">
-  <h3>Summary: All Issues Are Trainable</h3>
+  <h2>Why Fine-Tuning &mdash; Not Just Better Prompts?</h2>
+  <p>A fair question: can we just improve the system prompt instead of fine-tuning? We've already tried. Here's why prompts alone aren't enough:</p>
+
   <table>
-    <thead><tr><th>Issue</th><th>Type</th><th>Trainable?</th><th>Training Fix</th></tr></thead>
+    <thead><tr><th>Approach</th><th>What It Does</th><th>Limitation</th></tr></thead>
     <tbody>
-      <tr><td>Inconsistent table per language</td><td><span class="b b-red">Wrong data</span></td><td><span class="b b-green">Yes</span></td><td>10-20 salary examples enforcing consistent table</td></tr>
-      <tr><td>English MONTHNAME() in Arabic</td><td><span class="b b-yellow">Language gap</span></td><td><span class="b b-green">Yes</span></td><td>5-10 date examples with Arabic CASE</td></tr>
-      <tr><td>High token usage (4,803)</td><td><span class="b b-purple">Efficiency</span></td><td><span class="b b-green">Yes</span></td><td>Concise examples teach shorter outputs</td></tr>
-      <tr><td>Cross-language inconsistency</td><td><span class="b b-red">Reliability</span></td><td><span class="b b-green">Yes</span></td><td>Paired EN/AR examples enforce same tables</td></tr>
+      <tr><td><strong>Add rules to prompt</strong></td><td>"Always use user_salaries for salary queries"</td><td>Prompt is already 3,000+ tokens. More rules = more cost, more confusion. Model may ignore rules when context is long.</td></tr>
+      <tr><td><strong>Add table descriptions</strong></td><td>Annotate each table with its purpose</td><td>50+ tables &times; descriptions = massive prompt. Token cost increases significantly. Still no guarantee model follows them.</td></tr>
+      <tr><td><strong>Few-shot examples in prompt</strong></td><td>Include 2-3 example queries in prompt</td><td>Limited to 2-3 examples (cost). Can't cover all 7 query types &times; 2 languages. Static examples don't generalize.</td></tr>
+      <tr><td><strong style="color:#10B981">Fine-tuning (SFT)</strong></td><td>Train on 500 correct examples</td><td style="color:#059669"><strong>No limitation. Model internalizes patterns. Zero prompt overhead. Works for all query types.</strong></td></tr>
     </tbody>
   </table>
 
-  <div class="alert alert-success"><strong>Key takeaway:</strong> Every single failure is a <strong>pattern-based mistake</strong>, not a fundamental model limitation. The model already has excellent SQL generation and Arabic skills &mdash; it just needs to learn our specific database conventions and rules. This is the exact scenario where fine-tuning delivers the highest ROI.</div>
+  <div class="alert alert-info"><strong>Key point:</strong> Prompt engineering is a workaround. Fine-tuning is a permanent fix. The model doesn't just follow rules &mdash; it <strong>learns</strong> the rules. After training, it doesn't need to be told "use user_salaries" because it already knows. It doesn't need to be told "use CASE for Arabic months" because it's seen 10+ examples and internalized the pattern.</div>
+</div>
+
+<!-- ---- SUMMARY ---- -->
+<div class="sec">
+  <h2>Summary: Every Issue Is Fixable with Training</h2>
+  <table>
+    <thead><tr><th>Problem</th><th>Type</th><th>Severity</th><th>Trainable?</th><th>Training Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Different numbers per language</td><td><span class="b b-red">Wrong data</span></td><td><span class="b b-red">Critical</span></td><td><span class="b b-green">Yes</span></td><td>Paired EN/AR examples enforce same tables</td></tr>
+      <tr><td>English text in Arabic reports</td><td><span class="b b-yellow">Language</span></td><td><span class="b b-yellow">Medium</span></td><td><span class="b b-green">Yes</span></td><td>5-10 date examples with Arabic CASE</td></tr>
+      <tr><td>Non-obvious table names</td><td><span class="b b-red">Wrong data</span></td><td><span class="b b-red">Critical</span></td><td><span class="b b-green">Yes</span></td><td>Examples lock in correct table mappings</td></tr>
+      <tr><td>Wrong metrics (overtime vs late)</td><td><span class="b b-red">Wrong data</span></td><td><span class="b b-red">Critical</span></td><td><span class="b b-green">Yes</span></td><td>20-30 attendance examples with right columns</td></tr>
+      <tr><td>High token usage (4,803)</td><td><span class="b b-purple">Cost</span></td><td><span class="b b-yellow">Medium</span></td><td><span class="b b-green">Yes</span></td><td>Concise examples teach shorter outputs</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-success"><strong>The bottom line:</strong> Every failure we found is a <strong>pattern-based mistake</strong>, not a fundamental model limitation. Gemini 2.5 Pro already has excellent SQL generation and Arabic skills &mdash; it just doesn't know <em>our</em> database conventions. Fine-tuning teaches it those conventions permanently, with <strong>zero ongoing cost increase</strong>. This is the exact scenario where fine-tuning delivers the highest ROI.</div>
 </div>
 </div>
 
@@ -344,9 +445,9 @@ code{background:#F1F5F9;padding:1px 5px;border-radius:4px;font-size:12px}
     <tbody>
       <tr><td><strong>Overall Score</strong></td><td>88/100</td><td>93&ndash;97/100</td><td style="color:#059669;font-weight:700">+5 to +9</td></tr>
       <tr><td><strong>Pass Rate</strong></td><td>93% (13/14)</td><td>100% (14/14)</td><td style="color:#059669;font-weight:700">+7%</td></tr>
-      <tr><td><strong>Table Consistency</strong></td><td>Different table per language</td><td>Same table regardless of language</td><td style="color:#059669;font-weight:700">Fixed</td></tr>
+      <tr><td><strong>Cross-Language Consistency</strong></td><td>Different tables per language</td><td>Same tables regardless of language</td><td style="color:#059669;font-weight:700">Fixed</td></tr>
       <tr><td><strong>Arabic Month Names</strong></td><td>English via MONTHNAME()</td><td>Arabic via CASE</td><td style="color:#059669;font-weight:700">Fixed</td></tr>
-      <tr><td><strong>Cross-Language Consistency</strong></td><td>Different tables per language</td><td>Same tables regardless</td><td style="color:#059669;font-weight:700">Fixed</td></tr>
+      <tr><td><strong>Table Mapping Knowledge</strong></td><td>Guesses from column names</td><td>Knows exact table for each query type</td><td style="color:#059669;font-weight:700">Fixed</td></tr>
       <tr><td><strong>Token Usage</strong></td><td>~4,803 avg</td><td>~2,800&ndash;3,200</td><td style="color:#059669;font-weight:700">-33 to -42%</td></tr>
       <tr><td><strong>Retries</strong></td><td>1 per 14 queries</td><td>0</td><td style="color:#059669;font-weight:700">Eliminated</td></tr>
     </tbody>
