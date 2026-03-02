@@ -392,24 +392,6 @@ code{background:#F1F5F9;padding:1px 5px;border-radius:4px;font-size:12px}
   </div>
 </div>
 
-<!-- ---- WHY FINE-TUNING ---- -->
-<div class="sec">
-  <h2>Why Fine-Tuning &mdash; Not Just Better Prompts?</h2>
-  <p>A fair question: can we just improve the system prompt instead of fine-tuning? We've already tried. Here's why prompts alone aren't enough:</p>
-
-  <table>
-    <thead><tr><th>Approach</th><th>What It Does</th><th>Limitation</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Add rules to prompt</strong></td><td>"Always use user_salaries for salary queries"</td><td>Prompt is already 3,000+ tokens. More rules = more cost, more confusion. Model may ignore rules when context is long.</td></tr>
-      <tr><td><strong>Add table descriptions</strong></td><td>Annotate each table with its purpose</td><td>50+ tables &times; descriptions = massive prompt. Token cost increases significantly. Still no guarantee model follows them.</td></tr>
-      <tr><td><strong>Few-shot examples in prompt</strong></td><td>Include 2-3 example queries in prompt</td><td>Limited to 2-3 examples (cost). Can't cover all 7 query types &times; 2 languages. Static examples don't generalize.</td></tr>
-      <tr><td><strong style="color:#10B981">Fine-tuning (SFT)</strong></td><td>Train on 500 correct examples</td><td style="color:#059669"><strong>No limitation. Model internalizes patterns. Zero prompt overhead. Works for all query types.</strong></td></tr>
-    </tbody>
-  </table>
-
-  <div class="alert alert-info"><strong>Key point:</strong> Prompt engineering is a workaround. Fine-tuning is a permanent fix. The model doesn't just follow rules &mdash; it <strong>learns</strong> the rules. After training, it doesn't need to be told "use user_salaries" because it already knows. It doesn't need to be told "use CASE for Arabic months" because it's seen 10+ examples and internalized the pattern.</div>
-</div>
-
 <!-- ---- SUMMARY ---- -->
 <div class="sec">
   <h2>Summary: Every Issue Is Fixable with Training</h2>
@@ -547,6 +529,23 @@ GROUP BY d.id LIMIT 1000</code></pre>
     </div>
   </div>
   <p style="font-size:13px;color:#64748B">Same tables, same JOINs, same WHERE clause. Only differences: <code>_ar</code> columns and Arabic aliases.</p>
+</div>
+
+<div class="sec">
+  <h2>Why Fine-Tuning &mdash; Not Just Better Prompts?</h2>
+  <p>A fair question: can we just improve the system prompt instead of fine-tuning? We've already tried. Here's why prompts alone aren't enough:</p>
+
+  <table>
+    <thead><tr><th>Approach</th><th>What It Does</th><th>Limitation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Add rules to prompt</strong></td><td>"Always use user_salaries for salary queries"</td><td>Prompt is already 3,000+ tokens. More rules = more cost, more confusion. Model may ignore rules when context is long.</td></tr>
+      <tr><td><strong>Add table descriptions</strong></td><td>Annotate each table with its purpose</td><td>50+ tables &times; descriptions = massive prompt. Token cost increases significantly. Still no guarantee model follows them.</td></tr>
+      <tr><td><strong>Few-shot examples in prompt</strong></td><td>Include 2-3 example queries in prompt</td><td>Limited to 2-3 examples (cost). Can't cover all 7 query types &times; 2 languages. Static examples don't generalize.</td></tr>
+      <tr><td><strong style="color:#10B981">Fine-tuning (SFT)</strong></td><td>Train on 500 correct examples</td><td style="color:#059669"><strong>No limitation. Model internalizes patterns. Zero prompt overhead. Works for all query types.</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-info"><strong>Key point:</strong> Prompt engineering is a workaround. Fine-tuning is a permanent fix. The model doesn't just follow rules &mdash; it <strong>learns</strong> the rules. After training, it doesn't need to be told "use user_salaries" because it already knows. It doesn't need to be told "use CASE for Arabic months" because it's seen 10+ examples and internalized the pattern.</div>
 </div>
 
 </div>
