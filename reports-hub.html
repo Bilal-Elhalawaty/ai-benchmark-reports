@@ -14,18 +14,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .hero::after{content:'';position:absolute;bottom:-100px;left:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(167,139,250,.06) 0%,transparent 70%);pointer-events:none}
 .hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:1}
 .logo-wrap{display:flex;justify-content:center;margin-bottom:20px}
-.logo-hex{width:72px;height:72px}
 .brand{font-size:13px;color:#5EEAD4;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
 .hero h1{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:8px;background:linear-gradient(135deg,#F0FDFA,#5EEAD4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-ar{font-size:22px;font-weight:700;color:#A78BFA;font-family:Tahoma,sans-serif;direction:rtl;margin-bottom:16px}
 .hero p{font-size:15px;color:#94A3B8;line-height:1.7;max-width:600px;margin:0 auto 28px}
 .hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
-.hero-stat{text-align:center}
+.hero-stat{text-align:center;background:rgba(255,255,255,.06);border-radius:12px;padding:12px 20px}
 .hero-stat-v{font-size:28px;font-weight:800;color:#F0FDFA}
-.hero-stat-l{font-size:11px;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.hero-stat-l{font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+.hero-insights{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.hero-insight{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600}
 
 .cards-section{max-width:960px;margin:0 auto;padding:0 24px 40px}
-.section-label{font-size:12px;color:#5EEAD4;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;padding-top:40px}
+.section-label{font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;padding-top:40px}
 .section-title{font-size:22px;font-weight:800;color:#F0FDFA;margin-bottom:6px}
 .section-desc{font-size:13px;color:#64748B;margin-bottom:24px}
 
@@ -47,33 +48,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .card-link-arrow{font-size:16px;transition:transform .2s}
 .report-card:hover .card-link-arrow{transform:translateX(2px)}
 
-.card-old-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(148,163,184,.15);color:#94A3B8;letter-spacing:0.5px;text-transform:uppercase;margin-left:6px}
-.card-new-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(94,234,212,.15);color:#5EEAD4;letter-spacing:0.5px;text-transform:uppercase;margin-left:6px}
+.card-ver-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(148,163,184,.15);color:#94A3B8;letter-spacing:0.5px;text-transform:uppercase;margin-left:6px}
 
 /* Accent colors */
-.card-c1::before{background:linear-gradient(90deg,#0EA5E9,#0284C7)}
-.card-c1 .card-badge{background:rgba(14,165,233,.15);color:#7DD3FC}
-
-.card-c2::before{background:linear-gradient(90deg,#10B981,#059669)}
-.card-c2 .card-badge{background:rgba(16,185,129,.15);color:#6EE7B7}
-
-.card-c3::before{background:linear-gradient(90deg,#8B5CF6,#7C3AED)}
-.card-c3 .card-badge{background:rgba(139,92,246,.15);color:#C4B5FD}
-
-.card-c4::before{background:linear-gradient(90deg,#F59E0B,#D97706)}
-.card-c4 .card-badge{background:rgba(245,158,11,.15);color:#FCD34D}
-
-.card-c5::before{background:linear-gradient(90deg,#EF4444,#DC2626)}
-.card-c5 .card-badge{background:rgba(239,68,68,.15);color:#FCA5A5}
-
-.card-c6::before{background:linear-gradient(90deg,#64748B,#475569)}
-.card-c6 .card-badge{background:rgba(100,116,139,.15);color:#94A3B8}
-
-/* v2 accent — cyan/teal */
-.card-c7::before{background:linear-gradient(90deg,#06B6D4,#0891B2)}
-.card-c7 .card-badge{background:rgba(6,182,212,.15);color:#67E8F9}
-
-.card-v2-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(6,182,212,.2);color:#22D3EE;letter-spacing:0.5px;text-transform:uppercase;margin-left:6px}
+.card-c1::before{background:linear-gradient(90deg,#0EA5E9,#0284C7)}.card-c1 .card-badge{background:rgba(14,165,233,.15);color:#7DD3FC}
+.card-c2::before{background:linear-gradient(90deg,#10B981,#059669)}.card-c2 .card-badge{background:rgba(16,185,129,.15);color:#6EE7B7}
+.card-c3::before{background:linear-gradient(90deg,#8B5CF6,#7C3AED)}.card-c3 .card-badge{background:rgba(139,92,246,.15);color:#C4B5FD}
+.card-c4::before{background:linear-gradient(90deg,#F59E0B,#D97706)}.card-c4 .card-badge{background:rgba(245,158,11,.15);color:#FCD34D}
+.card-c5::before{background:linear-gradient(90deg,#EF4444,#DC2626)}.card-c5 .card-badge{background:rgba(239,68,68,.15);color:#FCA5A5}
+.card-c6::before{background:linear-gradient(90deg,#64748B,#475569)}.card-c6 .card-badge{background:rgba(100,116,139,.15);color:#94A3B8}
+.card-c7::before{background:linear-gradient(90deg,#06B6D4,#0891B2)}.card-c7 .card-badge{background:rgba(6,182,212,.15);color:#67E8F9}
+.card-c8::before{background:linear-gradient(90deg,#14B8A6,#0D9488)}.card-c8 .card-badge{background:rgba(20,184,166,.15);color:#5EEAD4}
 
 /* Divider */
 .divider{max-width:960px;margin:0 auto;padding:0 24px}
@@ -86,240 +71,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .flow-step{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;font-size:11px;font-weight:600;color:#CBD5E1}
 .flow-arrow{color:#334155;font-size:16px}
 
+/* Archive toggle */
+.archive-toggle{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 24px;cursor:pointer;font-size:14px;font-weight:600;color:#94A3B8;margin:0 auto 24px;max-width:960px;transition:all .2s}
+.archive-toggle:hover{background:rgba(255,255,255,.08);color:#CBD5E1}
+.archive-toggle .arrow{transition:transform .3s;font-size:12px}
+.archive-toggle.open .arrow{transform:rotate(180deg)}
+.archive-content{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.archive-content.open{max-height:2000px}
+
 .footer{border-top:1px solid rgba(255,255,255,.06);padding:32px 24px;text-align:center}
 .footer-brand{font-size:13px;color:#64748B;margin-bottom:4px}
 .footer-brand strong{color:#94A3B8}
 .footer-author{font-size:12px;color:#5EEAD4;font-weight:600}
 
-@media(max-width:600px){
-  .hero h1{font-size:24px}
-  .hero-ar{font-size:18px}
-  .hero-stats{gap:20px}
-  .cards-grid{grid-template-columns:1fr}
-}
-
-
-
-
-
-/* ===== THEME TOGGLE ===== */
+/* Theme toggle */
 #theme-bar{position:fixed;top:12px;left:12px;z-index:100}
-
-
 #theme-btn{background:rgba(15,23,42,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);border-radius:50%;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;padding:0;transition:background .2s,border-color .2s}
 #theme-btn:hover{background:rgba(15,23,42,.8);border-color:rgba(255,255,255,.2)}
 [data-theme="light"] #theme-btn{background:rgba(255,255,255,.7);border-color:#E2E8F0}
 [data-theme="light"] #theme-btn:hover{background:rgba(255,255,255,.95);border-color:#CBD5E1}
 
-/* ===== DARK MODE ===== */
+/* Dark mode (default) */
 [data-theme="dark"] body{background:#0B1120!important;color:#E2E8F0!important}
-
-/* Nav */
-[data-theme="dark"] .tab-nav{background:#131B2C!important;border-color:#1E293B!important}
-[data-theme="dark"] .tb,[data-theme="dark"] .tab-btn{color:#94A3B8!important}
-
-/* ALL surface elements */
-[data-theme="dark"] .card,
-[data-theme="dark"] .model-card,
-[data-theme="dark"] .stat-card,
-[data-theme="dark"] .panel,
-[data-theme="dark"] .report-card,
-[data-theme="dark"] .tl-card,
-[data-theme="dark"] .rank-row,
-[data-theme="dark"] .calc-box,
-[data-theme="dark"] .important-note,
-[data-theme="dark"] .source-item,
-[data-theme="dark"] .cost-card,
-[data-theme="dark"] .dim-card,
-[data-theme="dark"] .rec-card,
-[data-theme="dark"] .sub-card,
-[data-theme="dark"] .flow-box,
-[data-theme="dark"] .tier-card,
-[data-theme="dark"] .methodology{background:#1A2235!important;border-color:#2D3A4F!important;color:#E2E8F0!important}
-
-/* Metric/stat boxes */
-[data-theme="dark"] .mc-metric,
-[data-theme="dark"] .metric,
-[data-theme="dark"] .kpi-box,
-[data-theme="dark"] .stat-box,
-[data-theme="dark"] .sb,
-[data-theme="dark"] .layer-chip{background:#0F172A!important;border-color:#2D3A4F!important;color:#CBD5E1!important}
-[data-theme="dark"] .mc-metric .ml,
-[data-theme="dark"] .metric-l,
-[data-theme="dark"] .stat-card .label,
-[data-theme="dark"] .stat-label,
-[data-theme="dark"] .sb-l{color:#94A3B8!important}
-
-/* Headings */
-[data-theme="dark"] h2{color:#F1F5F9!important;border-color:#2D3A4F!important}
-[data-theme="dark"] h3,[data-theme="dark"] h4{color:#F1F5F9!important;border-color:#2D3A4F!important}
-[data-theme="dark"] .card-title,[data-theme="dark"] .mc-name,[data-theme="dark"] .model-name,
-[data-theme="dark"] .section-title,[data-theme="dark"] .note-title,[data-theme="dark"] .compare-title,
-[data-theme="dark"] .rec-model,[data-theme="dark"] .sub-name,[data-theme="dark"] .dim-name{color:#F1F5F9!important}
-[data-theme="dark"] .sec h2,[data-theme="dark"] .sec h3{color:#F1F5F9!important;border-color:#2D3A4F!important}
-
-/* Text */
-[data-theme="dark"] p,[data-theme="dark"] li{color:#CBD5E1!important}
-[data-theme="dark"] strong{color:#F1F5F9!important}
-[data-theme="dark"] .mc-sub,[data-theme="dark"] .card-desc,[data-theme="dark"] .model-tag,
-[data-theme="dark"] .section-desc,[data-theme="dark"] .note-body,[data-theme="dark"] .rank-id,
-[data-theme="dark"] .rec-reason,[data-theme="dark"] .arch-desc,[data-theme="dark"] .pattern-desc,
-[data-theme="dark"] .limit-row,[data-theme="dark"] .query-en,[data-theme="dark"] .query-ar,
-[data-theme="dark"] .card .provider,[data-theme="dark"] .card .label,
-[data-theme="dark"] .cost-tbl td:first-child{color:#94A3B8!important}
-[data-theme="dark"] .sub,[data-theme="dark"] .card-meta-item{color:#94A3B8!important}
-
-/* Tables */
-[data-theme="dark"] table th{color:#94A3B8!important;border-color:#2D3A4F!important}
-[data-theme="dark"] table td{color:#E2E8F0!important;border-color:#1E293B!important}
-[data-theme="dark"] table tfoot td,[data-theme="dark"] td.num{color:#E2E8F0!important}
-[data-theme="dark"] td.money{color:#A78BFA!important}
-[data-theme="dark"] td strong{color:#F1F5F9!important}
-[data-theme="dark"] tr:hover td{background:#131B2C!important}
-[data-theme="dark"] .pattern-row,[data-theme="dark"] .improve-row{border-color:#2D3A4F!important}
-
-/* Score/progress bars */
-[data-theme="dark"] .score-bar-bg,[data-theme="dark"] .score-track,[data-theme="dark"] .bar-track,
-[data-theme="dark"] .bar-bg,[data-theme="dark"] .pct-bar{background:#2D3A4F!important}
-[data-theme="dark"] .score-lbl,[data-theme="dark"] .rank-name{color:#E2E8F0!important}
-[data-theme="dark"] .bar-label .v,[data-theme="dark"] .bar-header .v{color:#94A3B8!important}
-[data-theme="dark"] .bar-label .n,[data-theme="dark"] .bar-header .n{color:#E2E8F0!important}
-
-/* Notes & Alerts — dedicated dark tints */
-[data-theme="dark"] .note-info,[data-theme="dark"] .alert-info{background:#131D35!important;border-color:#2563EB!important;color:#CBD5E1!important}
-[data-theme="dark"] .note-warn,[data-theme="dark"] .alert-warn,[data-theme="dark"] .warning{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
-[data-theme="dark"] .note-success,[data-theme="dark"] .alert-success{background:#0D1F18!important;border-color:#059669!important;color:#86EFAC!important}
-[data-theme="dark"] .note-danger,[data-theme="dark"] .alert-danger{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
-[data-theme="dark"] .note strong,[data-theme="dark"] .alert strong,[data-theme="dark"] .warning h4{color:inherit!important}
-[data-theme="dark"] .warning p{color:#FDE68A!important}
-[data-theme="dark"] .note-info .note-title{color:#93C5FD!important}
-[data-theme="dark"] .note-warn .note-title{color:#FCD34D!important}
-[data-theme="dark"] .note-purple{background:#1A1533!important;border-color:#7C3AED!important;color:#C4B5FD!important}
-
-/* Colored path/phase/callout/compare cards */
-[data-theme="dark"] .path-a,[data-theme="dark"] .arch-card.phase1,[data-theme="dark"] .compare-card.compare-31,
-[data-theme="dark"] .callout-green{background:#0D1F18!important;border-color:#059669!important;color:#CBD5E1!important}
-[data-theme="dark"] .path-b,[data-theme="dark"] .arch-card.phase2,[data-theme="dark"] .compare-card.compare-25,
-[data-theme="dark"] .callout-blue{background:#131D35!important;border-color:#3B82F6!important;color:#CBD5E1!important}
-[data-theme="dark"] .callout-purple{background:#1A1533!important;border-color:#7C3AED!important;color:#CBD5E1!important}
-[data-theme="dark"] .callout-yellow,[data-theme="dark"] .callout-orange{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
-
-/* Failure/result cards */
-[data-theme="dark"] .failure-card,[data-theme="dark"] .failure-red,[data-theme="dark"] .not-rec{background:#1F0D0D!important;border-color:#DC2626!important;color:#FCA5A5!important}
-[data-theme="dark"] .failure-card.failure-yellow{background:#1F1A0E!important;border-color:#D97706!important;color:#FDE68A!important}
-[data-theme="dark"] .improve-num{background:#0D1F18!important;color:#34D399!important}
-
-/* Cost type tags */
-[data-theme="dark"] .cost-per-token,.cost-one,.cost-monthly{color:inherit!important}
-
-/* Badges in dark */
-[data-theme="dark"] .b-gray{background:#2D3A4F!important;color:#CBD5E1!important;border-color:#475569!important}
-[data-theme="dark"] .b-cyan{background:#0D2D3A!important;color:#67E8F9!important;border-color:#0891B2!important}
-[data-theme="dark"] .b-orange{background:#2D1A0D!important;color:#FDBA74!important;border-color:#EA580C!important}
-[data-theme="dark"] .badge.pass{background:#0D1F18!important;color:#4ADE80!important}
-[data-theme="dark"] .badge.fail{background:#1F0D0D!important;color:#F87171!important}
-[data-theme="dark"] .badge.warn{background:#1F1A0E!important;color:#FBBF24!important}
-
-/* Buttons/toggles */
-[data-theme="dark"] .strategy-toggle button,.tabs button{background:#1A2235!important;color:#94A3B8!important;border-color:#2D3A4F!important}
-[data-theme="dark"] .tabs button.active{background:#F1F5F9!important;color:#0F172A!important}
-
-/* Banner text fix */
-[data-theme="dark"] .banner-a h4,[data-theme="dark"] .banner-a p{color:#C4B5FD!important}
-[data-theme="dark"] .banner-b h4,[data-theme="dark"] .banner-b p{color:#67E8F9!important}
-[data-theme="dark"] .banner-vs h4,[data-theme="dark"] .banner-vs p{color:#FCA5A5!important}
-[data-theme="dark"] .info-banner{background:#1A2235!important;border-color:#2D3A4F!important}
-
-/* Code */
-[data-theme="dark"] pre{background:#020617!important}
-[data-theme="dark"] code{background:#2D3A4F!important;color:#A78BFA!important}
-
-/* Hub & selection specifics */
-[data-theme="dark"] .cards-section{background:#0B1120!important}
+[data-theme="dark"] .report-card{background:#1A2235!important;border-color:#2D3A4F!important;color:#E2E8F0!important}
+[data-theme="dark"] .card-title{color:#F1F5F9!important}
+[data-theme="dark"] .card-desc{color:#94A3B8!important}
+[data-theme="dark"] .card-num{color:#64748B!important}
 [data-theme="dark"] .card-link{color:#94A3B8!important}
-[data-theme="dark"] .hero-stat{background:rgba(255,255,255,.08)!important}
-[data-theme="dark"] .slide{background:#1A2235!important;border-color:#2D3A4F!important}
-
-
-/* === INLINE STYLE OVERRIDES (dark mode) === */
-/* Override inline color:#475569 on paragraphs inside dark cards */
-[data-theme="dark"] .path-card p,
-[data-theme="dark"] .compare-card div,
-[data-theme="dark"] .card p,
-[data-theme="dark"] .section p{color:#CBD5E1!important}
-
-/* Override inline color:#7F1D1D and #92400E inside failure cards */
-[data-theme="dark"] .failure-card div,
-[data-theme="dark"] .failure-card span{color:inherit!important}
-[data-theme="dark"] .failure-card.failure-red div{color:#FCA5A5!important}
-[data-theme="dark"] .failure-card.failure-yellow div{color:#FDE68A!important}
-
-/* Override inline color:#991B1B / #7F1D1D inside alert boxes */
-[data-theme="dark"] .alert-box strong,
-[data-theme="dark"] .alert-box span,
-[data-theme="dark"] .alert-danger strong,
-[data-theme="dark"] .alert-danger span{color:#FCA5A5!important}
-
-/* Path C (inline background:#FDF4FF) — target .path-card without .path-a or .path-b */
-[data-theme="dark"] .path-card{background:#1A1533!important;border-color:#7C3AED!important;color:#CBD5E1!important}
-[data-theme="dark"] .path-card .path-title{color:#C4B5FD!important}
-[data-theme="dark"] .path-card .cost-tbl td{color:#E2E8F0!important}
-[data-theme="dark"] .path-card .cost-tbl td:first-child{color:#94A3B8!important}
-
-/* Override inline background:#F8FAFC on comparison table section header rows */
-[data-theme="dark"] tr[style*="F8FAFC"] td,
-[data-theme="dark"] tr[style*="F8FAFC"]{background:#131B2C!important;color:#94A3B8!important}
-
-/* Cost type tags in dark mode */
-[data-theme="dark"] .cost-type-tag{color:#E2E8F0!important}
-[data-theme="dark"] .cost-type-tag.cost-one{background:#1E3A5F!important;color:#93C5FD!important}
-[data-theme="dark"] .cost-type-tag.cost-per-token{background:#2D1F4E!important;color:#C4B5FD!important}
-[data-theme="dark"] .cost-type-tag.cost-monthly{background:#2D1A0D!important;color:#FDE68A!important}
-
-/* calc-box dashed border */
-[data-theme="dark"] .calc-box{background:#1A2235!important;border-color:#475569!important;color:#E2E8F0!important}
-
-/* .diff-yes / .diff-no in comparison tables */
-[data-theme="dark"] .diff-yes{color:#4ADE80!important}
-[data-theme="dark"] .diff-no{color:#F87171!important}
-
-/* file-block already dark, but ensure header stays good */
-[data-theme="dark"] .file-block{background:#0F172A!important;border-color:#1E293B!important}
-[data-theme="dark"] .file-header{background:#1E293B!important;color:#94A3B8!important}
-[data-theme="dark"] .file-body{background:#0F172A!important}
-[data-theme="dark"] .file-body pre{background:transparent!important}
-
-/* note-title inside colored alert/note with inline color */
-[data-theme="dark"] .note-warn .note-title,
-[data-theme="dark"] .note-danger .note-title{color:inherit!important}
-
-/* Override inline background on vs-box cards */
-[data-theme="dark"] .vs-box .card{background:#1A2235!important;border-color:#2D3A4F!important}
-
-/* b-red badge */
-[data-theme="dark"] .b-red,.b.b-red{background:#1F0D0D!important;color:#F87171!important;border-color:#DC2626!important}
-
-/* alert strong and span inside alerts */
-[data-theme="dark"] .alert strong{color:inherit!important}
-[data-theme="dark"] .alert-warn strong{color:#FDE68A!important}
-[data-theme="dark"] .alert-success strong{color:#86EFAC!important}
-[data-theme="dark"] .alert-danger strong{color:#FCA5A5!important}
-[data-theme="dark"] .alert-info strong{color:#93C5FD!important}
-
-/* Hero stat KPIs - explicit dark override */
-[data-theme="dark"] .hero-stat{background:rgba(255,255,255,.06)!important;border-radius:12px;padding:12px 20px}
+[data-theme="dark"] .section-title{color:#F1F5F9!important}
+[data-theme="dark"] .hero-stat{background:rgba(255,255,255,.06)!important}
 [data-theme="dark"] .hero-stat-v{color:#F0FDFA!important}
 [data-theme="dark"] .hero-stat-l{color:#94A3B8!important}
-/* Light mode hero stats */
-[data-theme="light"] .hero-stat{background:rgba(255,255,255,.12)!important;border-radius:12px;padding:12px 20px}
-[data-theme="light"] .hero-stat-v{color:#F0FDFA!important}
-[data-theme="light"] .hero-stat-l{color:#94A3B8!important}
+[data-theme="dark"] .cards-section{background:#0B1120!important}
 
-/* Smooth transitions */
-*{transition:background-color .25s,border-color .25s,color .25s}
-.header,.hero,.footer,#theme-bar,.bar-fill,.score-bar-fill,.score-fill,.rank-circle,.b,.badge{transition:none!important}
-
-/* ===== LIGHT MODE for dark-first hub ===== */
+/* Light mode */
 [data-theme="light"] body{background:#F8FAFC!important;color:#1E293B!important}
 [data-theme="light"] .hero{background:linear-gradient(160deg,#1E293B 0%,#0F766E 40%,#4338CA 70%,#1E293B 100%)!important}
 [data-theme="light"] .cards-section{background:#F8FAFC!important}
@@ -336,110 +121,63 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 [data-theme="light"] .footer{background:#0F172A!important}
 [data-theme="light"] .divider-line{border-color:#E2E8F0!important}
 [data-theme="light"] .flow-step{background:#fff!important;border-color:#E2E8F0!important;color:#1E293B!important}
-[data-theme="light"] .flow-step .step-num{color:#64748B!important}
+[data-theme="light"] .archive-toggle{background:#fff!important;border-color:#E2E8F0!important;color:#475569!important}
+[data-theme="light"] .archive-toggle:hover{background:#F1F5F9!important}
+[data-theme="light"] .hero-stat{background:rgba(255,255,255,.12)!important}
+[data-theme="light"] .hero-stat-v{color:#F0FDFA!important}
+[data-theme="light"] .hero-stat-l{color:#94A3B8!important}
 
+/* Smooth transitions */
+*{transition:background-color .25s,border-color .25s,color .25s}
+.hero,.footer,#theme-bar,.bar-fill{transition:none!important}
+
+@media(max-width:600px){
+  .hero h1{font-size:24px}
+  .hero-stats{gap:20px}
+  .hero-insights{flex-direction:column;align-items:center}
+  .cards-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-<div id="theme-bar"><button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="theme-icon">☀️</span></button></div>
+<div id="theme-bar"><button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="theme-icon">&#9728;&#65039;</span></button></div>
 
 <div class="hero">
   <div class="hero-inner">
     <div class="logo-wrap">
       <img src="icon.svg" alt="Idaratech" style="height:56px;margin-bottom:12px">
     </div>
-    <div class="brand">Idaratech · إدارتك</div>
-    <h1>AI SQL Chat — Report Hub</h1>
-
-    <p>All research, benchmarks, and recommendations for building production-grade natural language-to-SQL for Idaratech's HR platform. These reports cover model evaluation, cost analysis, fine-tuning strategy, and implementation planning.</p>
+    <div class="brand">Idaratech &middot; &#1573;&#1583;&#1575;&#1585;&#1578;&#1603;</div>
+    <h1>AI SQL Chat &mdash; Report Hub</h1>
+    <p>All research, benchmarks, and recommendations for building production-grade natural language-to-SQL for Idaratech's HR platform.</p>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="hero-stat-v">17</div><div class="hero-stat-l">Reports</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">9</div><div class="hero-stat-l">Current Reports</div></div>
       <div class="hero-stat"><div class="hero-stat-v">8</div><div class="hero-stat-l">Models Evaluated</div></div>
-      <div class="hero-stat"><div class="hero-stat-v">308</div><div class="hero-stat-l">Test Queries</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">112</div><div class="hero-stat-l">Test Queries</div></div>
       <div class="hero-stat"><div class="hero-stat-v">95%+</div><div class="hero-stat-l">Target Accuracy</div></div>
     </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:24px">
-      <div style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:10px 16px;font-size:13px;color:#6EE7B7;font-weight:600">Gemini 2.5 Pro recommended for production (88/100)</div>
-      <div style="background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);border-radius:10px;padding:10px 16px;font-size:13px;color:#5EEAD4;font-weight:600">Gemini 2.5 Flash — best value FT at $7.50 (82/100)</div>
-      <div style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:10px 16px;font-size:13px;color:#C4B5FD;font-weight:600">Fine-tuning can boost accuracy to 90-97%</div>
-      <div style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:10px 16px;font-size:13px;color:#FCD34D;font-weight:600">Self-hosting viable with Qwen 3 32B at ~$1K/mo</div>
+    <div class="hero-insights">
+      <div class="hero-insight" style="color:#6EE7B7;border-color:rgba(16,185,129,.25)">Gemini 2.5 Pro recommended for production (88/100)</div>
+      <div class="hero-insight" style="color:#5EEAD4;border-color:rgba(20,184,166,.25)">Flash &mdash; best value fine-tuning at $7.50 (82/100)</div>
+      <div class="hero-insight" style="color:#C4B5FD;border-color:rgba(139,92,246,.25)">Fine-tuning can boost accuracy to 90&ndash;97%</div>
     </div>
   </div>
 </div>
 
+<!-- ========== CURRENT REPORTS ========== -->
 <div class="cards-section">
-  <div class="section-label" style="color:#14B8A6">Reports (v3) — Latest</div>
-  <div class="section-desc">8 models benchmarked including Gemini 2.5 Flash (82/100, rank #4) — 112 test queries</div>
+  <div class="section-label" style="color:#5EEAD4">Current Reports</div>
+  <div class="section-desc">Latest analysis across 8 models &mdash; 112 test queries</div>
 
   <div class="cards-grid">
 
-    <!-- v3: Exec Cost Brief -->
-    <a href="exec-cost-report-v3.html" class="report-card card-c7">
-      <div class="card-num">#1</div>
-      <div class="card-icon">💼</div>
-      <div class="card-badge">Executive · C-Level</div>
-      <div class="card-title">Executive Cost Brief <span class="card-new-tag">v3</span></div>
-      <div class="card-desc">Start here — model costs and recommendations for decision makers. 5 model options with Flash as best-value option.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">💰 Cost Focused</div>
-        <div class="card-meta-item">📋 5 Options</div>
-        <div class="card-meta-item">🤖 8 Models</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- v3: Benchmark -->
-    <a href="idaratech-AI SQL Chat Benchmark Report-v3.html" class="report-card card-c7">
-      <div class="card-num">#2</div>
-      <div class="card-icon">📊</div>
-      <div class="card-badge">Technical · Engineering</div>
-      <div class="card-title">AI SQL Chat Benchmark Report <span class="card-new-tag">v3</span></div>
-      <div class="card-desc">Full benchmark results across 8 models and 112 test queries. Gemini 2.5 Flash at rank #4 with 82/100.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">📄 5 Tabs</div>
-        <div class="card-meta-item">🤖 8 Models</div>
-        <div class="card-meta-item">🎯 112 Queries</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- v3: Fine-Tuning Report -->
-    <a href="idaratech-finetuning-report-v3.html" class="report-card card-c7">
-      <div class="card-num">#3</div>
-      <div class="card-icon">🧠</div>
-      <div class="card-badge">Strategy · Cost Analysis</div>
-      <div class="card-title">Fine-Tuning Recommendation <span class="card-new-tag">v3</span></div>
-      <div class="card-desc">Flash is the cheapest managed FT option ($7.50 for 500 examples). Updated cost tiers, strategy, and model analysis for 8 models.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">💰 $1.39 – $37.50</div>
-        <div class="card-meta-item">🖥️ 2 Self-Hosted</div>
-        <div class="card-meta-item">🤖 8 Models</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- v3: Case for Fine-Tuning Flash -->
-    <a href="fine-tuning-case-gemini-2.5-flash.html" class="report-card card-c2" style="border-color:rgba(20,184,166,.3)">
-      <div class="card-num">#4</div>
-      <div class="card-icon">&#9889;</div>
-      <div class="card-badge">Business Case · Fine-Tuning</div>
-      <div class="card-title">The Case for Fine-Tuning Flash <span class="card-new-tag">new</span></div>
-      <div class="card-desc">Why Flash is the smartest starting point — $7.50 training, 75% cheaper inference, projected 90–94% accuracy. Includes progressive upgrade strategy.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">&#128161; Budget-First Strategy</div>
-        <div class="card-meta-item">&#128176; $7.50 Total</div>
-        <div class="card-meta-item">&#127919; 90&ndash;94% Target</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
-    </a>
-
-    <!-- v3: AI Chat Cost Report -->
+    <!-- 1. AI Chat Cost Report -->
     <a href="ai-chat-cost-report.html" class="report-card card-c3">
-      <div class="card-num">#5</div>
+      <div class="card-num">#1</div>
       <div class="card-icon">&#128176;</div>
       <div class="card-badge">Cost Planning &middot; Internal</div>
-      <div class="card-title">AI Chat Cost Report <span class="card-new-tag">new</span></div>
-      <div class="card-desc">Token pricing for 5 models, company quota planning (500K&ndash;10M tiers), monthly cost simulator, and fine-tuning cost breakdown.</div>
+      <div class="card-title">AI Chat Cost Report</div>
+      <div class="card-desc">Token pricing for 5 models, company quota planning (500K&ndash;10M tiers), monthly cost simulator, and fine-tuning cost breakdown. Start here for cost decisions.</div>
       <div class="card-meta">
         <div class="card-meta-item">&#128176; 5 Models Priced</div>
         <div class="card-meta-item">&#128202; Quota Tiers</div>
@@ -448,229 +186,135 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
     </a>
 
-    <!-- v3: Pro vs Flash Comparison -->
+    <!-- 2. Exec Cost Brief -->
+    <a href="exec-cost-report-v3.html" class="report-card card-c7">
+      <div class="card-num">#2</div>
+      <div class="card-icon">&#128188;</div>
+      <div class="card-badge">Executive &middot; C-Level</div>
+      <div class="card-title">Executive Cost Brief</div>
+      <div class="card-desc">Model costs and recommendations for decision makers. 5 model options with cost breakdowns, comparison, and clear decision framework.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">&#128176; Cost Focused</div>
+        <div class="card-meta-item">&#128203; 5 Options</div>
+        <div class="card-meta-item">&#129302; 8 Models</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+    </a>
+
+    <!-- 3. Benchmark Report -->
+    <a href="idaratech-AI SQL Chat Benchmark Report-v3.html" class="report-card card-c7">
+      <div class="card-num">#3</div>
+      <div class="card-icon">&#128202;</div>
+      <div class="card-badge">Technical &middot; Engineering</div>
+      <div class="card-title">AI SQL Chat Benchmark Report</div>
+      <div class="card-desc">Full benchmark results across 8 models and 112 test queries. Pass/fail matrix, Arabic compliance audit, and detailed model analysis.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">&#128196; 5 Tabs</div>
+        <div class="card-meta-item">&#129302; 8 Models</div>
+        <div class="card-meta-item">&#127919; 112 Queries</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+    </a>
+
+    <!-- 4. Fine-Tuning Recommendations -->
+    <a href="idaratech-finetuning-report-v3.html" class="report-card card-c7">
+      <div class="card-num">#4</div>
+      <div class="card-icon">&#129504;</div>
+      <div class="card-badge">Strategy &middot; Cost Analysis</div>
+      <div class="card-title">Fine-Tuning Recommendations</div>
+      <div class="card-desc">Flash is the cheapest managed FT option ($7.50 for 500 examples). Updated cost tiers, strategy, and model analysis for 8 models.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">&#128176; $1.39 &ndash; $37.50</div>
+        <div class="card-meta-item">&#128421; 2 Self-Hosted</div>
+        <div class="card-meta-item">&#129302; 8 Models</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+    </a>
+
+    <!-- 5. Case for Fine-Tuning Flash -->
+    <a href="fine-tuning-case-gemini-2.5-flash.html" class="report-card card-c8">
+      <div class="card-num">#5</div>
+      <div class="card-icon">&#9889;</div>
+      <div class="card-badge">Business Case &middot; Fine-Tuning</div>
+      <div class="card-title">The Case for Fine-Tuning Flash</div>
+      <div class="card-desc">Why Flash is the smartest starting point &mdash; $7.50 training, 75% cheaper inference, projected 90&ndash;94% accuracy. Progressive upgrade strategy.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">&#128161; Budget-First</div>
+        <div class="card-meta-item">&#128176; $7.50 Total</div>
+        <div class="card-meta-item">&#127919; 90&ndash;94% Target</div>
+      </div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+    </a>
+
+    <!-- 6. Pro vs Flash Head-to-Head -->
     <a href="gemini-pro-vs-flash-comparison.html" class="report-card card-c2">
       <div class="card-num">#6</div>
       <div class="card-icon">&#9878;&#65039;</div>
-      <div class="card-badge">Comparison · Decision</div>
-      <div class="card-title">Pro vs Flash &mdash; Head-to-Head <span class="card-new-tag">new</span></div>
-      <div class="card-desc">Side-by-side comparison of Gemini 2.5 Pro and Flash: benchmark, tokens, cost, fine-tuning, and practical recommendation.</div>
+      <div class="card-badge">Comparison &middot; Decision</div>
+      <div class="card-title">Pro vs Flash &mdash; Head-to-Head</div>
+      <div class="card-desc">Side-by-side comparison of Gemini 2.5 Pro and Flash: benchmark scores, tokens, cost, fine-tuning, and practical recommendation.</div>
       <div class="card-meta">
         <div class="card-meta-item">&#9878;&#65039; Head-to-Head</div>
         <div class="card-meta-item">&#128176; Cost Analysis</div>
         <div class="card-meta-item">&#127919; Decision Framework</div>
       </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
     </a>
 
-  </div>
-</div>
-
-<!-- Divider -->
-<div class="divider"><hr class="divider-line"></div>
-
-<div class="cards-section">
-  <div class="section-label" style="color:#22D3EE">Reports (v2)</div>
-  <div class="section-desc">7 models benchmarked including MiniMax M2.5 (87/100, rank #2)</div>
-
-  <div class="cards-grid">
-
-    <!-- 1. Exec Cost Brief v2 -->
-    <a href="exec-cost-report-v2.html" class="report-card card-c7">
-      <div class="card-num">#1</div>
-      <div class="card-icon">💼</div>
-      <div class="card-badge">Executive · C-Level</div>
-      <div class="card-title">Executive Cost Brief <span class="card-v2-tag">v2</span></div>
-      <div class="card-desc">Start here — model costs and recommendations for decision makers. Top 4 model options with cost breakdowns, side-by-side comparison, and clear decision framework.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">💰 Cost Focused</div>
-        <div class="card-meta-item">📋 4 Options</div>
-        <div class="card-meta-item">🤖 7 Models</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- NEW: Fine-Tuning Case for Gemini 2.5 Pro -->
+    <!-- 7. Case for Fine-Tuning Pro -->
     <a href="fine-tuning-case-gemini-2.5-pro.html" class="report-card card-c2">
-      <div class="card-num">#2</div>
-      <div class="card-icon">🎯</div>
-      <div class="card-badge">Business Case · Fine-Tuning</div>
-      <div class="card-title">The Case for Fine-Tuning Gemini 2.5 Pro <span class="card-new-tag">new</span></div>
-      <div class="card-desc">Why fine-tuning is the right move — real benchmark failures, how training fixes each one, cost analysis ($37.50 one-time), and projected 93–97% accuracy.</div>
+      <div class="card-num">#7</div>
+      <div class="card-icon">&#127919;</div>
+      <div class="card-badge">Business Case &middot; Fine-Tuning</div>
+      <div class="card-title">The Case for Fine-Tuning Gemini 2.5 Pro</div>
+      <div class="card-desc">Why fine-tuning Pro is the right move &mdash; real benchmark failures, how training fixes each one, cost analysis ($37.50), and projected 93&ndash;97% accuracy.</div>
       <div class="card-meta">
-        <div class="card-meta-item">📊 Real Benchmark Data</div>
-        <div class="card-meta-item">💰 $37.50 Total</div>
-        <div class="card-meta-item">🎯 93–97% Target</div>
+        <div class="card-meta-item">&#128202; Real Benchmark Data</div>
+        <div class="card-meta-item">&#128176; $37.50 Total</div>
+        <div class="card-meta-item">&#127919; 93&ndash;97% Target</div>
       </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
     </a>
 
-    <!-- 3. Fine-Tuning Report v2 -->
-    <a href="idaratech-finetuning-report-v2.html" class="report-card card-c7">
-      <div class="card-num">#3</div>
-      <div class="card-icon">🧠</div>
-      <div class="card-badge">Strategy · Cost Analysis</div>
-      <div class="card-title">Fine-Tuning Recommendation <span class="card-v2-tag">v2</span></div>
-      <div class="card-desc">Deeper technical cost analysis and training strategy. Self-hosting vs API analysis, infrastructure costs, and 2 self-hosted model options.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">💰 $2 – $250 Training</div>
-        <div class="card-meta-item">🖥️ 2 Self-Hosted</div>
-        <div class="card-meta-item">🏗️ Architecture</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- 4. Benchmark v2 -->
-    <a href="idaratech-AI SQL Chat Benchmark Report-v2.html" class="report-card card-c7">
-      <div class="card-num">#4</div>
-      <div class="card-icon">📊</div>
-      <div class="card-badge">Technical · Engineering</div>
-      <div class="card-title">AI SQL Chat Benchmark Report <span class="card-v2-tag">v2</span></div>
-      <div class="card-desc">Full benchmark results across 7 models and 98 test queries. Pass/fail matrix, Arabic compliance audit, and detailed model analysis.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">📄 5 Tabs</div>
-        <div class="card-meta-item">🤖 7 Models</div>
-        <div class="card-meta-item">🎯 98 Queries</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- 5. Practical Guide v2 -->
-    <a href="fine-tuning-practical-guide-v2.html" class="report-card card-c7">
-      <div class="card-num">#5</div>
-      <div class="card-icon">🔧</div>
-      <div class="card-badge">Implementation · How-To</div>
-      <div class="card-title">Fine-Tuning Practical Guide <span class="card-v2-tag">v2</span></div>
+    <!-- 8. Fine-Tuning Practical Guide -->
+    <a href="fine-tuning-practical-guide-v2.html" class="report-card card-c4">
+      <div class="card-num">#8</div>
+      <div class="card-icon">&#128295;</div>
+      <div class="card-badge">Implementation &middot; How-To</div>
+      <div class="card-title">Fine-Tuning Practical Guide</div>
       <div class="card-desc">Step-by-step fine-tuning implementation. Knowledge base format, dataset tiers, provider setup, and deployment commands.</div>
       <div class="card-meta">
-        <div class="card-meta-item">⚙️ Step-by-Step</div>
-        <div class="card-meta-item">🖥️ 4-GPU Setup</div>
-        <div class="card-meta-item">📝 vLLM Guide</div>
+        <div class="card-meta-item">&#9881;&#65039; Step-by-Step</div>
+        <div class="card-meta-item">&#128421; 4-GPU Setup</div>
+        <div class="card-meta-item">&#128221; vLLM Guide</div>
       </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
     </a>
 
-    <!-- 6. OpenRouter Analytics -->
-    <a href="openrouter-analytics.html" class="report-card" style="border-color:#A78BFA">
-      <div class="card-num">#6</div>
-      <div class="card-icon">📡</div>
-      <div class="card-badge">Analytics · Data</div>
+  </div>
+</div>
+
+<!-- Divider -->
+<div class="divider"><hr class="divider-line"></div>
+
+<!-- ========== REFERENCE & ANALYTICS ========== -->
+<div class="cards-section" style="padding-bottom:20px">
+  <div class="section-label" style="color:#A78BFA">Reference &amp; Analytics</div>
+  <div class="section-desc">Technical data and API usage analytics</div>
+
+  <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));max-width:600px">
+
+    <a href="openrouter-analytics.html" class="report-card" style="border-color:rgba(167,139,250,.2)">
+      <div class="card-icon">&#128225;</div>
+      <div class="card-badge" style="background:rgba(167,139,250,.15);color:#C4B5FD">Analytics &middot; Data</div>
       <div class="card-title">OpenRouter Usage Analytics</div>
-      <div class="card-desc">API usage data — costs, tokens, and provider breakdown. Complete analysis of all 736 API requests across 7 models and 19 providers.</div>
+      <div class="card-desc">API usage data &mdash; costs, tokens, and provider breakdown. Complete analysis of all 736 API requests across 7 models and 19 providers.</div>
       <div class="card-meta">
-        <div class="card-meta-item">💰 $6.15 Total</div>
-        <div class="card-meta-item">📡 736 Requests</div>
-        <div class="card-meta-item">🔢 2.25M Tokens</div>
+        <div class="card-meta-item">&#128176; $6.15 Total</div>
+        <div class="card-meta-item">&#128225; 736 Requests</div>
+        <div class="card-meta-item">&#128290; 2.25M Tokens</div>
       </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-  </div>
-</div>
-
-<!-- Divider -->
-<div class="divider"><hr class="divider-line"></div>
-
-<!-- v1 Reports -->
-<div class="cards-section" style="padding-bottom:20px">
-  <div class="section-label">Previous Version</div>
-  <div class="section-title" style="font-size:18px">v1 Reports — 6 Models</div>
-  <div class="section-desc">Original reports with 6 models (before MiniMax M2.5)</div>
-
-  <div class="cards-grid">
-
-    <a href="exec-cost-report.html" class="report-card card-c1" style="opacity:.75">
-      <div class="card-num">#1</div>
-      <div class="card-icon">💼</div>
-      <div class="card-badge">Executive · C-Level</div>
-      <div class="card-title">Executive Cost Brief <span class="card-old-tag">v1</span></div>
-      <div class="card-desc">Non-technical summary. Top 4 model options with cost breakdowns. 6 models evaluated.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">📋 4 Options</div>
-        <div class="card-meta-item">🤖 6 Models</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <a href="idaratech-AI SQL Chat Benchmark Report.html" class="report-card card-c2" style="opacity:.75">
-      <div class="card-num">#2</div>
-      <div class="card-icon">📊</div>
-      <div class="card-badge">Technical · Engineering</div>
-      <div class="card-title">Benchmark Report <span class="card-old-tag">v1</span></div>
-      <div class="card-desc">6 AI models, 84 test queries. Pass/fail matrix, Arabic compliance audit.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">🤖 6 Models</div>
-        <div class="card-meta-item">📊 84 Queries</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <a href="idaratech-finetuning-report.html" class="report-card card-c3" style="opacity:.75">
-      <div class="card-num">#3</div>
-      <div class="card-icon">🧠</div>
-      <div class="card-badge">Strategy · Cost Analysis</div>
-      <div class="card-title">Fine-Tuning Recommendation <span class="card-old-tag">v1</span></div>
-      <div class="card-desc">Fine-tuning strategy with cost breakdowns. Qwen 3 32B self-hosted analysis.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">💰 $2 – $38</div>
-        <div class="card-meta-item">🖥️ 1 Self-Hosted</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <a href="fine-tuning-practical-guide.html" class="report-card card-c4" style="opacity:.75">
-      <div class="card-num">#4</div>
-      <div class="card-icon">🔧</div>
-      <div class="card-badge">Implementation · How-To</div>
-      <div class="card-title">Practical Guide <span class="card-old-tag">v1</span></div>
-      <div class="card-desc">Step-by-step implementation guide. Provider setup, validation, deployment.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">⚙️ Step-by-Step</div>
-        <div class="card-meta-item">📝 Code Examples</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-  </div>
-</div>
-
-<!-- Divider -->
-<div class="divider"><hr class="divider-line"></div>
-
-<!-- Archive -->
-<div class="cards-section" style="padding-bottom:20px">
-  <div class="section-label" style="color:#64748B">Archive</div>
-  <div class="section-title" style="color:#94A3B8;font-size:18px">Earlier Versions</div>
-  <div class="section-desc">Previous iterations — kept for reference</div>
-
-  <div class="cards-grid">
-
-    <!-- 5. Model Selection (Old) -->
-    <a href="model-selection-report.html" class="report-card card-c5" style="opacity:.7">
-      <div class="card-num">#5</div>
-      <div class="card-icon">🏆</div>
-      <div class="card-badge">Decision · Comparison</div>
-      <div class="card-title">Model Selection Report <span class="card-old-tag">Earlier Version</span></div>
-      <div class="card-desc">Earlier model comparison and selection rationale. Capability matrix, Arabic language readiness, cost-per-query projections, and vendor lock-in analysis.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">⚖️ Trade-off Analysis</div>
-        <div class="card-meta-item">🗺️ Rollout Plan</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
-    </a>
-
-    <!-- 6. Benchmark (Old) -->
-    <a href="benchmark-report.html" class="report-card card-c6" style="opacity:.7">
-      <div class="card-num">#6</div>
-      <div class="card-icon">📊</div>
-      <div class="card-badge">Technical · Engineering</div>
-      <div class="card-title">Benchmark Report <span class="card-old-tag">Earlier Version</span></div>
-      <div class="card-desc">Initial benchmark iteration. Superseded by the new AI SQL Chat Benchmark Report (#2) which includes updated scoring, expanded Arabic audit, and refined pass/fail matrix.</div>
-      <div class="card-meta">
-        <div class="card-meta-item">📄 Earlier Data</div>
-        <div class="card-meta-item">🤖 6 Models</div>
-      </div>
-      <div class="card-link">Open report <span class="card-link-arrow">→</span></div>
+      <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
     </a>
 
   </div>
@@ -678,28 +322,137 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 <!-- Reading order -->
 <div class="reading-order">
-  <div class="flow-label">Suggested Reading Order (v3 — 8 Models)</div>
+  <div class="flow-label">Suggested Reading Order</div>
   <div class="flow-row">
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">1.</span>💼 Exec Brief</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color:rgba(16,185,129,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">2.</span>🎯 Fine-Tuning Case</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">3.</span>🧠 Fine-Tuning Rec</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">4.</span>📊 Benchmark</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color:rgba(6,182,212,.3)"><span class="step-num" style="font-size:10px;color:#64748B;margin-right:4px">5.</span>🔧 Practical Guide</div>
+    <div class="flow-step"><span style="font-size:10px;color:#64748B;margin-right:4px">1.</span>&#128176; Cost Report</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step"><span style="font-size:10px;color:#64748B;margin-right:4px">2.</span>&#128188; Exec Brief</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step"><span style="font-size:10px;color:#64748B;margin-right:4px">3.</span>&#9889; FT Case (Flash)</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step"><span style="font-size:10px;color:#64748B;margin-right:4px">4.</span>&#129504; FT Recommendations</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step"><span style="font-size:10px;color:#64748B;margin-right:4px">5.</span>&#128202; Benchmark</div>
   </div>
 </div>
 
+<!-- Divider -->
+<div class="divider"><hr class="divider-line"></div>
+
+<!-- ========== ARCHIVE (COLLAPSIBLE) ========== -->
+<div style="max-width:960px;margin:0 auto;padding:24px 24px 0">
+  <div class="archive-toggle" id="archive-toggle" onclick="toggleArchive()">
+    <span>&#128451; Previous Versions (9 archived reports)</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+</div>
+
+<div class="archive-content" id="archive-content">
+
+  <!-- v2 Reports -->
+  <div class="cards-section" style="padding-bottom:20px">
+    <div class="section-label" style="color:#64748B">v2 Reports &mdash; 7 Models</div>
+    <div class="section-desc">Superseded by current reports. Included MiniMax M2.5 (87/100, rank #2).</div>
+
+    <div class="cards-grid">
+      <a href="exec-cost-report-v2.html" class="report-card card-c6" style="opacity:.7">
+        <div class="card-icon">&#128188;</div>
+        <div class="card-title">Executive Cost Brief <span class="card-ver-tag">v2</span></div>
+        <div class="card-desc">4 model options, 7 models evaluated. Superseded by current Executive Cost Brief.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+
+      <a href="idaratech-AI SQL Chat Benchmark Report-v2.html" class="report-card card-c6" style="opacity:.7">
+        <div class="card-icon">&#128202;</div>
+        <div class="card-title">Benchmark Report <span class="card-ver-tag">v2</span></div>
+        <div class="card-desc">7 models, 98 test queries. Superseded by current Benchmark Report (8 models, 112 queries).</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+
+      <a href="idaratech-finetuning-report-v2.html" class="report-card card-c6" style="opacity:.7">
+        <div class="card-icon">&#129504;</div>
+        <div class="card-title">Fine-Tuning Recommendation <span class="card-ver-tag">v2</span></div>
+        <div class="card-desc">Self-hosting vs API analysis, infrastructure costs, 2 self-hosted options. Superseded by current FT Recommendations.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- v1 Reports -->
+  <div class="cards-section" style="padding-bottom:20px">
+    <div class="section-label" style="color:#64748B">v1 Reports &mdash; 6 Models</div>
+    <div class="section-desc">Original reports before MiniMax M2.5 and Gemini 2.5 Flash were added.</div>
+
+    <div class="cards-grid">
+      <a href="exec-cost-report.html" class="report-card card-c6" style="opacity:.65">
+        <div class="card-icon">&#128188;</div>
+        <div class="card-title">Executive Cost Brief <span class="card-ver-tag">v1</span></div>
+        <div class="card-desc">4 model options, 6 models evaluated.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+
+      <a href="idaratech-AI SQL Chat Benchmark Report.html" class="report-card card-c6" style="opacity:.65">
+        <div class="card-icon">&#128202;</div>
+        <div class="card-title">Benchmark Report <span class="card-ver-tag">v1</span></div>
+        <div class="card-desc">6 models, 84 test queries.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+
+      <a href="idaratech-finetuning-report.html" class="report-card card-c6" style="opacity:.65">
+        <div class="card-icon">&#129504;</div>
+        <div class="card-title">Fine-Tuning Recommendation <span class="card-ver-tag">v1</span></div>
+        <div class="card-desc">Original fine-tuning strategy. Qwen 3 32B self-hosted analysis.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+
+      <a href="fine-tuning-practical-guide.html" class="report-card card-c6" style="opacity:.65">
+        <div class="card-icon">&#128295;</div>
+        <div class="card-title">Practical Guide <span class="card-ver-tag">v1</span></div>
+        <div class="card-desc">Original step-by-step implementation guide.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Earliest versions -->
+  <div class="cards-section" style="padding-bottom:20px">
+    <div class="section-label" style="color:#64748B">Earliest Versions</div>
+    <div class="section-desc">Initial research iterations &mdash; kept for reference only.</div>
+
+    <div class="cards-grid">
+      <a href="model-selection-report.html" class="report-card card-c6" style="opacity:.55">
+        <div class="card-icon">&#127942;</div>
+        <div class="card-title">Model Selection Report <span class="card-ver-tag">early</span></div>
+        <div class="card-desc">Earlier model comparison and selection rationale. Capability matrix, vendor lock-in analysis.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+
+      <a href="benchmark-report.html" class="report-card card-c6" style="opacity:.55">
+        <div class="card-icon">&#128202;</div>
+        <div class="card-title">Benchmark Report <span class="card-ver-tag">early</span></div>
+        <div class="card-desc">Initial benchmark iteration with 4 queries. Claude Opus 4.6 data sourced from this report.</div>
+        <div class="card-link">Open report <span class="card-link-arrow">&rarr;</span></div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- end archive-content -->
+
 <div class="footer">
-  <div class="footer-brand"><strong>Idaratech · إدارتك</strong> — AI SQL Chat Report Hub</div>
+  <div class="footer-brand"><strong>Idaratech &middot; &#1573;&#1583;&#1575;&#1585;&#1578;&#1603;</strong> &mdash; AI SQL Chat Report Hub</div>
   <div class="footer-author">Prepared by Bilal Elhalawaty</div>
 </div>
 
 <script>
-function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').textContent=d?'🌙':'☀️';localStorage.setItem('idaratech-theme',d?'light':'dark')}
-(function(){var d=document.documentElement.getAttribute('data-theme')==='dark';if(d)document.getElementById('theme-icon').textContent='☀️'})();
+function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').textContent=d?'\uD83C\uDF19':'\u2600\uFE0F';localStorage.setItem('idaratech-theme',d?'light':'dark')}
+(function(){var d=document.documentElement.getAttribute('data-theme')==='dark';if(d)document.getElementById('theme-icon').textContent='\u2600\uFE0F'})();
+
+function toggleArchive(){
+  var btn=document.getElementById('archive-toggle');
+  var content=document.getElementById('archive-content');
+  btn.classList.toggle('open');
+  content.classList.toggle('open');
+}
 </script>
 </body>
 </html>
