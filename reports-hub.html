@@ -175,7 +175,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <h1>AI SQL Chat &mdash; Report Hub</h1>
     <p>Complete research, benchmarks, and cost analysis for building production-grade natural language-to-SQL for Idaratech's HR platform.</p>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="hero-stat-v">18</div><div class="hero-stat-l">Total Reports</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">21</div><div class="hero-stat-l">Total Reports</div></div>
       <div class="hero-stat"><div class="hero-stat-v">8</div><div class="hero-stat-l">Models Evaluated</div></div>
       <div class="hero-stat"><div class="hero-stat-v">308</div><div class="hero-stat-l">Test Queries</div></div>
       <div class="hero-stat"><div class="hero-stat-v">736</div><div class="hero-stat-l">API Requests</div></div>
@@ -205,9 +205,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="scope-detail">Gemini 2.5 Flash, Gemini 2.5 Pro, Gemini 3.1 Pro, GPT 4.1, MiniMax M2.5, Qwen 3 235B, Qwen 3 32B, Gemma 3 27B</div>
       </div>
       <div class="scope-item">
-        <div class="scope-num">18</div>
+        <div class="scope-num">21</div>
         <div class="scope-label">Reports Produced</div>
-        <div class="scope-detail">9 current reports + 9 archived versions &mdash; covering cost, benchmarks, fine-tuning, strategy, and implementation</div>
+        <div class="scope-detail">9 current reports + 3 architecture docs + 9 archived versions &mdash; covering cost, benchmarks, fine-tuning, strategy, implementation, and architecture</div>
       </div>
       <div class="scope-item">
         <div class="scope-num">736</div>
@@ -218,6 +218,64 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="scope-note">Every test query was run in both English and Arabic to validate bilingual compliance for Saudi HR data.</div>
   </div>
 </div>
+
+<!-- ========== DOCUMENTATION & ARCHITECTURE ========== -->
+<div class="cards-section">
+  <div class="section-label" style="color:#14B8A6">Documentation &amp; Architecture (3)</div>
+  <div class="section-desc">Technical documentation for the AI Chat module &mdash; architecture, security, data scoping, and prompt engineering</div>
+
+  <div class="cards-grid">
+
+    <!-- Architecture Reference -->
+    <a href="ai-chat-architecture.html" class="report-card card-c1">
+      <div class="card-num">#1</div>
+      <div class="card-icon">&#127959;</div>
+      <div class="card-badge">Architecture &middot; Technical</div>
+      <div class="card-title">Architecture Reference</div>
+      <div class="card-desc">Complete module architecture &mdash; request flow pipeline, 3 hard security layers, permission-to-table mapping, access scopes, Gemini context caching, and API endpoints.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">&#128274; 3 Security Layers</div>
+        <div class="card-meta-item">&#128221; 21 Permission Groups</div>
+        <div class="card-meta-item">&#9881; Config Reference</div>
+      </div>
+      <div class="card-link">Open docs <span class="card-link-arrow">&rarr;</span></div>
+    </a>
+
+    <!-- Data Scoping Guide -->
+    <a href="ai-chat-data-scoping.html" class="report-card card-c8">
+      <div class="card-num">#2</div>
+      <div class="card-icon">&#128272;</div>
+      <div class="card-badge">Security &middot; Data Access</div>
+      <div class="card-title">Data Scoping Guide</div>
+      <div class="card-desc">Permission-based table access, row-level scope injection (ALL_COMPANY / TEAM / PERSONAL), blocked columns, SQL validation pipeline, and future dynamic mapping design.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">&#128274; Row-Level Security</div>
+        <div class="card-meta-item">&#128101; 3 Access Scopes</div>
+        <div class="card-meta-item">&#128736; ~80 Tables Mapped</div>
+      </div>
+      <div class="card-link">Open docs <span class="card-link-arrow">&rarr;</span></div>
+    </a>
+
+    <!-- Prompt Engineering Guide -->
+    <a href="ai-chat-prompt-engineering.html" class="report-card card-c3">
+      <div class="card-num">#3</div>
+      <div class="card-icon">&#129504;</div>
+      <div class="card-badge">AI &middot; Prompt Design</div>
+      <div class="card-title">Prompt Engineering Guide</div>
+      <div class="card-desc">System prompt architecture, SQL generation rules, bilingual (EN/AR) support, result formatting, retry strategies, and conversation context management.</div>
+      <div class="card-meta">
+        <div class="card-meta-item">&#129302; Gemini + OpenRouter</div>
+        <div class="card-meta-item">&#127760; EN/AR Bilingual</div>
+        <div class="card-meta-item">&#128221; Prompt Templates</div>
+      </div>
+      <div class="card-link">Open docs <span class="card-link-arrow">&rarr;</span></div>
+    </a>
+
+  </div>
+</div>
+
+<!-- Divider -->
+<div class="divider"><hr class="divider-line"></div>
 
 <!-- ========== CURRENT REPORTS ========== -->
 <div class="cards-section">

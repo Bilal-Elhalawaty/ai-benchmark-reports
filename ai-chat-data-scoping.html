@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){var t=localStorage.getItem("idaratech-theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.setAttribute("data-theme","dark")})()</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Idaratech — AI Chat Data Scoping Report</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0F172A;color:#E2E8F0;min-height:100vh;line-height:1.6}
+
+/* Hero */
+.hero{background:linear-gradient(160deg,#0F172A 0%,#0B3B34 40%,#1E1B4B 70%,#0F172A 100%);padding:60px 24px 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-120px;right:-120px;width:400px;height:400px;background:radial-gradient(circle,rgba(94,234,212,.08) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-100px;left:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(167,139,250,.06) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:1}
+.brand{font-size:13px;color:#5EEAD4;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.hero h1{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:8px;background:linear-gradient(135deg,#F0FDFA,#5EEAD4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:15px;color:#94A3B8;line-height:1.7;max-width:600px;margin:0 auto 28px}
+.hero-stats{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+.hero-stat{text-align:center;background:rgba(255,255,255,.06);border-radius:12px;padding:12px 20px}
+.hero-stat-v{font-size:28px;font-weight:800;color:#F0FDFA}
+.hero-stat-l{font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+/* Content */
+.content{max-width:960px;margin:0 auto;padding:40px 24px}
+
+/* TOC */
+.toc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;margin-bottom:40px}
+.toc h3{font-size:14px;font-weight:700;color:#5EEAD4;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px}
+.toc a{color:#94A3B8;text-decoration:none;font-size:13px;font-weight:500;padding:4px 0;display:block;transition:color .2s}
+.toc a:hover{color:#5EEAD4}
+.toc a .num{color:#475569;margin-right:6px;font-weight:700;font-size:11px}
+
+/* Sections */
+.section{margin-bottom:48px}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.section-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.section h2{font-size:20px;font-weight:800;color:#F0FDFA}
+.section h3{font-size:16px;font-weight:700;color:#E2E8F0;margin:24px 0 12px}
+.section h4{font-size:14px;font-weight:700;color:#CBD5E1;margin:16px 0 8px}
+.section p{color:#94A3B8;font-size:14px;margin-bottom:12px}
+
+/* Alert / Callout boxes */
+.alert{border-radius:12px;padding:20px 24px;margin:16px 0 24px;border:1px solid}
+.alert-danger{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2)}
+.alert-danger .alert-title{color:#FCA5A5;font-weight:700;font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.alert-success{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)}
+.alert-success .alert-title{color:#6EE7B7;font-weight:700;font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.alert-info{background:rgba(14,165,233,.06);border-color:rgba(14,165,233,.2)}
+.alert-info .alert-title{color:#7DD3FC;font-weight:700;font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+
+/* Quote */
+blockquote{border-left:3px solid #5EEAD4;padding:12px 20px;margin:16px 0;background:rgba(94,234,212,.04);border-radius:0 8px 8px 0}
+blockquote p{color:#CBD5E1;font-size:13px;font-style:italic;margin-bottom:4px}
+blockquote cite{font-size:12px;color:#64748B;font-style:normal;font-weight:600}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0;border:1px solid rgba(255,255,255,.08);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:12px 16px;background:rgba(255,255,255,.04);color:#5EEAD4;font-weight:600;border-bottom:1px solid rgba(255,255,255,.1);white-space:nowrap}
+td{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.05);color:#CBD5E1;vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* Comparison cards */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.compare-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+.compare-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
+.compare-card.chosen::before{background:linear-gradient(90deg,#10B981,#059669)}
+.compare-card.chosen{border-color:rgba(16,185,129,.3)}
+.compare-card.rejected::before{background:linear-gradient(90deg,#EF4444,#DC2626)}
+.compare-card.rejected{border-color:rgba(239,68,68,.2);opacity:.85}
+.compare-card .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:12px}
+.badge-chosen{background:rgba(16,185,129,.15);color:#6EE7B7}
+.badge-rejected{background:rgba(239,68,68,.15);color:#FCA5A5}
+.compare-card h3{font-size:16px;font-weight:800;margin:0 0 8px;color:#F0FDFA}
+.compare-card p{font-size:13px;color:#94A3B8;margin-bottom:16px}
+.pro-con{list-style:none;font-size:13px}
+.pro-con li{padding:4px 0;color:#CBD5E1}
+.pro::before{content:'+';color:#10B981;font-weight:700;margin-right:8px}
+.con::before{content:'-';color:#EF4444;font-weight:700;margin-right:8px}
+
+/* Scope cards */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+.scope-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;text-align:center}
+.scope-card h4{font-size:16px;font-weight:800;margin-bottom:4px}
+.scope-card .who{font-size:12px;color:#94A3B8;margin-bottom:12px}
+.scope-card .sql{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:12px;text-align:left;color:#CBD5E1;word-break:break-all}
+.scope-all{border-top:3px solid #10B981}
+.scope-team{border-top:3px solid #F59E0B}
+.scope-personal{border-top:3px solid #EF4444}
+
+/* Code */
+pre{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:16px;overflow-x:auto;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:12px;color:#CBD5E1;line-height:1.6;margin:12px 0}
+code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:12px}
+
+/* Chip */
+.chip{display:inline-block;padding:2px 8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:4px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:12px;margin:2px}
+.chip-list{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+
+/* Layer diagram */
+.layer{border-radius:12px;padding:16px 20px;margin:8px 0;border:1px solid}
+.layer-soft{background:rgba(245,158,11,.04);border-color:rgba(245,158,11,.2)}
+.layer-hard{background:rgba(239,68,68,.04);border-color:rgba(239,68,68,.15)}
+.layer-safe{background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.2)}
+.layer .label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.label-soft{color:#FCD34D}
+.label-hard{color:#FCA5A5}
+.label-safe{color:#6EE7B7}
+.layer h4{font-size:14px;font-weight:700;color:#E2E8F0;margin-bottom:4px}
+.layer p,.layer li{font-size:13px;color:#94A3B8}
+.layer ul{list-style:none;margin-top:8px}
+.layer li{padding:2px 0}
+.layer li::before{content:'-> ';color:#475569}
+
+/* Ref cards */
+.ref-grid{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0}
+.ref-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 20px}
+.ref-card .source{font-size:12px;font-weight:700;color:#5EEAD4;margin-bottom:4px}
+.ref-card .finding{font-size:13px;color:#CBD5E1;margin-bottom:6px}
+.ref-card a{font-size:12px;color:#64748B;text-decoration:none;word-break:break-all}
+.ref-card a:hover{color:#94A3B8}
+
+/* Footer */
+.footer{border-top:1px solid rgba(255,255,255,.06);padding:32px 24px;text-align:center}
+.footer-brand{font-size:13px;color:#64748B;margin-bottom:4px}
+.footer-brand strong{color:#94A3B8}
+.footer-author{font-size:12px;color:#5EEAD4;font-weight:600}
+
+/* Theme toggle */
+#theme-bar{position:fixed;top:12px;left:12px;z-index:100}
+#theme-btn{background:rgba(15,23,42,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);border-radius:50%;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;padding:0;transition:background .2s,border-color .2s}
+#theme-btn:hover{background:rgba(15,23,42,.8);border-color:rgba(255,255,255,.2)}
+
+/* Light mode */
+[data-theme="light"] body{background:#F8FAFC!important;color:#1E293B!important}
+[data-theme="light"] .hero{background:linear-gradient(160deg,#1E293B 0%,#0F766E 40%,#4338CA 70%,#1E293B 100%)!important}
+[data-theme="light"] #theme-btn{background:rgba(255,255,255,.7);border-color:#E2E8F0}
+[data-theme="light"] .content{color:#1E293B}
+[data-theme="light"] .section h2{color:#0F172A!important}
+[data-theme="light"] .section h3{color:#1E293B!important}
+[data-theme="light"] .section p{color:#475569!important}
+[data-theme="light"] td{color:#334155!important}
+[data-theme="light"] .toc{background:#fff!important;border-color:#E2E8F0!important}
+[data-theme="light"] .toc a{color:#475569!important}
+[data-theme="light"] .toc a:hover{color:#0F766E!important}
+[data-theme="light"] .table-wrap{border-color:#E2E8F0!important}
+[data-theme="light"] th{background:#F1F5F9!important;color:#0F766E!important;border-color:#E2E8F0!important}
+[data-theme="light"] td{border-color:#F1F5F9!important}
+[data-theme="light"] tr:hover td{background:#F8FAFC!important}
+[data-theme="light"] .compare-card{background:#fff!important;border-color:#E2E8F0!important}
+[data-theme="light"] .compare-card h3{color:#0F172A!important}
+[data-theme="light"] .compare-card p{color:#475569!important}
+[data-theme="light"] .pro-con li{color:#334155!important}
+[data-theme="light"] .scope-card{background:#fff!important;border-color:#E2E8F0!important}
+[data-theme="light"] .scope-card .sql{background:#F1F5F9!important;border-color:#E2E8F0!important;color:#334155!important}
+[data-theme="light"] pre{background:#F1F5F9!important;border-color:#E2E8F0!important;color:#334155!important}
+[data-theme="light"] code{background:#E2E8F0!important;color:#1E293B!important}
+[data-theme="light"] .chip{background:#F1F5F9!important;border-color:#E2E8F0!important;color:#334155!important}
+[data-theme="light"] .layer-soft{background:rgba(245,158,11,.04)!important;border-color:rgba(245,158,11,.2)!important}
+[data-theme="light"] .layer-hard{background:rgba(239,68,68,.03)!important;border-color:rgba(239,68,68,.15)!important}
+[data-theme="light"] .layer-safe{background:rgba(16,185,129,.04)!important;border-color:rgba(16,185,129,.2)!important}
+[data-theme="light"] .layer p,.layer li{color:#475569!important}
+[data-theme="light"] .ref-card{background:#fff!important;border-color:#E2E8F0!important}
+[data-theme="light"] .ref-card .finding{color:#334155!important}
+[data-theme="light"] .alert-danger{background:rgba(239,68,68,.04)!important}
+[data-theme="light"] .alert-success{background:rgba(16,185,129,.04)!important}
+[data-theme="light"] .alert-info{background:rgba(14,165,233,.04)!important}
+[data-theme="light"] blockquote{background:rgba(94,234,212,.04)!important}
+[data-theme="light"] blockquote p{color:#334155!important}
+[data-theme="light"] .hero-stat{background:rgba(255,255,255,.12)!important}
+[data-theme="light"] .footer{background:#0F172A!important}
+
+*{transition:background-color .25s,border-color .25s,color .25s}
+.hero,.footer,#theme-bar{transition:none!important}
+
+@media(max-width:768px){
+  .hero h1{font-size:24px}
+  .hero-stats{gap:12px}
+  .compare-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr}
+  .toc-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="theme-bar"><button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="theme-icon">&#9728;&#65039;</span></button></div>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="brand">Idaratech &middot; &#1573;&#1583;&#1575;&#1585;&#1578;&#1603;</div>
+    <h1>AI Chat &mdash; Data Scoping Report</h1>
+    <p>Evaluating two approaches for controlling which data each user can access through AI-powered natural language queries.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-v">2</div><div class="hero-stat-l">Options Evaluated</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">21</div><div class="hero-stat-l">Permission Groups</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">~80</div><div class="hero-stat-l">Tables Mapped</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">3</div><div class="hero-stat-l">Security Layers</div></div>
+      <div class="hero-stat"><div class="hero-stat-v">3</div><div class="hero-stat-l">Access Scopes</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ==================== TOC ==================== -->
+<div class="toc">
+  <h3>Contents</h3>
+  <div class="toc-grid">
+    <a href="#problem"><span class="num">1.</span> Problem Statement</a>
+    <a href="#principle"><span class="num">2.</span> AI Must Never Handle Security</a>
+    <a href="#overview"><span class="num">3.</span> Scoping Options Overview</a>
+    <a href="#option-a"><span class="num">4.</span> Option A: Permission-to-Table Mapping</a>
+    <a href="#option-b"><span class="num">5.</span> Option B: Scope-Level Tiers</a>
+    <a href="#comparison"><span class="num">6.</span> Side-by-Side Comparison</a>
+    <a href="#security"><span class="num">7.</span> Security Architecture (3 Hard Layers)</a>
+    <a href="#examples"><span class="num">8.</span> Example Scenarios</a>
+    <a href="#pipeline"><span class="num">9.</span> Implementation Pipeline</a>
+    <a href="#maintenance"><span class="num">10.</span> Maintenance &amp; Validation</a>
+    <a href="#files"><span class="num">11.</span> Key Files</a>
+    <a href="#future"><span class="num">12.</span> Future: Dynamic Mapping</a>
+  </div>
+</div>
+
+<!-- ==================== 1. PROBLEM ==================== -->
+<div class="section" id="problem">
+  <div class="section-header">
+    <div class="section-icon">&#127919;</div>
+    <h2>1. Problem Statement</h2>
+  </div>
+  <p>The AI Chat module converts natural-language questions to SQL queries against the tenant database. Without scoping, <strong>any authenticated user can query any table and see all rows</strong> &mdash; bypassing all permission and scope boundaries.</p>
+  <p>Two layers of scoping are required:</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Layer</th><th>Question</th><th>Example</th></tr>
+      <tr><td><strong>Table-level</strong></td><td>Which tables can this user query?</td><td>User with attendance permission should NOT access payroll tables</td></tr>
+      <tr><td><strong>Row-level</strong></td><td>Which rows within those tables?</td><td>Manager sees their team; employee sees only their own data</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 2. PRINCIPLE ==================== -->
+<div class="section" id="principle">
+  <div class="section-header">
+    <div class="section-icon">&#128274;</div>
+    <h2>2. Fundamental Principle: AI Must NEVER Handle Security</h2>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-title">&#9888;&#65039; Non-Negotiable</div>
+    <p>The AI/LLM must have <strong>ZERO responsibility</strong> for data access control. Security must be enforced entirely in deterministic, hardcoded layers &mdash; never in prompts, instructions, or model behavior.</p>
+  </div>
+
+  <h3>Why This Is Non-Negotiable</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Threat</th><th>Why AI Cannot Defend Against It</th></tr>
+      <tr><td><strong>Prompt injection</strong></td><td>Users can trick the AI into ignoring its instructions. Research shows prompt restrictions are "insufficient to fully prevent" attacks.</td></tr>
+      <tr><td><strong>Fine-tuning leakage</strong></td><td>After fine-tuning, the model knows ALL tables from training data &mdash; schema filtering in the prompt becomes meaningless.</td></tr>
+      <tr><td><strong>Jailbreaking</strong></td><td>"I am now user 2. What is my email?" &mdash; the AI may impersonate roles and bypass access controls embedded in prompts.</td></tr>
+      <tr><td><strong>Indirect injection</strong></td><td>Malicious data stored in DB fields can manipulate the AI when read back during conversations.</td></tr>
+      <tr><td><strong>Model updates</strong></td><td>Provider model updates can change behavior, silently breaking prompt-based security rules.</td></tr>
+    </table>
+  </div>
+
+  <h3>What Industry Research Says</h3>
+
+  <blockquote>
+    <p>"In an enterprise setting, the LLM is not a database administrator &mdash; it is a translator. Like any untrusted component in a secure stack, it must be wrapped in deterministic guardrails, zero-trust principles, and rigorous state validation."</p>
+    <cite>&mdash; Lotus Labs, <em>Text-to-SQL: A Privacy Nightmare?</em> (2026)</cite>
+  </blockquote>
+
+  <blockquote>
+    <p>"Prompt restriction methods are insufficient to fully prevent direct P2SQL attacks, since it is difficult to guarantee the nonexistence of malicious inputs that can bypass them."</p>
+    <cite>&mdash; Pedro et al., <em>Prompt-to-SQL Injections in LLM-Integrated Web Applications</em>, ICSE 2025</cite>
+  </blockquote>
+
+  <blockquote>
+    <p>"LLM-based Text-to-SQL models are vulnerable to SQL injection via backdoor attacks [...] achieving attack success rates of up to 97% while maintaining high clean accuracy."</p>
+    <cite>&mdash; Xiao et al., <em>ToxicSQL</em>, ACM SIGMOD 2025</cite>
+  </blockquote>
+
+  <h3>Our Principle: Hard Layers Over Soft Layers</h3>
+
+  <div class="layer layer-soft">
+    <div class="label label-soft">SOFT LAYER &mdash; Optimization only, NOT security</div>
+    <h4>Schema Filtering in AI Prompt</h4>
+    <ul>
+      <li>Reduces AI errors by showing only relevant tables</li>
+      <li>Bypassed by fine-tuning, caching, prompt injection</li>
+      <li>An optimization, not a boundary</li>
+    </ul>
+  </div>
+  <div class="layer layer-hard">
+    <div class="label label-hard">HARD LAYERS &mdash; Actual security boundaries (code-enforced)</div>
+    <h4>SqlQueryValidator + SqlScopeInjector + Read-Only TX</h4>
+    <ul>
+      <li>Rejects queries for disallowed tables (AST parsing)</li>
+      <li>Injects WHERE clauses for row-level access</li>
+      <li>MySQL session-level read-only protection</li>
+      <li>Cannot be bypassed by the AI, the user, or prompt manipulation</li>
+    </ul>
+  </div>
+
+  <h3>References</h3>
+  <div class="ref-grid">
+    <div class="ref-card">
+      <div class="source">OWASP Top 10 for LLM Applications 2025</div>
+      <div class="finding">Prompt Injection is #1 risk; Excessive Agency warns against giving LLMs security decisions.</div>
+      <a href="https://genai.owasp.org/llm-top-10/">genai.owasp.org/llm-top-10/</a>
+    </div>
+    <div class="ref-card">
+      <div class="source">Pedro et al. &mdash; ICSE 2025</div>
+      <div class="finding">Prompt-to-SQL injection attacks bypass prompt-based restrictions; hardening prompts is "exceedingly fragile".</div>
+      <a href="https://syssec.dpss.inesc-id.pt/papers/pedro_icse25.pdf">syssec.dpss.inesc-id.pt/papers/pedro_icse25.pdf</a>
+    </div>
+    <div class="ref-card">
+      <div class="source">Xiao et al. &mdash; ToxicSQL, ACM SIGMOD 2025</div>
+      <div class="finding">Backdoor attacks on text-to-SQL models achieve 97% attack success rate while maintaining normal accuracy.</div>
+      <a href="https://arxiv.org/abs/2503.05445">arxiv.org/abs/2503.05445</a>
+    </div>
+    <div class="ref-card">
+      <div class="source">Lotus Labs &mdash; 2026</div>
+      <div class="finding">"The LLM is a translator, not a DBA" &mdash; must be wrapped in deterministic guardrails and zero-trust principles.</div>
+      <a href="https://lotuslabs.medium.com/text-to-sql-a-privacy-nightmare-how-to-architect-secure-enterprise-grade-text-to-sql-256615d1b59f">lotuslabs.medium.com/...</a>
+    </div>
+    <div class="ref-card">
+      <div class="source">Xiang et al. &mdash; 2023</div>
+      <div class="finding">Demonstrates how prompt injection chains into SQL injection in LLM-integrated applications.</div>
+      <a href="https://arxiv.org/pdf/2308.01990">arxiv.org/pdf/2308.01990</a>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. OVERVIEW ==================== -->
+<div class="section" id="overview">
+  <div class="section-header">
+    <div class="section-icon">&#128214;</div>
+    <h2>3. Scoping Options Overview</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th></th><th>Option A: Permission-to-Table Mapping</th><th>Option B: Scope-Level Tiers</th></tr>
+      <tr><td><strong>Concept</strong></td><td>Map each table to a permission prefix. User's IdentityCore permissions determine which tables they can query.</td><td>Classify tables into 3 sensitivity tiers (OPEN / STANDARD / RESTRICTED). Gate access by access_scope level only.</td></tr>
+      <tr><td><strong>Table-level</strong></td><td>Per-feature (21 permission groups)</td><td>Per-tier (3 sensitivity levels)</td></tr>
+      <tr><td><strong>Row-level</strong></td><td>WHERE injection (ALL_COMPANY / TEAM / PERSONAL)</td><td>WHERE injection (ALL_COMPANY / TEAM / PERSONAL)</td></tr>
+      <tr><td><strong>Permission parity</strong></td><td style="color:#6EE7B7">Yes &mdash; mirrors UI exactly</td><td style="color:#FCA5A5">No &mdash; ignores individual permissions</td></tr>
+      <tr><td><strong>Status</strong></td><td style="color:#6EE7B7;font-weight:700">Implemented</td><td style="color:#FCA5A5;font-weight:700">Rejected</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 4. OPTION A ==================== -->
+<div class="section" id="option-a">
+  <div class="section-header">
+    <div class="section-icon">&#9989;</div>
+    <h2>4. Option A: Permission-to-Table Mapping (Implemented)</h2>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-title">&#9989; Chosen Approach</div>
+    <p>Each database table maps to a specific permission prefix from IdentityCore. When a user authenticates, their permissions determine which tables are accessible. Row-level filtering is applied based on access_scope.</p>
+  </div>
+
+  <h3>How It Works</h3>
+  <pre>User authenticates
+  |
+  v
+IdentityPermissionService -> permissions[] + access_scope (cached 300s via gRPC)
+  |
+  v
+TableAccessResolver.resolve(permissions[])
+  |-- Always: REFERENCE_TABLES (departments, positions, shifts, etc.)
+  |-- Always: UNIVERSAL_TABLES (users -- always row-scoped)
+  |-- Feature-gated: FEATURE_MAP[prefix] -> tables (if user has matching permission)
+  '-- Shared: SHARED_TABLES[table] -> [prefix1, prefix2] (OR logic)
+  |
+  v
+allowed_tables[] -> SqlQueryValidator REJECTS queries outside this list
+  |
+  v
+SqlScopeInjector -> injects WHERE clauses based on access_scope</pre>
+
+  <h3>Feature-Level Granularity (Critical)</h3>
+  <p>The mapping is at the <strong>feature level</strong>, not module level:</p>
+  <pre>Wrong (module-level):
+  'HR.Employees' -> [users, user_contracts, user_offboards, documents, ...]
+  User with HR.Employees.Offboarding.View gets access to ALL of these
+
+Correct (feature-level -- our implementation):
+  'HR.Employees.Team'        -> [user_extended_infos, user_addresses, dependents, ...]
+  'HR.Employees.Offboarding' -> [user_offboards]
+  'HR.Employees.Contracts'   -> [user_contracts]
+  User with HR.Employees.Offboarding.View only gets user_offboards</pre>
+
+  <h3>Permission-to-Table Map (21 Groups)</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Permission Prefix</th><th>Tables Granted</th></tr>
+      <tr><td><code>HR.Employees.Team</code></td><td><div class="chip-list"><span class="chip">user_extended_infos</span><span class="chip">user_addresses</span><span class="chip">user_biometrices</span><span class="chip">user_devices</span><span class="chip">user_locations</span><span class="chip">user_policies</span><span class="chip">user_assets</span><span class="chip">dependents</span></div></td></tr>
+      <tr><td><code>HR.Employees.Documents</code></td><td><span class="chip">documents</span></td></tr>
+      <tr><td><code>HR.Employees.Contracts</code></td><td><span class="chip">user_contracts</span></td></tr>
+      <tr><td><code>HR.Employees.Onboarding</code></td><td><span class="chip">onboards</span></td></tr>
+      <tr><td><code>HR.Employees.Offboarding</code></td><td><span class="chip">user_offboards</span></td></tr>
+      <tr><td><code>HR.Employees.GosiHistory</code></td><td><span class="chip">gosi_employment_histories</span></td></tr>
+      <tr><td><code>HR.Employees.Letters</code></td><td><span class="chip">letter_recipients</span></td></tr>
+      <tr><td><code>HR.Attendance.Attendance</code></td><td><div class="chip-list"><span class="chip">attendances</span><span class="chip">breaks</span><span class="chip">timesheet</span><span class="chip">attendance_comments</span></div></td></tr>
+      <tr><td><code>HR.Attendance.Shifts</code></td><td><div class="chip-list"><span class="chip">user_shifts</span><span class="chip">user_schedules</span></div></td></tr>
+      <tr><td><code>HR.Attendance.AttendanceSettings</code></td><td><span class="chip">employee_attendance_settings</span></td></tr>
+      <tr><td><code>HR.Payroll.Payroll</code></td><td><div class="chip-list"><span class="chip">payrolls</span><span class="chip">payrun</span><span class="chip">payslip</span><span class="chip">user_salaries</span><span class="chip">user_payments</span><span class="chip">user_benefits</span><span class="chip">user_packages</span><span class="chip">+ 5 more</span></div></td></tr>
+      <tr><td><code>HR.Leaves.LeaveBalance</code></td><td><div class="chip-list"><span class="chip">leave_balances</span><span class="chip">leave_balance_histories</span></div></td></tr>
+      <tr><td><code>HR.TaskManagement.TaskManagement</code></td><td><span class="chip">tasks</span></td></tr>
+      <tr><td><code>HR.KPI.Evaluations</code></td><td><span class="chip">kpi_employee_evaluations</span></td></tr>
+      <tr><td><code>HR.Tickets.Tickets</code></td><td><span class="chip">tickets</span></td></tr>
+      <tr><td><code>HR.Announcements</code></td><td><span class="chip">announcements</span></td></tr>
+      <tr><td><code>HR.Calendar</code></td><td><span class="chip">events</span></td></tr>
+      <tr><td><code>HR.Assets</code></td><td><span class="chip">assets</span></td></tr>
+      <tr><td><code>HR.Employees.PerformanceEvaluationCycles</code></td><td><div class="chip-list"><span class="chip">evaluation_cycles</span><span class="chip">evaluation_cycle_employees</span></div></td></tr>
+      <tr><td><code>HR.Requests</code></td><td><span class="chip">hr_request_approvals</span></td></tr>
+    </table>
+  </div>
+
+  <h3>Row-Level Scoping: Access Scopes</h3>
+  <div class="scope-grid">
+    <div class="scope-card scope-all">
+      <h4 style="color:#10B981">ALL_COMPANY</h4>
+      <div class="who">Owner, Admin, HR, Accountant</div>
+      <div class="sql"><span style="color:#64748B">-- No WHERE injection</span><br>SELECT * FROM users<br>LIMIT 100</div>
+    </div>
+    <div class="scope-card scope-team">
+      <h4 style="color:#F59E0B">TEAM</h4>
+      <div class="who">Manager, Supervisor</div>
+      <div class="sql">SELECT * FROM users<br><span style="color:#F59E0B">WHERE id IN (42, 10, 20)</span><br>LIMIT 100<br><span style="color:#64748B">-- self + direct reports</span></div>
+    </div>
+    <div class="scope-card scope-personal">
+      <h4 style="color:#EF4444">PERSONAL</h4>
+      <div class="who">Employee, Reception</div>
+      <div class="sql">SELECT * FROM users<br><span style="color:#EF4444">WHERE id = 42</span><br>LIMIT 100<br><span style="color:#64748B">-- self only</span></div>
+    </div>
+  </div>
+
+  <h3>Where the Mappings Live (Storage Options)</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Factor</th><th>Static PHP (Current)</th><th>Central MySQL (Recommended)</th><th>IdentityCore PG (Rejected)</th></tr>
+      <tr><td><strong>Where</strong></td><td><code>TablePermissionRegistry.php</code></td><td><code>ai_table_access_rules</code> table</td><td>PostgreSQL in Go IAM service</td></tr>
+      <tr><td><strong>Managed by</strong></td><td>Developers (code deploy)</td><td>Developers (DB + admin UI)</td><td>IdentityCore team (Go deploy)</td></tr>
+      <tr><td><strong>Separation of concerns</strong></td><td style="color:#6EE7B7">Clean</td><td style="color:#6EE7B7">Clean</td><td style="color:#FCA5A5">Violates</td></tr>
+      <tr><td><strong>Admin UI possible</strong></td><td>No</td><td style="color:#6EE7B7">Yes</td><td>Needs Go endpoints</td></tr>
+    </table>
+  </div>
+
+  <h3>Pros &amp; Cons</h3>
+  <ul class="pro-con">
+    <li class="pro">Feature-level granularity &mdash; 21 permission groups, each table mapped to its specific feature</li>
+    <li class="pro">Permission parity with UI &mdash; same permissions control both UI and AI Chat</li>
+    <li class="pro">Default-deny &mdash; unmapped tables are BLOCKED</li>
+    <li class="pro">No duplication &mdash; each table listed exactly once in the registry</li>
+    <li class="pro">Easy maintenance &mdash; new table = add 1 line to FEATURE_MAP</li>
+    <li class="pro">Future-proof &mdash; prefix matching handles new permission actions automatically</li>
+    <li class="pro">Fine-tuning safe &mdash; enforcement at validator level, not prompt level</li>
+    <li class="con">~80 table entries to maintain (one-time setup)</li>
+    <li class="con">Permission prefix coupling &mdash; must match IdentityCore's strings exactly</li>
+    <li class="con">Static PHP (current) &mdash; requires code deploy to change mappings</li>
+  </ul>
+</div>
+
+<!-- ==================== 5. OPTION B ==================== -->
+<div class="section" id="option-b">
+  <div class="section-header">
+    <div class="section-icon">&#10060;</div>
+    <h2>5. Option B: Scope-Level Tier Classification (Rejected)</h2>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-title">&#10060; Rejected &mdash; Fundamental Permission Gap</div>
+    <p>This approach ignores the user's actual permissions, creating a gap where users can access data through AI Chat that they cannot see in the application.</p>
+  </div>
+
+  <h3>Concept</h3>
+  <p>Classify all tables into 3 sensitivity tiers and use the user's <code>access_scope</code> to gate access. No permission mapping.</p>
+  <pre>OPEN       -> everyone can query (reference data: departments, positions)
+STANDARD   -> everyone can query, row-scoped (users, attendances, tasks)
+RESTRICTED -> only ALL_COMPANY scope can query (payrolls, payslips)</pre>
+
+  <h3>Pros &amp; Cons</h3>
+  <ul class="pro-con">
+    <li class="pro">Simple &mdash; 3 flat lists instead of 21 permission groups</li>
+    <li class="pro">Low maintenance &mdash; classify new table into one of 3 tiers</li>
+    <li class="pro">Row-level scoping still works (ALL_COMPANY / TEAM / PERSONAL)</li>
+    <li class="con"><strong>No permission parity</strong> &mdash; user without attendance permission CAN query attendance tables</li>
+    <li class="con"><strong>Permission bypass</strong> &mdash; "I can't see this in the app but AI shows it to me"</li>
+    <li class="con"><strong>Coarse-grained</strong> &mdash; 3 tiers cannot distinguish HR from payroll from attendance</li>
+    <li class="con"><strong>Identical access for different roles</strong> &mdash; owner, admin, HR, accountant all see same data</li>
+    <li class="con"><strong>Compliance risk</strong> &mdash; auditors expect consistent access controls across UI and AI</li>
+  </ul>
+
+  <h3>The Core Problem &mdash; Permission Bypass Examples</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Scenario</th><th>In the App</th><th>AI Chat (Option B)</th><th>AI Chat (Option A)</th></tr>
+      <tr>
+        <td>User with only <code>HR.Attendance.Attendance.View</code></td>
+        <td>Can only see attendance pages</td>
+        <td style="color:#FCA5A5">Can query user_contracts, payslips, leave_balances &mdash; anything in STANDARD tier</td>
+        <td style="color:#6EE7B7">Can only query attendance tables</td>
+      </tr>
+      <tr>
+        <td>Accountant with <code>HR.Payroll.Payroll.View</code> but NOT <code>HR.Employees.Team.View</code></td>
+        <td>Can see payroll but not employee personal details</td>
+        <td style="color:#FCA5A5">Can query employee personal details (both are STANDARD)</td>
+        <td style="color:#6EE7B7">Can only query payroll tables</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 6. COMPARISON ==================== -->
+<div class="section" id="comparison">
+  <div class="section-header">
+    <div class="section-icon">&#9878;&#65039;</div>
+    <h2>6. Side-by-Side Comparison</h2>
+  </div>
+
+  <div class="compare-grid">
+    <div class="compare-card chosen">
+      <div class="badge badge-chosen">Implemented</div>
+      <h3>Option A: Permission-to-Table Mapping</h3>
+      <p>Feature-level granularity using reverse permission map. Each table maps to a permission prefix. Prefix matching ensures future permissions work automatically.</p>
+      <ul class="pro-con">
+        <li class="pro">Feature-level granularity (21 groups)</li>
+        <li class="pro">Permission parity with UI &mdash; mirrors exactly</li>
+        <li class="pro">Default-deny for unknown tables</li>
+        <li class="pro">Each table listed exactly once</li>
+        <li class="pro">Fine-tuning safe (hard enforcement)</li>
+        <li class="con">~80 table entries (one-time setup)</li>
+        <li class="con">Permission prefix must match IdentityCore</li>
+      </ul>
+    </div>
+    <div class="compare-card rejected">
+      <div class="badge badge-rejected">Rejected</div>
+      <h3>Option B: Scope-Level Tiers</h3>
+      <p>Classify tables into OPEN/STANDARD/RESTRICTED tiers. Use access_scope to gate restricted tables. Simpler but fundamentally flawed.</p>
+      <ul class="pro-con">
+        <li class="pro">Simple &mdash; 3 flat lists</li>
+        <li class="pro">Low maintenance</li>
+        <li class="con">No permission parity &mdash; ignores permissions</li>
+        <li class="con">Permission bypass &mdash; "can't see in app but AI shows it"</li>
+        <li class="con">Coarse-grained &mdash; 3 tiers is too few</li>
+        <li class="con">Compliance risk with auditors</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-wrap" style="margin-top:20px">
+    <table>
+      <tr><th>Criteria</th><th>Option A</th><th>Option B</th></tr>
+      <tr><td>Granularity</td><td>Per-feature (21 groups)</td><td>Per-tier (3 levels)</td></tr>
+      <tr><td>Permission parity with UI</td><td style="color:#6EE7B7">Yes</td><td style="color:#FCA5A5">No</td></tr>
+      <tr><td>Table-level security</td><td>Principle of least privilege</td><td>Row-level safety net only</td></tr>
+      <tr><td>Row-level security</td><td>WHERE injection (same)</td><td>WHERE injection (same)</td></tr>
+      <tr><td>Default for unknown tables</td><td>BLOCKED</td><td>BLOCKED</td></tr>
+      <tr><td>Risk of permission bypass</td><td style="color:#6EE7B7">None</td><td style="color:#FCA5A5">Yes &mdash; the core problem</td></tr>
+      <tr><td>Complexity</td><td>Medium (~80 entries)</td><td>Low (3 lists)</td></tr>
+      <tr><td>Compliance / audit</td><td style="color:#6EE7B7">Clean</td><td style="color:#FCA5A5">Risky</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 7. SECURITY ==================== -->
+<div class="section" id="security">
+  <div class="section-header">
+    <div class="section-icon">&#128737;</div>
+    <h2>7. Security Architecture (3 Hard Layers)</h2>
+  </div>
+
+  <p>Every SQL query passes through 3 hard security layers before reaching the database. These layers are deterministic, code-enforced, and cannot be bypassed by the AI.</p>
+
+  <div class="layer layer-soft" style="margin-top:16px">
+    <div class="label label-soft">SOFT &mdash; Optimization Only</div>
+    <h4>Schema Filtering in AI Prompt</h4>
+    <ul>
+      <li>Reduces AI errors by only showing relevant tables</li>
+      <li>NOT a security boundary (model may know tables anyway)</li>
+      <li>Bypassed when Gemini context caching is enabled</li>
+    </ul>
+  </div>
+
+  <div class="layer layer-hard">
+    <div class="label label-hard">HARD 1 &mdash; SqlQueryValidator</div>
+    <h4>4-Layer SQL Validation</h4>
+    <ul>
+      <li><strong>L1 Regex:</strong> Reject INSERT/DROP/UNION/SLEEP/multi-statement</li>
+      <li><strong>L2 AST:</strong> Parse with PhpMyAdmin, extract tables, verify against allowed_tables[]</li>
+      <li><strong>L3 LIMIT:</strong> Must have LIMIT 1&ndash;1000</li>
+      <li><strong>L4 Columns:</strong> Block password, iban, token, api_key, etc.</li>
+      <li>All subqueries blocked (prevents scope bypass)</li>
+    </ul>
+  </div>
+
+  <div class="layer layer-hard">
+    <div class="label label-hard">HARD 2 &mdash; SqlScopeInjector</div>
+    <h4>Row-Level WHERE Injection</h4>
+    <ul>
+      <li>ALL_COMPANY: no filter (full access)</li>
+      <li>TEAM: WHERE user_id IN (self + direct reports)</li>
+      <li>PERSONAL: WHERE user_id = self</li>
+      <li>Uses AST token positions (safe injection)</li>
+      <li>Re-checks blocked columns after injection</li>
+    </ul>
+  </div>
+
+  <div class="layer layer-safe">
+    <div class="label label-safe">HARD 3 &mdash; Read-Only Transaction</div>
+    <h4>MySQL Session-Level Protection</h4>
+    <ul>
+      <li>SET TRANSACTION READ ONLY</li>
+      <li>MAX_EXECUTION_TIME timeout (5000ms)</li>
+      <li>Even if all above fail, no data modification possible</li>
+      <li>Error messages sanitized (no internal paths leaked)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 8. EXAMPLES ==================== -->
+<div class="section" id="examples">
+  <div class="section-header">
+    <div class="section-icon">&#128221;</div>
+    <h2>8. Example Scenarios</h2>
+  </div>
+
+  <h3>Employee with <code>HR.Employees.Offboarding.View</code> only, PERSONAL scope</h3>
+  <pre>allowed_tables = [reference_tables] + [users] + [user_offboards]
+-> Can query: departments, positions, users (row-scoped), user_offboards (row-scoped)
+-> Cannot query: user_contracts, attendances, payslips, etc.</pre>
+
+  <h3>Manager with <code>HR.Attendance.Attendance.View</code>, TEAM scope</h3>
+  <pre>-- AI generates:
+SELECT u.first_name, a.date FROM users u JOIN attendances a ON u.id = a.user_id LIMIT 10
+
+-- After scope injection:
+SELECT u.first_name, a.date FROM users u JOIN attendances a ON u.id = a.user_id
+WHERE (u.id IN (42,10,20) AND a.user_id IN (42,10,20)) LIMIT 10</pre>
+
+  <h3>Admin with ALL_COMPANY scope</h3>
+  <pre>allowed_tables = [all mapped tables]
+SQL passes through SqlScopeInjector unchanged (no WHERE injection)</pre>
+</div>
+
+<!-- ==================== 9. PIPELINE ==================== -->
+<div class="section" id="pipeline">
+  <div class="section-header">
+    <div class="section-icon">&#9881;</div>
+    <h2>9. Implementation Pipeline</h2>
+  </div>
+
+  <pre>ChatOrchestrator::handleMessage()
+  |
+  |-- 1. Get permissions[] + access_scope from IdentityPermissionService (cached 300s)
+  |-- 2. TableAccessResolver::resolve(permissions[]) -> allowed_tables[]
+  |
+  |-- 3. Build schema text:
+  |       |-- If Gemini context caching -> FULL unfiltered schema (shared cache)
+  |       '-- Otherwise -> filtered schema for allowed_tables only
+  |
+  |-- 4. Single AI call -> generate SQL from question + schema
+  |
+  |-- 5. SqlExecutionPipeline.process(sql, allowed_tables, scope, userId, teamIds)
+  |       |-- [HARD] SqlQueryValidator.validate()       -> reject disallowed tables/syntax
+  |       |-- [HARD] SqlScopeInjector.inject()          -> add WHERE clauses for scope
+  |       |-- [HARD] SqlQueryValidator.checkBlocked()   -> re-check scoped SQL
+  |       '-- [HARD] SqlQueryExecutor.execute()         -> read-only transaction
+  |
+  |-- 6. On failure -> retry with error context (up to 3 rounds)
+  '-- 7. On success -> AI summary + format results</pre>
+</div>
+
+<!-- ==================== 10. MAINTENANCE ==================== -->
+<div class="section" id="maintenance">
+  <div class="section-header">
+    <div class="section-icon">&#128295;</div>
+    <h2>10. Maintenance &amp; Validation</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Event</th><th>Frequency</th><th>Effort</th></tr>
+      <tr><td>New table added</td><td>~1&ndash;2/month</td><td>Add 1 line to FEATURE_MAP + 1 line to SCOPE_COLUMNS</td></tr>
+      <tr><td>New permission added</td><td>~1&ndash;2/quarter</td><td>Usually no change (prefix matching)</td></tr>
+      <tr><td>Permission prefix renamed</td><td>Very rare</td><td>Update affected entries</td></tr>
+      <tr><td>Validate consistency</td><td>As needed</td><td><code>php artisan ai:validate-table-map --tenant={id}</code></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 11. KEY FILES ==================== -->
+<div class="section" id="files">
+  <div class="section-header">
+    <div class="section-icon">&#128193;</div>
+    <h2>11. Key Files</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>File</th><th>Purpose</th></tr>
+      <tr><td><code>Services/Access/TablePermissionRegistry.php</code></td><td>Single source of truth &mdash; all table/permission/scope mappings</td></tr>
+      <tr><td><code>Services/Access/TableAccessResolver.php</code></td><td>Runtime resolution &mdash; permissions[] -> allowed_tables[]</td></tr>
+      <tr><td><code>Services/Sql/SqlScopeInjector.php</code></td><td>Row-level WHERE injection using AST positions</td></tr>
+      <tr><td><code>Services/Sql/SqlQueryValidator.php</code></td><td>Table-level enforcement &mdash; rejects disallowed tables</td></tr>
+      <tr><td><code>Services/Sql/SqlExecutionPipeline.php</code></td><td>Orchestrates validate -> scope -> execute</td></tr>
+      <tr><td><code>Services/Sql/SqlQueryExecutor.php</code></td><td>Read-only MySQL execution with timeout</td></tr>
+      <tr><td><code>Repositories/UserScopeRepository.php</code></td><td>Fetches direct report IDs for TEAM scope</td></tr>
+      <tr><td><code>Console/Commands/ValidateTableMapCommand.php</code></td><td>Artisan command for consistency checks</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 12. FUTURE ==================== -->
+<div class="section" id="future">
+  <div class="section-header">
+    <div class="section-icon">&#128302;</div>
+    <h2>12. Future Enhancement: Dynamic Permission-to-Table Mapping</h2>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-title">&#128218; Design Only &mdash; Not Yet Implemented</div>
+    <p>Move the static <code>TablePermissionRegistry</code> to a central MySQL table (<code>ai_table_access_rules</code>) with Redis caching for runtime resolution.</p>
+  </div>
+
+  <h3>Proposed Schema</h3>
+  <pre>CREATE TABLE ai_table_access_rules (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  permission_prefix VARCHAR(255) NOT NULL,
+  table_name VARCHAR(255) NOT NULL,
+  scope_column VARCHAR(100) NULL,
+  table_category ENUM('feature', 'reference', 'universal') NOT NULL DEFAULT 'feature',
+  shared_prefixes JSON NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order INT UNSIGNED NOT NULL DEFAULT 0,
+  notes VARCHAR(500) NULL,
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL,
+  UNIQUE KEY uq_prefix_table (permission_prefix, table_name)
+);</pre>
+
+  <h3>What Stays Static (Cannot Be Dynamic)</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Component</th><th>Why Static</th></tr>
+      <tr><td><code>blocked_tables</code></td><td>Security &mdash; system tables that must NEVER be exposed</td></tr>
+      <tr><td><code>blocked_columns</code></td><td>Security &mdash; password, iban, token, etc.</td></tr>
+      <tr><td>Subquery blocking</td><td>Security rule</td></tr>
+      <tr><td>Read-only transaction</td><td>Security rule</td></tr>
+    </table>
+  </div>
+  <p><strong>Principle:</strong> Security boundaries stay in code. Only the permission-to-table mapping moves to DB.</p>
+
+  <h3>Cache Strategy</h3>
+  <pre>Write:    Admin changes rule -> Save to DB -> Clear Redis cache key
+Read:     TableAccessResolver -> DynamicRegistry -> Redis cache (1h TTL)
+                                                  | miss -> DB query -> cache
+Fallback: If both Redis + DB fail -> fall back to static constants</pre>
+
+  <h3>When to Implement</h3>
+  <p>Not now. Current static registry works well. Consider when table mappings change frequently, multiple developers need to modify them simultaneously, or admin UI visibility is needed.</p>
+</div>
+
+</div><!-- end content -->
+
+<div class="footer">
+  <div class="footer-brand"><strong>Idaratech &middot; &#1573;&#1583;&#1575;&#1585;&#1578;&#1603;</strong> &mdash; AI Chat Data Scoping Report</div>
+  <div class="footer-author">Prepared by Bilal Elhalawaty</div>
+</div>
+
+<script>
+function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').textContent=d?'\uD83C\uDF19':'\u2600\uFE0F';localStorage.setItem('idaratech-theme',d?'light':'dark')}
+(function(){var d=document.documentElement.getAttribute('data-theme')==='dark';if(d)document.getElementById('theme-icon').textContent='\u2600\uFE0F'})();
+</script>
+</body>
+</html>
