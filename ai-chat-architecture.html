@@ -255,7 +255,7 @@
   }
 
   .security-card li::before {
-    content: '→ ';
+    content: '\2192 ';
     color: var(--text-muted);
   }
 
@@ -394,8 +394,8 @@
 
   .pro-con { list-style: none; }
   .pro-con li { padding: 4px 0; font-size: 0.88em; }
-  .pro-con .pro::before { content: '✓ '; color: var(--accent-green); font-weight: bold; }
-  .pro-con .con::before { content: '✗ '; color: var(--accent-red); font-weight: bold; }
+  .pro-con .pro::before { content: '\2713 '; color: var(--accent-green); font-weight: bold; }
+  .pro-con .con::before { content: '\2717 '; color: var(--accent-red); font-weight: bold; }
 
   /* Gemini Caching */
   .cache-flow {
@@ -518,20 +518,12 @@
     font-size: 0.85em;
   }
 
-  .toc {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px 28px;
-    margin-bottom: 40px;
-  }
-
-  .toc h3 { color: var(--text-heading); margin-bottom: 12px; }
-  .toc ul { list-style: none; columns: 2; }
-  @media (max-width: 700px) { .toc ul { columns: 1; } }
-  .toc li { padding: 4px 0; }
-  .toc a { color: var(--accent); text-decoration: none; font-size: 0.92em; }
-  .toc a:hover { text-decoration: underline; }
+  /* Tabs */
+  .tabs{display:flex;gap:4px;background:var(--bg-card);padding:6px;border-radius:10px;margin:20px 0;flex-wrap:wrap;border:1px solid var(--border)}
+  .tb{padding:8px 16px;border-radius:8px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s}
+  .tb:hover{background:rgba(88,166,255,0.1);color:var(--accent)}
+  .tb.active{background:var(--accent);color:var(--bg)}
+  .tc{display:none}.tc.active{display:block}
 </style>
 </head>
 <body>
@@ -560,149 +552,218 @@
     <div class="stat"><div class="number">2</div><div class="label">AI Providers</div></div>
   </div>
 
-  <!-- TOC -->
-  <div class="toc">
-    <h3>Contents</h3>
-    <ul>
-      <li><a href="#flow">Request Flow (Single Phase)</a></li>
-      <li><a href="#security">Security Layers</a></li>
-      <li><a href="#scoping">Permission-Based Scoping</a></li>
-      <li><a href="#scope-levels">Access Scope Levels</a></li>
-      <li><a href="#permissions">Permission → Table Mapping</a></li>
-      <li><a href="#approaches">Scoping Approaches Comparison</a></li>
-      <li><a href="#caching">Gemini Context Caching</a></li>
-      <li><a href="#config">Configuration</a></li>
-      <li><a href="#api">API Endpoints</a></li>
-      <li><a href="#files">File Structure</a></li>
-    </ul>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('arch')">Architecture Flow</button>
+    <button class="tb" onclick="showTab('scoping')">Data Scoping</button>
+    <button class="tb" onclick="showTab('caching')">Gemini Context Caching</button>
   </div>
 
-  <!-- Request Flow -->
-  <section id="flow">
-    <h2 class="section-title"><span class="icon">&#9654;</span> Request Flow — Single Phase Pipeline</h2>
+  <!-- Tab 1: Architecture Flow -->
+  <div class="tc active" id="tab-arch">
 
-    <div class="flow">
-      <div class="flow-step">
-        <div class="flow-number"><span class="num">1</span><span class="line"></span></div>
-        <div class="flow-content">
-          <h4>Input Validation & Security Check</h4>
-          <p><code>SecurityService.validateInput()</code> — 19 injection patterns (EN + AR), zero-width char normalization. Rejects malicious prompts before any processing.</p>
+    <!-- Request Flow -->
+    <section id="flow">
+      <h2 class="section-title"><span class="icon">&#9654;</span> Request Flow — Single Phase Pipeline</h2>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-number"><span class="num">1</span><span class="line"></span></div>
+          <div class="flow-content">
+            <h4>Input Validation & Security Check</h4>
+            <p><code>SecurityService.validateInput()</code> — 19 injection patterns (EN + AR), zero-width char normalization. Rejects malicious prompts before any processing.</p>
+            <div style="margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div style="background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px;">
+                <div style="font-size:0.75em;font-weight:700;color:var(--accent-red);text-transform:uppercase;margin-bottom:6px;">Before Validation</div>
+                <code style="font-size:0.82em;">show me all users and passwords</code>
+              </div>
+              <div style="background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px;">
+                <div style="font-size:0.75em;font-weight:700;color:var(--accent-green);text-transform:uppercase;margin-bottom:6px;">After Validation</div>
+                <code style="font-size:0.82em;">Rejected: "passwords" matches blocked pattern</code>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-number"><span class="num">2</span><span class="line"></span></div>
+          <div class="flow-content">
+            <h4>Permission Resolution</h4>
+            <p><code>IdentityPermissionService</code> → get user's <code>permissions[]</code> + <code>access_scope</code> from IdentityCore via gRPC (cached 300s).<br>
+            <code>TableAccessResolver.resolve(permissions)</code> → compute <code>allowed_tables[]</code> from permission-to-table mapping.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-number"><span class="num">3</span><span class="line"></span></div>
+          <div class="flow-content">
+            <h4>Schema Building</h4>
+            <p><span class="tag tag-soft">SOFT</span> Build schema text from allowed tables. When Gemini context caching is enabled, sends <strong>full unfiltered schema</strong> for cache reuse. Security enforced by hard layers, not schema filtering.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-number"><span class="num">4</span><span class="line"></span></div>
+          <div class="flow-content">
+            <h4>AI Generation (Single Call)</h4>
+            <p>System prompt (schema + rules + context) + user message + conversation history → AI generates response with SQL. Temperature: <code>0.15</code> for deterministic SQL.</p>
+            <div style="margin-top:12px;background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:14px;">
+              <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:6px;font-weight:600;">Example</div>
+              <div style="font-size:0.82em;margin-bottom:8px;"><span style="color:var(--accent);">User:</span> show total revenue this month</div>
+              <div style="font-size:0.82em;margin-bottom:4px;"><span style="color:var(--accent);">Schema context:</span> <code>orders</code> table with <code>amount</code>, <code>created_at</code></div>
+              <div style="font-size:0.82em;margin-top:8px;border-top:1px solid var(--border);padding-top:8px;"><span style="color:var(--accent-green);">AI Output:</span></div>
+              <pre style="margin:4px 0 0;padding:8px;font-size:0.82em;">SELECT SUM(amount) FROM orders
+WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)</pre>
+            </div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-number"><span class="num">5</span><span class="line"></span></div>
+          <div class="flow-content">
+            <h4>SQL Execution Pipeline (5 Steps)</h4>
+            <p>Every AI-generated query passes through 5 hard security checks before touching the database.</p>
+
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+              <div style="background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span class="tag tag-hard">STEP 1</span>
+                  <strong style="font-size:0.88em;">Regex Validation</strong>
+                </div>
+                <div style="font-size:0.82em;color:var(--text-muted);">
+                  <span style="color:var(--accent);">Input:</span> <code>SELECT * FROM users; DROP TABLE users</code><br>
+                  <span style="color:var(--accent-red);">Output:</span> Blocked — multi-statement detected (semicolon)
+                </div>
+              </div>
+
+              <div style="background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span class="tag tag-hard">STEP 2</span>
+                  <strong style="font-size:0.88em;">AST Table Verification</strong>
+                </div>
+                <div style="font-size:0.82em;color:var(--text-muted);">
+                  <span style="color:var(--accent);">Input:</span> <code>SELECT * FROM payslips LIMIT 10</code><br>
+                  <span style="color:var(--accent);">User's allowed_tables:</span> [users, attendances, departments]<br>
+                  <span style="color:var(--accent-red);">Output:</span> Blocked — <code>payslips</code> not in allowed_tables
+                </div>
+              </div>
+
+              <div style="background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span class="tag tag-hard">STEP 3</span>
+                  <strong style="font-size:0.88em;">Scope Injection</strong>
+                </div>
+                <div style="font-size:0.82em;color:var(--text-muted);">
+                  <span style="color:var(--accent);">Input:</span> <code>SELECT * FROM attendances LIMIT 10</code> (TEAM scope, user 42)<br>
+                  <span style="color:var(--accent-green);">Output:</span> <code>SELECT * FROM attendances WHERE user_id IN (42,10,20) LIMIT 10</code>
+                </div>
+              </div>
+
+              <div style="background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span class="tag tag-hard">STEP 4</span>
+                  <strong style="font-size:0.88em;">Blocked Column Recheck</strong>
+                </div>
+                <div style="font-size:0.82em;color:var(--text-muted);">
+                  <span style="color:var(--accent);">Input:</span> Scoped SQL from Step 3<br>
+                  <span style="color:var(--accent-green);">Output:</span> Passed — no blocked columns (password, iban, token, etc.)
+                </div>
+              </div>
+
+              <div style="background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span class="tag tag-hard">STEP 5</span>
+                  <strong style="font-size:0.88em;">Read-Only Execution</strong>
+                </div>
+                <div style="font-size:0.82em;color:var(--text-muted);">
+                  <span style="color:var(--accent);">Input:</span> Validated + scoped SQL<br>
+                  <span style="color:var(--accent-green);">Output:</span> Execute in <code>SET TRANSACTION READ ONLY</code> with 5000ms timeout
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-number"><span class="num">6</span><span class="line"></span></div>
+          <div class="flow-content">
+            <h4>Retry Loop (up to 3 rounds)</h4>
+            <p>On SQL error → send error context back to AI → AI generates corrected SQL → re-validate. Max 3 retry rounds before returning error to user.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-number"><span class="num">7</span><span class="line"></span></div>
+          <div class="flow-content">
+            <h4>Format Results & Respond</h4>
+            <p><code>ResultFormatter</code> builds tables/charts/CSV. AI summarizes data in natural language. Returns response with <code>message</code>, <code>tables[]</code>, <code>charts[]</code>, <code>files[]</code>.</p>
+          </div>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number"><span class="num">2</span><span class="line"></span></div>
-        <div class="flow-content">
-          <h4>Permission Resolution</h4>
-          <p><code>IdentityPermissionService</code> → get user's <code>permissions[]</code> + <code>access_scope</code> from IdentityCore via gRPC (cached 300s).<br>
-          <code>TableAccessResolver.resolve(permissions)</code> → compute <code>allowed_tables[]</code> from permission-to-table mapping.</p>
+    </section>
+
+    <!-- Security Layers -->
+    <section id="security">
+      <h2 class="section-title"><span class="icon">&#128274;</span> Security Layers</h2>
+
+      <div class="security-grid">
+        <div class="security-card soft">
+          <h3><span class="label label-soft">SOFT</span> Schema Filtering</h3>
+          <p style="color: var(--text-muted); font-size: 0.9em;">Optimization only — NOT a security boundary</p>
+          <ul>
+            <li>Filters schema in AI prompt to reduce errors</li>
+            <li>Bypassed when Gemini context caching is on</li>
+            <li>Irrelevant after model fine-tuning</li>
+            <li>Prompt manipulation could bypass this</li>
+          </ul>
+        </div>
+
+        <div class="security-card hard">
+          <h3><span class="label label-hard">HARD 1</span> SqlQueryValidator</h3>
+          <p style="color: var(--text-muted); font-size: 0.9em;">4-layer validation — cannot be bypassed</p>
+          <ul>
+            <li><strong>L1 Regex:</strong> Reject INSERT/DROP/UNION/SLEEP/multi-statement</li>
+            <li><strong>L2 AST:</strong> Parse with PhpMyAdmin, extract tables, verify allowed list</li>
+            <li><strong>L3 LIMIT:</strong> Must have LIMIT 1-1000</li>
+            <li><strong>L4 Columns:</strong> Block password, iban, token, api_key, etc.</li>
+            <li>All subqueries blocked (prevents scope bypass)</li>
+          </ul>
+        </div>
+
+        <div class="security-card hard">
+          <h3><span class="label label-hard">HARD 2</span> SqlScopeInjector</h3>
+          <p style="color: var(--text-muted); font-size: 0.9em;">Row-level WHERE injection — applied programmatically</p>
+          <ul>
+            <li>ALL_COMPANY → no filter (full access)</li>
+            <li>TEAM → WHERE user_id IN (self + direct reports)</li>
+            <li>PERSONAL → WHERE user_id = self</li>
+            <li>Uses AST token positions (safe injection)</li>
+            <li>Re-checks blocked columns after injection</li>
+          </ul>
+        </div>
+
+        <div class="security-card readonly">
+          <h3><span class="label label-safe">HARD 3</span> Read-Only Transaction</h3>
+          <p style="color: var(--text-muted); font-size: 0.9em;">Last line of defense — MySQL session level</p>
+          <ul>
+            <li>SET TRANSACTION READ ONLY</li>
+            <li>MAX_EXECUTION_TIME timeout (5000ms)</li>
+            <li>Even if all above fail, no data modification</li>
+            <li>Error messages sanitized (no internal paths)</li>
+          </ul>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number"><span class="num">3</span><span class="line"></span></div>
-        <div class="flow-content">
-          <h4>Schema Building</h4>
-          <p><span class="tag tag-soft">SOFT</span> Build schema text from allowed tables. When Gemini context caching is enabled, sends <strong>full unfiltered schema</strong> for cache reuse. Security enforced by hard layers, not schema filtering.</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-number"><span class="num">4</span><span class="line"></span></div>
-        <div class="flow-content">
-          <h4>AI Generation (Single Call)</h4>
-          <p>System prompt (schema + rules + context) + user message + conversation history → AI generates response with SQL. Temperature: <code>0.15</code> for deterministic SQL.</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-number"><span class="num">5</span><span class="line"></span></div>
-        <div class="flow-content">
-          <h4>SQL Execution Pipeline</h4>
-          <p>
-            <span class="tag tag-hard">HARD</span> <code>SqlQueryValidator</code> — 4-layer validation (regex → AST → LIMIT → blocked columns)<br>
-            <span class="tag tag-hard">HARD</span> <code>SqlScopeInjector</code> — Inject WHERE clauses based on access_scope<br>
-            <span class="tag tag-hard">HARD</span> Re-check blocked columns on scoped SQL<br>
-            <span class="tag tag-hard">HARD</span> <code>SqlQueryExecutor</code> — Read-only transaction with timeout
-          </p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-number"><span class="num">6</span><span class="line"></span></div>
-        <div class="flow-content">
-          <h4>Retry Loop (up to 3 rounds)</h4>
-          <p>On SQL error → send error context back to AI → AI generates corrected SQL → re-validate. Max 3 retry rounds before returning error to user.</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-number"><span class="num">7</span><span class="line"></span></div>
-        <div class="flow-content">
-          <h4>Format Results & Respond</h4>
-          <p><code>ResultFormatter</code> builds tables/charts/CSV. AI summarizes data in natural language. Returns response with <code>message</code>, <code>tables[]</code>, <code>charts[]</code>, <code>files[]</code>.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Security Layers -->
-  <section id="security">
-    <h2 class="section-title"><span class="icon">&#128274;</span> Security Layers</h2>
+  </div><!-- end tab-arch -->
 
-    <div class="security-grid">
-      <div class="security-card soft">
-        <h3><span class="label label-soft">SOFT</span> Schema Filtering</h3>
-        <p style="color: var(--text-muted); font-size: 0.9em;">Optimization only — NOT a security boundary</p>
-        <ul>
-          <li>Filters schema in AI prompt to reduce errors</li>
-          <li>Bypassed when Gemini context caching is on</li>
-          <li>Irrelevant after model fine-tuning</li>
-          <li>Prompt manipulation could bypass this</li>
-        </ul>
-      </div>
+  <!-- Tab 2: Data Scoping -->
+  <div class="tc" id="tab-scoping">
 
-      <div class="security-card hard">
-        <h3><span class="label label-hard">HARD 1</span> SqlQueryValidator</h3>
-        <p style="color: var(--text-muted); font-size: 0.9em;">4-layer validation — cannot be bypassed</p>
-        <ul>
-          <li><strong>L1 Regex:</strong> Reject INSERT/DROP/UNION/SLEEP/multi-statement</li>
-          <li><strong>L2 AST:</strong> Parse with PhpMyAdmin, extract tables, verify allowed list</li>
-          <li><strong>L3 LIMIT:</strong> Must have LIMIT 1-1000</li>
-          <li><strong>L4 Columns:</strong> Block password, iban, token, api_key, etc.</li>
-          <li>All subqueries blocked (prevents scope bypass)</li>
-        </ul>
-      </div>
+    <!-- Scoping -->
+    <section id="scoping">
+      <h2 class="section-title"><span class="icon">&#128272;</span> Permission-Based Table Scoping</h2>
 
-      <div class="security-card hard">
-        <h3><span class="label label-hard">HARD 2</span> SqlScopeInjector</h3>
-        <p style="color: var(--text-muted); font-size: 0.9em;">Row-level WHERE injection — applied programmatically</p>
-        <ul>
-          <li>ALL_COMPANY → no filter (full access)</li>
-          <li>TEAM → WHERE user_id IN (self + direct reports)</li>
-          <li>PERSONAL → WHERE user_id = self</li>
-          <li>Uses AST token positions (safe injection)</li>
-          <li>Re-checks blocked columns after injection</li>
-        </ul>
-      </div>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">
+        Tables are gated by IdentityCore permissions using <code>TablePermissionRegistry</code> — the single source of truth.
+        <code>TableAccessResolver</code> computes the allowed table list at runtime by matching user permissions to feature prefixes.
+      </p>
 
-      <div class="security-card readonly">
-        <h3><span class="label label-safe">HARD 3</span> Read-Only Transaction</h3>
-        <p style="color: var(--text-muted); font-size: 0.9em;">Last line of defense — MySQL session level</p>
-        <ul>
-          <li>SET TRANSACTION READ ONLY</li>
-          <li>MAX_EXECUTION_TIME timeout (5000ms)</li>
-          <li>Even if all above fail, no data modification</li>
-          <li>Error messages sanitized (no internal paths)</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Scoping -->
-  <section id="scoping">
-    <h2 class="section-title"><span class="icon">&#128272;</span> Permission-Based Table Scoping</h2>
-
-    <p style="color: var(--text-muted); margin-bottom: 24px;">
-      Tables are gated by IdentityCore permissions using <code>TablePermissionRegistry</code> — the single source of truth.
-      <code>TableAccessResolver</code> computes the allowed table list at runtime by matching user permissions to feature prefixes.
-    </p>
-
-    <pre><span class="comment">// User authenticates → IdentityCore returns permissions + scope</span>
+      <pre><span class="comment">// User authenticates → IdentityCore returns permissions + scope</span>
 <span class="keyword">permissions</span> = [<span class="string">'HR.Employees.Team.View'</span>, <span class="string">'HR.Attendance.Attendance.View'</span>]
 <span class="keyword">access_scope</span> = <span class="string">'TEAM'</span>
 
@@ -714,296 +775,312 @@
 
 <span class="comment">// Tables NOT accessible (no matching permission):</span>
 <span class="comment">// user_contracts (HR.Employees.Contracts), payslips (HR.Payroll.Payroll), etc.</span></pre>
-  </section>
+    </section>
 
-  <!-- Scope Levels -->
-  <section id="scope-levels">
-    <h2 class="section-title"><span class="icon">&#128101;</span> Access Scope Levels</h2>
+    <!-- Scope Levels -->
+    <section id="scope-levels">
+      <h2 class="section-title"><span class="icon">&#128101;</span> Access Scope Levels</h2>
 
-    <div class="scope-grid">
-      <div class="scope-card scope-all">
-        <h3 style="color: var(--accent-green)">ALL_COMPANY</h3>
-        <div class="who">Owner, Admin, HR, Accountant</div>
-        <div class="sql-effect">
-          <span style="color: var(--text-muted)">-- No WHERE injection</span><br>
-          SELECT * FROM users<br>
-          LIMIT 100
+      <div class="scope-grid">
+        <div class="scope-card scope-all">
+          <h3 style="color: var(--accent-green)">ALL_COMPANY</h3>
+          <div class="who">Owner, Admin, HR, Accountant</div>
+          <div class="sql-effect">
+            <span style="color: var(--text-muted)">-- No WHERE injection</span><br>
+            SELECT * FROM users<br>
+            LIMIT 100
+          </div>
+        </div>
+
+        <div class="scope-card scope-team">
+          <h3 style="color: var(--accent-yellow)">TEAM</h3>
+          <div class="who">Manager, Supervisor</div>
+          <div class="sql-effect">
+            SELECT * FROM users<br>
+            <span style="color: var(--accent-yellow)">WHERE id IN (42, 10, 20)</span><br>
+            LIMIT 100<br>
+            <span style="color: var(--text-muted)">-- self + direct reports</span>
+          </div>
+        </div>
+
+        <div class="scope-card scope-personal">
+          <h3 style="color: var(--accent-red)">PERSONAL</h3>
+          <div class="who">Employee, Reception</div>
+          <div class="sql-effect">
+            SELECT * FROM users<br>
+            <span style="color: var(--accent-red)">WHERE id = 42</span><br>
+            LIMIT 100<br>
+            <span style="color: var(--text-muted)">-- self only</span>
+          </div>
         </div>
       </div>
 
-      <div class="scope-card scope-team">
-        <h3 style="color: var(--accent-yellow)">TEAM</h3>
-        <div class="who">Manager, Supervisor</div>
-        <div class="sql-effect">
-          SELECT * FROM users<br>
-          <span style="color: var(--accent-yellow)">WHERE id IN (42, 10, 20)</span><br>
-          LIMIT 100<br>
-          <span style="color: var(--text-muted)">-- self + direct reports</span>
+      <p style="color: var(--text-muted); margin-top: 16px; font-size: 0.9em;">
+        Team members resolved via <code>UserScopeRepository.getDirectReportIds()</code> using <code>line_manager</code> column.
+        For teams &gt;200 users, a subquery is used: <code>IN (SELECT id FROM users WHERE line_manager = ?)</code>
+      </p>
+    </section>
+
+    <!-- Permission Table -->
+    <section id="permissions">
+      <h2 class="section-title"><span class="icon">&#128221;</span> Permission → Table Mapping</h2>
+
+      <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;">
+        <table class="perm-table">
+          <thead>
+            <tr>
+              <th>Permission Prefix</th>
+              <th>Tables Granted</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="perm-prefix">null (Reference)</span></td>
+              <td><div class="table-list">
+                <span class="table-chip">departments</span>
+                <span class="table-chip">positions</span>
+                <span class="table-chip">locations</span>
+                <span class="table-chip">teams</span>
+                <span class="table-chip">shifts</span>
+                <span class="table-chip">banks</span>
+                <span class="table-chip">roles</span>
+                <span class="table-chip">+ 20 more</span>
+              </div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">null (Universal)</span></td>
+              <td><div class="table-list"><span class="table-chip">users</span> <span style="color: var(--accent-yellow); font-size: 0.82em;">(always row-scoped)</span></div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.Employees.Team</span></td>
+              <td><div class="table-list">
+                <span class="table-chip">user_extended_infos</span>
+                <span class="table-chip">user_addresses</span>
+                <span class="table-chip">user_biometrices</span>
+                <span class="table-chip">user_devices</span>
+                <span class="table-chip">user_locations</span>
+                <span class="table-chip">user_policies</span>
+                <span class="table-chip">user_assets</span>
+                <span class="table-chip">dependents</span>
+              </div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.Employees.Contracts</span></td>
+              <td><div class="table-list"><span class="table-chip">user_contracts</span></div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.Employees.Offboarding</span></td>
+              <td><div class="table-list"><span class="table-chip">user_offboards</span></div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.Attendance.Attendance</span></td>
+              <td><div class="table-list">
+                <span class="table-chip">attendances</span>
+                <span class="table-chip">breaks</span>
+                <span class="table-chip">timesheet</span>
+                <span class="table-chip">attendance_comments</span>
+              </div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.Payroll.Payroll</span></td>
+              <td><div class="table-list">
+                <span class="table-chip">payrolls</span>
+                <span class="table-chip">payrun</span>
+                <span class="table-chip">payslip</span>
+                <span class="table-chip">user_salaries</span>
+                <span class="table-chip">user_payments</span>
+                <span class="table-chip">user_benefits</span>
+                <span class="table-chip">user_packages</span>
+                <span class="table-chip">+ 5 more</span>
+              </div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.Leaves.LeaveBalance</span></td>
+              <td><div class="table-list">
+                <span class="table-chip">leave_balances</span>
+                <span class="table-chip">leave_balance_histories</span>
+              </div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.TaskManagement.TaskManagement</span></td>
+              <td><div class="table-list"><span class="table-chip">tasks</span></div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.KPI.Evaluations</span></td>
+              <td><div class="table-list"><span class="table-chip">kpi_employee_evaluations</span></div></td>
+            </tr>
+            <tr>
+              <td><span class="perm-prefix">HR.Tickets.Tickets</span></td>
+              <td><div class="table-list"><span class="table-chip">tickets</span></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Approaches Comparison -->
+    <section id="approaches">
+      <h2 class="section-title"><span class="icon">&#9878;</span> Scoping Approaches Comparison</h2>
+
+      <div class="approach-grid">
+        <div class="approach-card chosen">
+          <div class="ribbon ribbon-chosen">Implemented</div>
+          <h3 style="color: var(--accent-green)">A: Permission-to-Table Mapping</h3>
+          <p>Feature-level granularity using reverse permission map. Each table maps to a permission prefix. Prefix matching ensures future permissions work automatically.</p>
+          <ul class="pro-con">
+            <li class="pro">Feature-level granularity (21 groups)</li>
+            <li class="pro">Permission parity with UI — mirrors exactly</li>
+            <li class="pro">Default-deny for unknown tables</li>
+            <li class="pro">Each table listed exactly once</li>
+            <li class="pro">No change needed for new permission actions</li>
+            <li class="pro">Fine-tuning safe (hard enforcement)</li>
+            <li class="con">~80 table entries (one-time setup)</li>
+            <li class="con">Permission prefix must match IdentityCore</li>
+          </ul>
+        </div>
+
+        <div class="approach-card rejected">
+          <div class="ribbon ribbon-rejected">Rejected</div>
+          <h3 style="color: var(--accent-red)">B: Scope-Level Tiers</h3>
+          <p>Classify tables into OPEN/STANDARD/RESTRICTED tiers. Use access_scope to gate restricted tables. Simpler but fundamentally flawed.</p>
+          <ul class="pro-con">
+            <li class="pro">Simple — 3 flat lists</li>
+            <li class="pro">Low maintenance</li>
+            <li class="con">No permission parity — ignores permissions entirely</li>
+            <li class="con">Permission bypass: user without attendance access can query attendance</li>
+            <li class="con">Coarse-grained — 3 tiers is too few</li>
+            <li class="con">Owner/admin/HR/accountant all get identical access</li>
+            <li class="con">"I can't see this in the app but AI shows it"</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- end tab-scoping -->
+
+  <!-- Tab 3: Gemini Context Caching -->
+  <div class="tc" id="tab-caching">
+
+    <!-- Gemini Caching -->
+    <section id="caching">
+      <h2 class="section-title"><span class="icon">&#9889;</span> Gemini Context Caching</h2>
+
+      <p style="color: var(--text-muted); margin-bottom: 20px;">
+        When enabled, the full database schema is cached on Gemini's servers, reducing token costs for subsequent requests.
+        All users and tenants share the same cache entry since database structure is identical across tenants.
+      </p>
+
+      <div class="cache-flow">
+        <div class="cache-box">
+          <h4>1. Check Redis</h4>
+          <p><code>gemini_cache:{md5(prompt)}</code><br>Cache key based on system prompt hash</p>
+        </div>
+        <span class="arrow">→</span>
+        <div class="cache-box">
+          <h4>2. Miss? Create Cache</h4>
+          <p><code>POST /v1beta/cachedContents</code><br>Upload schema to Gemini with TTL</p>
+        </div>
+        <span class="arrow">→</span>
+        <div class="cache-box">
+          <h4>3. Generate Content</h4>
+          <p><code>cachedContent: "cachedContents/abc"</code><br>Reference cache instead of inline schema</p>
+        </div>
+        <span class="arrow">→</span>
+        <div class="cache-box">
+          <h4>4. Error? Fallback</h4>
+          <p>On 404/400 → invalidate Redis<br>Retry with inline system_instruction</p>
         </div>
       </div>
 
-      <div class="scope-card scope-personal">
-        <h3 style="color: var(--accent-red)">PERSONAL</h3>
-        <div class="who">Employee, Reception</div>
-        <div class="sql-effect">
-          SELECT * FROM users<br>
-          <span style="color: var(--accent-red)">WHERE id = 42</span><br>
-          LIMIT 100<br>
-          <span style="color: var(--text-muted)">-- self only</span>
-        </div>
+      <p style="color: var(--text-muted); font-size: 0.88em;">
+        <strong>Why full schema?</strong> Security is enforced by hard layers (validator + scope injector), not by schema filtering.
+        Sending unfiltered schema lets all users share 1 cache entry instead of N per-permission-set entries.
+      </p>
+    </section>
+
+    <!-- Config -->
+    <section id="config">
+      <h2 class="section-title"><span class="icon">&#9881;</span> Configuration</h2>
+
+      <div class="config-grid">
+        <div class="config-item"><span class="key">AI_ASSISTANT_PROVIDER</span><span class="val">openrouter</span></div>
+        <div class="config-item"><span class="key">AI_ASSISTANT_MODEL</span><span class="val">google/gemini-2.5-flash</span></div>
+        <div class="config-item"><span class="key">AI_ASSISTANT_MAX_TOKENS</span><span class="val">8192</span></div>
+        <div class="config-item"><span class="key">temperature_sql</span><span class="val">0.15</span></div>
+        <div class="config-item"><span class="key">temperature_summary</span><span class="val">0.5</span></div>
+        <div class="config-item"><span class="key">AI_SQL_MAX_ROWS</span><span class="val">1000</span></div>
+        <div class="config-item"><span class="key">AI_SQL_TIMEOUT_MS</span><span class="val">5000</span></div>
+        <div class="config-item"><span class="key">max_retry_rounds</span><span class="val">3</span></div>
+        <div class="config-item"><span class="key">AI_ASSISTANT_RATE_LIMIT</span><span class="val">30 / 10min</span></div>
+        <div class="config-item"><span class="key">schema_cache_ttl</span><span class="val">3600s</span></div>
+        <div class="config-item"><span class="key">GEMINI_CONTEXT_CACHE_ENABLED</span><span class="val">false</span></div>
+        <div class="config-item"><span class="key">GEMINI_CONTEXT_CACHE_TTL</span><span class="val">3600s</span></div>
       </div>
-    </div>
+    </section>
 
-    <p style="color: var(--text-muted); margin-top: 16px; font-size: 0.9em;">
-      Team members resolved via <code>UserScopeRepository.getDirectReportIds()</code> using <code>line_manager</code> column.
-      For teams &gt;200 users, a subquery is used: <code>IN (SELECT id FROM users WHERE line_manager = ?)</code>
-    </p>
-  </section>
+    <!-- API -->
+    <section id="api">
+      <h2 class="section-title"><span class="icon">&#128279;</span> API Endpoints</h2>
 
-  <!-- Permission Table -->
-  <section id="permissions">
-    <h2 class="section-title"><span class="icon">&#128221;</span> Permission → Table Mapping</h2>
+      <p style="color: var(--text-muted); margin-bottom: 16px;">Base path: <code>/api/v2/ai</code> — All require <code>authVerify</code> + <code>identity.authorize</code></p>
 
-    <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;">
-      <table class="perm-table">
-        <thead>
-          <tr>
-            <th>Permission Prefix</th>
-            <th>Tables Granted</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="perm-prefix">null (Reference)</span></td>
-            <td><div class="table-list">
-              <span class="table-chip">departments</span>
-              <span class="table-chip">positions</span>
-              <span class="table-chip">locations</span>
-              <span class="table-chip">teams</span>
-              <span class="table-chip">shifts</span>
-              <span class="table-chip">banks</span>
-              <span class="table-chip">roles</span>
-              <span class="table-chip">+ 20 more</span>
-            </div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">null (Universal)</span></td>
-            <td><div class="table-list"><span class="table-chip">users</span> <span style="color: var(--accent-yellow); font-size: 0.82em;">(always row-scoped)</span></div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.Employees.Team</span></td>
-            <td><div class="table-list">
-              <span class="table-chip">user_extended_infos</span>
-              <span class="table-chip">user_addresses</span>
-              <span class="table-chip">user_biometrices</span>
-              <span class="table-chip">user_devices</span>
-              <span class="table-chip">user_locations</span>
-              <span class="table-chip">user_policies</span>
-              <span class="table-chip">user_assets</span>
-              <span class="table-chip">dependents</span>
-            </div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.Employees.Contracts</span></td>
-            <td><div class="table-list"><span class="table-chip">user_contracts</span></div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.Employees.Offboarding</span></td>
-            <td><div class="table-list"><span class="table-chip">user_offboards</span></div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.Attendance.Attendance</span></td>
-            <td><div class="table-list">
-              <span class="table-chip">attendances</span>
-              <span class="table-chip">breaks</span>
-              <span class="table-chip">timesheet</span>
-              <span class="table-chip">attendance_comments</span>
-            </div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.Payroll.Payroll</span></td>
-            <td><div class="table-list">
-              <span class="table-chip">payrolls</span>
-              <span class="table-chip">payrun</span>
-              <span class="table-chip">payslip</span>
-              <span class="table-chip">user_salaries</span>
-              <span class="table-chip">user_payments</span>
-              <span class="table-chip">user_benefits</span>
-              <span class="table-chip">user_packages</span>
-              <span class="table-chip">+ 5 more</span>
-            </div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.Leaves.LeaveBalance</span></td>
-            <td><div class="table-list">
-              <span class="table-chip">leave_balances</span>
-              <span class="table-chip">leave_balance_histories</span>
-            </div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.TaskManagement.TaskManagement</span></td>
-            <td><div class="table-list"><span class="table-chip">tasks</span></div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.KPI.Evaluations</span></td>
-            <td><div class="table-list"><span class="table-chip">kpi_employee_evaluations</span></div></td>
-          </tr>
-          <tr>
-            <td><span class="perm-prefix">HR.Tickets.Tickets</span></td>
-            <td><div class="table-list"><span class="table-chip">tickets</span></div></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Approaches Comparison -->
-  <section id="approaches">
-    <h2 class="section-title"><span class="icon">&#9878;</span> Scoping Approaches Comparison</h2>
-
-    <div class="approach-grid">
-      <div class="approach-card chosen">
-        <div class="ribbon ribbon-chosen">Implemented</div>
-        <h3 style="color: var(--accent-green)">A: Permission-to-Table Mapping</h3>
-        <p>Feature-level granularity using reverse permission map. Each table maps to a permission prefix. Prefix matching ensures future permissions work automatically.</p>
-        <ul class="pro-con">
-          <li class="pro">Feature-level granularity (21 groups)</li>
-          <li class="pro">Permission parity with UI — mirrors exactly</li>
-          <li class="pro">Default-deny for unknown tables</li>
-          <li class="pro">Each table listed exactly once</li>
-          <li class="pro">No change needed for new permission actions</li>
-          <li class="pro">Fine-tuning safe (hard enforcement)</li>
-          <li class="con">~80 table entries (one-time setup)</li>
-          <li class="con">Permission prefix must match IdentityCore</li>
-        </ul>
+      <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;">
+        <table class="perm-table">
+          <thead><tr><th>Method</th><th>Path</th><th>Description</th><th>Extra Middleware</th></tr></thead>
+          <tbody>
+            <tr><td><span style="color: var(--accent-green); font-weight: 600;">POST</span></td><td><code>/chat</code></td><td>Send message, get AI response</td><td>RateLimitMiddleware</td></tr>
+            <tr><td><span style="color: var(--accent); font-weight: 600;">GET</span></td><td><code>/suggested-prompts</code></td><td>Locale-aware example prompts</td><td>—</td></tr>
+            <tr><td><span style="color: var(--accent); font-weight: 600;">GET</span></td><td><code>/conversations</code></td><td>List conversations (paginated)</td><td>—</td></tr>
+            <tr><td><span style="color: var(--accent); font-weight: 600;">GET</span></td><td><code>/conversations/{id}</code></td><td>Get conversation with messages</td><td>—</td></tr>
+            <tr><td><span style="color: var(--accent-yellow); font-weight: 600;">PATCH</span></td><td><code>/conversations/{id}</code></td><td>Rename conversation</td><td>—</td></tr>
+            <tr><td><span style="color: var(--accent-red); font-weight: 600;">DELETE</span></td><td><code>/conversations/{id}</code></td><td>Soft-delete conversation</td><td>—</td></tr>
+            <tr><td><span style="color: var(--accent-green); font-weight: 600;">POST</span></td><td><code>/conversations/{id}/clear</code></td><td>Clear all messages</td><td>—</td></tr>
+          </tbody>
+        </table>
       </div>
+    </section>
 
-      <div class="approach-card rejected">
-        <div class="ribbon ribbon-rejected">Rejected</div>
-        <h3 style="color: var(--accent-red)">B: Scope-Level Tiers</h3>
-        <p>Classify tables into OPEN/STANDARD/RESTRICTED tiers. Use access_scope to gate restricted tables. Simpler but fundamentally flawed.</p>
-        <ul class="pro-con">
-          <li class="pro">Simple — 3 flat lists</li>
-          <li class="pro">Low maintenance</li>
-          <li class="con">No permission parity — ignores permissions entirely</li>
-          <li class="con">Permission bypass: user without attendance access can query attendance</li>
-          <li class="con">Coarse-grained — 3 tiers is too few</li>
-          <li class="con">Owner/admin/HR/accountant all get identical access</li>
-          <li class="con">"I can't see this in the app but AI shows it"</li>
-        </ul>
+    <!-- Files -->
+    <section id="files">
+      <h2 class="section-title"><span class="icon">&#128193;</span> Key Files</h2>
+
+      <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;">
+        <table class="perm-table">
+          <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>Services/ChatOrchestrator.php</code></td><td>Main pipeline — single-phase flow, permission resolution, retry loop</td></tr>
+            <tr><td><code>Services/Sql/SqlExecutionPipeline.php</code></td><td>Orchestrates validate → scope inject → blocked column recheck → execute</td></tr>
+            <tr><td><code>Services/Sql/SqlQueryValidator.php</code></td><td>4-layer SQL validation (regex, AST, LIMIT, blocked columns)</td></tr>
+            <tr><td><code>Services/Sql/SqlScopeInjector.php</code></td><td>Row-level WHERE injection using AST token positions</td></tr>
+            <tr><td><code>Services/Sql/SqlQueryExecutor.php</code></td><td>Read-only MySQL execution with timeout</td></tr>
+            <tr><td><code>Services/Sql/SchemaProvider.php</code></td><td>Loads + caches tenant DB schema from INFORMATION_SCHEMA</td></tr>
+            <tr><td><code>Services/Access/TablePermissionRegistry.php</code></td><td>Single source of truth: permission → table mapping</td></tr>
+            <tr><td><code>Services/Access/TableAccessResolver.php</code></td><td>Resolves allowed tables from user permissions at runtime</td></tr>
+            <tr><td><code>Repositories/UserScopeRepository.php</code></td><td>Get direct report IDs for TEAM scope (line_manager query)</td></tr>
+            <tr><td><code>Integrations/Gemini/GeminiClient.php</code></td><td>Gemini API client with context caching support</td></tr>
+            <tr><td><code>Console/Commands/ValidateTableMapCommand.php</code></td><td>Registry consistency check: <code>ai:validate-table-map</code></td></tr>
+            <tr><td><code>Config/config.php</code></td><td>All module configuration (~80 settings)</td></tr>
+          </tbody>
+        </table>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Gemini Caching -->
-  <section id="caching">
-    <h2 class="section-title"><span class="icon">&#9889;</span> Gemini Context Caching</h2>
-
-    <p style="color: var(--text-muted); margin-bottom: 20px;">
-      When enabled, the full database schema is cached on Gemini's servers, reducing token costs for subsequent requests.
-      All users and tenants share the same cache entry since database structure is identical across tenants.
-    </p>
-
-    <div class="cache-flow">
-      <div class="cache-box">
-        <h4>1. Check Redis</h4>
-        <p><code>gemini_cache:{md5(prompt)}</code><br>Cache key based on system prompt hash</p>
-      </div>
-      <span class="arrow">→</span>
-      <div class="cache-box">
-        <h4>2. Miss? Create Cache</h4>
-        <p><code>POST /v1beta/cachedContents</code><br>Upload schema to Gemini with TTL</p>
-      </div>
-      <span class="arrow">→</span>
-      <div class="cache-box">
-        <h4>3. Generate Content</h4>
-        <p><code>cachedContent: "cachedContents/abc"</code><br>Reference cache instead of inline schema</p>
-      </div>
-      <span class="arrow">→</span>
-      <div class="cache-box">
-        <h4>4. Error? Fallback</h4>
-        <p>On 404/400 → invalidate Redis<br>Retry with inline system_instruction</p>
-      </div>
-    </div>
-
-    <p style="color: var(--text-muted); font-size: 0.88em;">
-      <strong>Why full schema?</strong> Security is enforced by hard layers (validator + scope injector), not by schema filtering.
-      Sending unfiltered schema lets all users share 1 cache entry instead of N per-permission-set entries.
-    </p>
-  </section>
-
-  <!-- Config -->
-  <section id="config">
-    <h2 class="section-title"><span class="icon">&#9881;</span> Configuration</h2>
-
-    <div class="config-grid">
-      <div class="config-item"><span class="key">AI_ASSISTANT_PROVIDER</span><span class="val">openrouter</span></div>
-      <div class="config-item"><span class="key">AI_ASSISTANT_MODEL</span><span class="val">google/gemini-2.5-flash</span></div>
-      <div class="config-item"><span class="key">AI_ASSISTANT_MAX_TOKENS</span><span class="val">8192</span></div>
-      <div class="config-item"><span class="key">temperature_sql</span><span class="val">0.15</span></div>
-      <div class="config-item"><span class="key">temperature_summary</span><span class="val">0.5</span></div>
-      <div class="config-item"><span class="key">AI_SQL_MAX_ROWS</span><span class="val">1000</span></div>
-      <div class="config-item"><span class="key">AI_SQL_TIMEOUT_MS</span><span class="val">5000</span></div>
-      <div class="config-item"><span class="key">max_retry_rounds</span><span class="val">3</span></div>
-      <div class="config-item"><span class="key">AI_ASSISTANT_RATE_LIMIT</span><span class="val">30 / 10min</span></div>
-      <div class="config-item"><span class="key">schema_cache_ttl</span><span class="val">3600s</span></div>
-      <div class="config-item"><span class="key">GEMINI_CONTEXT_CACHE_ENABLED</span><span class="val">false</span></div>
-      <div class="config-item"><span class="key">GEMINI_CONTEXT_CACHE_TTL</span><span class="val">3600s</span></div>
-    </div>
-  </section>
-
-  <!-- API -->
-  <section id="api">
-    <h2 class="section-title"><span class="icon">&#128279;</span> API Endpoints</h2>
-
-    <p style="color: var(--text-muted); margin-bottom: 16px;">Base path: <code>/api/v2/ai</code> — All require <code>authVerify</code> + <code>identity.authorize</code></p>
-
-    <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;">
-      <table class="perm-table">
-        <thead><tr><th>Method</th><th>Path</th><th>Description</th><th>Extra Middleware</th></tr></thead>
-        <tbody>
-          <tr><td><span style="color: var(--accent-green); font-weight: 600;">POST</span></td><td><code>/chat</code></td><td>Send message, get AI response</td><td>RateLimitMiddleware</td></tr>
-          <tr><td><span style="color: var(--accent); font-weight: 600;">GET</span></td><td><code>/suggested-prompts</code></td><td>Locale-aware example prompts</td><td>—</td></tr>
-          <tr><td><span style="color: var(--accent); font-weight: 600;">GET</span></td><td><code>/conversations</code></td><td>List conversations (paginated)</td><td>—</td></tr>
-          <tr><td><span style="color: var(--accent); font-weight: 600;">GET</span></td><td><code>/conversations/{id}</code></td><td>Get conversation with messages</td><td>—</td></tr>
-          <tr><td><span style="color: var(--accent-yellow); font-weight: 600;">PATCH</span></td><td><code>/conversations/{id}</code></td><td>Rename conversation</td><td>—</td></tr>
-          <tr><td><span style="color: var(--accent-red); font-weight: 600;">DELETE</span></td><td><code>/conversations/{id}</code></td><td>Soft-delete conversation</td><td>—</td></tr>
-          <tr><td><span style="color: var(--accent-green); font-weight: 600;">POST</span></td><td><code>/conversations/{id}/clear</code></td><td>Clear all messages</td><td>—</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Files -->
-  <section id="files">
-    <h2 class="section-title"><span class="icon">&#128193;</span> Key Files</h2>
-
-    <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;">
-      <table class="perm-table">
-        <thead><tr><th>File</th><th>Purpose</th></tr></thead>
-        <tbody>
-          <tr><td><code>Services/ChatOrchestrator.php</code></td><td>Main pipeline — single-phase flow, permission resolution, retry loop</td></tr>
-          <tr><td><code>Services/Sql/SqlExecutionPipeline.php</code></td><td>Orchestrates validate → scope inject → blocked column recheck → execute</td></tr>
-          <tr><td><code>Services/Sql/SqlQueryValidator.php</code></td><td>4-layer SQL validation (regex, AST, LIMIT, blocked columns)</td></tr>
-          <tr><td><code>Services/Sql/SqlScopeInjector.php</code></td><td>Row-level WHERE injection using AST token positions</td></tr>
-          <tr><td><code>Services/Sql/SqlQueryExecutor.php</code></td><td>Read-only MySQL execution with timeout</td></tr>
-          <tr><td><code>Services/Sql/SchemaProvider.php</code></td><td>Loads + caches tenant DB schema from INFORMATION_SCHEMA</td></tr>
-          <tr><td><code>Services/Access/TablePermissionRegistry.php</code></td><td>Single source of truth: permission → table mapping</td></tr>
-          <tr><td><code>Services/Access/TableAccessResolver.php</code></td><td>Resolves allowed tables from user permissions at runtime</td></tr>
-          <tr><td><code>Repositories/UserScopeRepository.php</code></td><td>Get direct report IDs for TEAM scope (line_manager query)</td></tr>
-          <tr><td><code>Integrations/Gemini/GeminiClient.php</code></td><td>Gemini API client with context caching support</td></tr>
-          <tr><td><code>Console/Commands/ValidateTableMapCommand.php</code></td><td>Registry consistency check: <code>ai:validate-table-map</code></td></tr>
-          <tr><td><code>Config/config.php</code></td><td>All module configuration (~80 settings)</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+  </div><!-- end tab-caching -->
 
 </div>
 
 <footer>
   AI Chat Assistance Module — Idaratech HR Platform &bull; Laravel 11 &bull; PHP 8.3 &bull; Gemini AI + gRPC
 </footer>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tc').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
 
 </body>
 </html>

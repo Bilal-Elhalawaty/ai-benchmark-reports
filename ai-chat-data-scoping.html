@@ -25,13 +25,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 /* Content */
 .content{max-width:960px;margin:0 auto;padding:40px 24px}
 
-/* TOC */
-.toc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;margin-bottom:40px}
-.toc h3{font-size:14px;font-weight:700;color:#5EEAD4;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
-.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px}
-.toc a{color:#94A3B8;text-decoration:none;font-size:13px;font-weight:500;padding:4px 0;display:block;transition:color .2s}
-.toc a:hover{color:#5EEAD4}
-.toc a .num{color:#475569;margin-right:6px;font-weight:700;font-size:11px}
+/* Tabs */
+.tabs{display:flex;gap:4px;background:rgba(255,255,255,.04);padding:6px;border-radius:10px;margin:20px 0;flex-wrap:wrap;border:1px solid rgba(255,255,255,.08)}
+.tb{padding:8px 16px;border-radius:8px;border:none;background:transparent;color:#94A3B8;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s}
+.tb:hover{background:rgba(94,234,212,0.1);color:#5EEAD4}
+.tb.active{background:#5EEAD4;color:#0F172A}
+.tc{display:none}.tc.active{display:block}
 
 /* Sections */
 .section{margin-bottom:48px}
@@ -142,9 +141,10 @@ code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:rgba(255
 [data-theme="light"] .section h3{color:#1E293B!important}
 [data-theme="light"] .section p{color:#475569!important}
 [data-theme="light"] td{color:#334155!important}
-[data-theme="light"] .toc{background:#fff!important;border-color:#E2E8F0!important}
-[data-theme="light"] .toc a{color:#475569!important}
-[data-theme="light"] .toc a:hover{color:#0F766E!important}
+[data-theme="light"] .tabs{background:#fff!important;border-color:#E2E8F0!important}
+[data-theme="light"] .tb{color:#64748B!important}
+[data-theme="light"] .tb:hover{background:rgba(15,118,110,0.1)!important;color:#0F766E!important}
+[data-theme="light"] .tb.active{background:#0F766E!important;color:#fff!important}
 [data-theme="light"] .table-wrap{border-color:#E2E8F0!important}
 [data-theme="light"] th{background:#F1F5F9!important;color:#0F766E!important;border-color:#E2E8F0!important}
 [data-theme="light"] td{border-color:#F1F5F9!important}
@@ -180,7 +180,6 @@ code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:rgba(255
   .hero-stats{gap:12px}
   .compare-grid{grid-template-columns:1fr}
   .scope-grid{grid-template-columns:1fr}
-  .toc-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -206,30 +205,21 @@ code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:rgba(255
 
 <div class="content">
 
-<!-- ==================== TOC ==================== -->
-<div class="toc">
-  <h3>Contents</h3>
-  <div class="toc-grid">
-    <a href="#problem"><span class="num">1.</span> Problem Statement</a>
-    <a href="#principle"><span class="num">2.</span> AI Must Never Handle Security</a>
-    <a href="#overview"><span class="num">3.</span> Scoping Options Overview</a>
-    <a href="#option-a"><span class="num">4.</span> Option A: Permission-to-Table Mapping</a>
-    <a href="#option-b"><span class="num">5.</span> Option B: Scope-Level Tiers</a>
-    <a href="#comparison"><span class="num">6.</span> Side-by-Side Comparison</a>
-    <a href="#security"><span class="num">7.</span> Security Architecture (3 Hard Layers)</a>
-    <a href="#examples"><span class="num">8.</span> Example Scenarios</a>
-    <a href="#pipeline"><span class="num">9.</span> Implementation Pipeline</a>
-    <a href="#maintenance"><span class="num">10.</span> Maintenance &amp; Validation</a>
-    <a href="#files"><span class="num">11.</span> Key Files</a>
-    <a href="#future"><span class="num">12.</span> Future: Dynamic Mapping</a>
-  </div>
+<!-- ==================== TABS ==================== -->
+<div class="tabs">
+  <button class="tb active" onclick="showTab('principles')">Problem & Security</button>
+  <button class="tb" onclick="showTab('strategies')">Scoping Strategies</button>
+  <button class="tb" onclick="showTab('comparison')">Comparison & Examples</button>
+  <button class="tb" onclick="showTab('implementation')">Implementation</button>
 </div>
 
-<!-- ==================== 1. PROBLEM ==================== -->
+<!-- ==================== TAB 1: PROBLEM & SECURITY ==================== -->
+<div class="tc active" id="tab-principles">
+
 <div class="section" id="problem">
   <div class="section-header">
     <div class="section-icon">&#127919;</div>
-    <h2>1. Problem Statement</h2>
+    <h2>Problem Statement</h2>
   </div>
   <p>The AI Chat module converts natural-language questions to SQL queries against the tenant database. Without scoping, <strong>any authenticated user can query any table and see all rows</strong> &mdash; bypassing all permission and scope boundaries.</p>
   <p>Two layers of scoping are required:</p>
@@ -242,11 +232,10 @@ code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:rgba(255
   </div>
 </div>
 
-<!-- ==================== 2. PRINCIPLE ==================== -->
 <div class="section" id="principle">
   <div class="section-header">
     <div class="section-icon">&#128274;</div>
-    <h2>2. Fundamental Principle: AI Must NEVER Handle Security</h2>
+    <h2>Fundamental Principle: AI Must NEVER Handle Security</h2>
   </div>
 
   <div class="alert alert-danger">
@@ -335,11 +324,69 @@ code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:rgba(255
   </div>
 </div>
 
-<!-- ==================== 3. OVERVIEW ==================== -->
+<div class="section" id="security">
+  <div class="section-header">
+    <div class="section-icon">&#128737;</div>
+    <h2>Security Architecture (3 Hard Layers)</h2>
+  </div>
+
+  <p>Every SQL query passes through 3 hard security layers before reaching the database. These layers are deterministic, code-enforced, and cannot be bypassed by the AI.</p>
+
+  <div class="layer layer-soft" style="margin-top:16px">
+    <div class="label label-soft">SOFT &mdash; Optimization Only</div>
+    <h4>Schema Filtering in AI Prompt</h4>
+    <ul>
+      <li>Reduces AI errors by only showing relevant tables</li>
+      <li>NOT a security boundary (model may know tables anyway)</li>
+      <li>Bypassed when Gemini context caching is enabled</li>
+    </ul>
+  </div>
+
+  <div class="layer layer-hard">
+    <div class="label label-hard">HARD 1 &mdash; SqlQueryValidator</div>
+    <h4>4-Layer SQL Validation</h4>
+    <ul>
+      <li><strong>L1 Regex:</strong> Reject INSERT/DROP/UNION/SLEEP/multi-statement</li>
+      <li><strong>L2 AST:</strong> Parse with PhpMyAdmin, extract tables, verify against allowed_tables[]</li>
+      <li><strong>L3 LIMIT:</strong> Must have LIMIT 1&ndash;1000</li>
+      <li><strong>L4 Columns:</strong> Block password, iban, token, api_key, etc.</li>
+      <li>All subqueries blocked (prevents scope bypass)</li>
+    </ul>
+  </div>
+
+  <div class="layer layer-hard">
+    <div class="label label-hard">HARD 2 &mdash; SqlScopeInjector</div>
+    <h4>Row-Level WHERE Injection</h4>
+    <ul>
+      <li>ALL_COMPANY: no filter (full access)</li>
+      <li>TEAM: WHERE user_id IN (self + direct reports)</li>
+      <li>PERSONAL: WHERE user_id = self</li>
+      <li>Uses AST token positions (safe injection)</li>
+      <li>Re-checks blocked columns after injection</li>
+    </ul>
+  </div>
+
+  <div class="layer layer-safe">
+    <div class="label label-safe">HARD 3 &mdash; Read-Only Transaction</div>
+    <h4>MySQL Session-Level Protection</h4>
+    <ul>
+      <li>SET TRANSACTION READ ONLY</li>
+      <li>MAX_EXECUTION_TIME timeout (5000ms)</li>
+      <li>Even if all above fail, no data modification possible</li>
+      <li>Error messages sanitized (no internal paths leaked)</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- end tab-principles -->
+
+<!-- ==================== TAB 2: SCOPING STRATEGIES ==================== -->
+<div class="tc" id="tab-strategies">
+
 <div class="section" id="overview">
   <div class="section-header">
     <div class="section-icon">&#128214;</div>
-    <h2>3. Scoping Options Overview</h2>
+    <h2>Scoping Options Overview</h2>
   </div>
 
   <div class="table-wrap">
@@ -354,11 +401,10 @@ code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:rgba(255
   </div>
 </div>
 
-<!-- ==================== 4. OPTION A ==================== -->
 <div class="section" id="option-a">
   <div class="section-header">
     <div class="section-icon">&#9989;</div>
-    <h2>4. Option A: Permission-to-Table Mapping (Implemented)</h2>
+    <h2>Option A: Permission-to-Table Mapping (Implemented)</h2>
   </div>
 
   <div class="alert alert-success">
@@ -469,11 +515,10 @@ Correct (feature-level -- our implementation):
   </ul>
 </div>
 
-<!-- ==================== 5. OPTION B ==================== -->
 <div class="section" id="option-b">
   <div class="section-header">
     <div class="section-icon">&#10060;</div>
-    <h2>5. Option B: Scope-Level Tier Classification (Rejected)</h2>
+    <h2>Option B: Scope-Level Tier Classification (Rejected)</h2>
   </div>
 
   <div class="alert alert-danger">
@@ -519,11 +564,15 @@ RESTRICTED -> only ALL_COMPANY scope can query (payrolls, payslips)</pre>
   </div>
 </div>
 
-<!-- ==================== 6. COMPARISON ==================== -->
+</div><!-- end tab-strategies -->
+
+<!-- ==================== TAB 3: COMPARISON & EXAMPLES ==================== -->
+<div class="tc" id="tab-comparison">
+
 <div class="section" id="comparison">
   <div class="section-header">
     <div class="section-icon">&#9878;&#65039;</div>
-    <h2>6. Side-by-Side Comparison</h2>
+    <h2>Side-by-Side Comparison</h2>
   </div>
 
   <div class="compare-grid">
@@ -571,66 +620,10 @@ RESTRICTED -> only ALL_COMPANY scope can query (payrolls, payslips)</pre>
   </div>
 </div>
 
-<!-- ==================== 7. SECURITY ==================== -->
-<div class="section" id="security">
-  <div class="section-header">
-    <div class="section-icon">&#128737;</div>
-    <h2>7. Security Architecture (3 Hard Layers)</h2>
-  </div>
-
-  <p>Every SQL query passes through 3 hard security layers before reaching the database. These layers are deterministic, code-enforced, and cannot be bypassed by the AI.</p>
-
-  <div class="layer layer-soft" style="margin-top:16px">
-    <div class="label label-soft">SOFT &mdash; Optimization Only</div>
-    <h4>Schema Filtering in AI Prompt</h4>
-    <ul>
-      <li>Reduces AI errors by only showing relevant tables</li>
-      <li>NOT a security boundary (model may know tables anyway)</li>
-      <li>Bypassed when Gemini context caching is enabled</li>
-    </ul>
-  </div>
-
-  <div class="layer layer-hard">
-    <div class="label label-hard">HARD 1 &mdash; SqlQueryValidator</div>
-    <h4>4-Layer SQL Validation</h4>
-    <ul>
-      <li><strong>L1 Regex:</strong> Reject INSERT/DROP/UNION/SLEEP/multi-statement</li>
-      <li><strong>L2 AST:</strong> Parse with PhpMyAdmin, extract tables, verify against allowed_tables[]</li>
-      <li><strong>L3 LIMIT:</strong> Must have LIMIT 1&ndash;1000</li>
-      <li><strong>L4 Columns:</strong> Block password, iban, token, api_key, etc.</li>
-      <li>All subqueries blocked (prevents scope bypass)</li>
-    </ul>
-  </div>
-
-  <div class="layer layer-hard">
-    <div class="label label-hard">HARD 2 &mdash; SqlScopeInjector</div>
-    <h4>Row-Level WHERE Injection</h4>
-    <ul>
-      <li>ALL_COMPANY: no filter (full access)</li>
-      <li>TEAM: WHERE user_id IN (self + direct reports)</li>
-      <li>PERSONAL: WHERE user_id = self</li>
-      <li>Uses AST token positions (safe injection)</li>
-      <li>Re-checks blocked columns after injection</li>
-    </ul>
-  </div>
-
-  <div class="layer layer-safe">
-    <div class="label label-safe">HARD 3 &mdash; Read-Only Transaction</div>
-    <h4>MySQL Session-Level Protection</h4>
-    <ul>
-      <li>SET TRANSACTION READ ONLY</li>
-      <li>MAX_EXECUTION_TIME timeout (5000ms)</li>
-      <li>Even if all above fail, no data modification possible</li>
-      <li>Error messages sanitized (no internal paths leaked)</li>
-    </ul>
-  </div>
-</div>
-
-<!-- ==================== 8. EXAMPLES ==================== -->
 <div class="section" id="examples">
   <div class="section-header">
     <div class="section-icon">&#128221;</div>
-    <h2>8. Example Scenarios</h2>
+    <h2>Example Scenarios</h2>
   </div>
 
   <h3>Employee with <code>HR.Employees.Offboarding.View</code> only, PERSONAL scope</h3>
@@ -651,11 +644,15 @@ WHERE (u.id IN (42,10,20) AND a.user_id IN (42,10,20)) LIMIT 10</pre>
 SQL passes through SqlScopeInjector unchanged (no WHERE injection)</pre>
 </div>
 
-<!-- ==================== 9. PIPELINE ==================== -->
+</div><!-- end tab-comparison -->
+
+<!-- ==================== TAB 4: IMPLEMENTATION ==================== -->
+<div class="tc" id="tab-implementation">
+
 <div class="section" id="pipeline">
   <div class="section-header">
     <div class="section-icon">&#9881;</div>
-    <h2>9. Implementation Pipeline</h2>
+    <h2>Implementation Pipeline</h2>
   </div>
 
   <pre>ChatOrchestrator::handleMessage()
@@ -679,11 +676,10 @@ SQL passes through SqlScopeInjector unchanged (no WHERE injection)</pre>
   '-- 7. On success -> AI summary + format results</pre>
 </div>
 
-<!-- ==================== 10. MAINTENANCE ==================== -->
 <div class="section" id="maintenance">
   <div class="section-header">
     <div class="section-icon">&#128295;</div>
-    <h2>10. Maintenance &amp; Validation</h2>
+    <h2>Maintenance &amp; Validation</h2>
   </div>
 
   <div class="table-wrap">
@@ -697,11 +693,10 @@ SQL passes through SqlScopeInjector unchanged (no WHERE injection)</pre>
   </div>
 </div>
 
-<!-- ==================== 11. KEY FILES ==================== -->
 <div class="section" id="files">
   <div class="section-header">
     <div class="section-icon">&#128193;</div>
-    <h2>11. Key Files</h2>
+    <h2>Key Files</h2>
   </div>
 
   <div class="table-wrap">
@@ -719,11 +714,10 @@ SQL passes through SqlScopeInjector unchanged (no WHERE injection)</pre>
   </div>
 </div>
 
-<!-- ==================== 12. FUTURE ==================== -->
 <div class="section" id="future">
   <div class="section-header">
     <div class="section-icon">&#128302;</div>
-    <h2>12. Future Enhancement: Dynamic Permission-to-Table Mapping</h2>
+    <h2>Future Enhancement: Dynamic Permission-to-Table Mapping</h2>
   </div>
 
   <div class="alert alert-info">
@@ -769,6 +763,8 @@ Fallback: If both Redis + DB fail -> fall back to static constants</pre>
   <p>Not now. Current static registry works well. Consider when table mappings change frequently, multiple developers need to modify them simultaneously, or admin UI visibility is needed.</p>
 </div>
 
+</div><!-- end tab-implementation -->
+
 </div><!-- end content -->
 
 <div class="footer">
@@ -777,6 +773,12 @@ Fallback: If both Redis + DB fail -> fall back to static constants</pre>
 </div>
 
 <script>
+function showTab(id){
+  document.querySelectorAll('.tc').forEach(function(e){e.classList.remove('active')});
+  document.querySelectorAll('.tb').forEach(function(e){e.classList.remove('active')});
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
 function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').textContent=d?'\uD83C\uDF19':'\u2600\uFE0F';localStorage.setItem('idaratech-theme',d?'light':'dark')}
 (function(){var d=document.documentElement.getAttribute('data-theme')==='dark';if(d)document.getElementById('theme-icon').textContent='\u2600\uFE0F'})();
 </script>
