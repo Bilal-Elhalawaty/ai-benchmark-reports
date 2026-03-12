@@ -809,39 +809,77 @@ SQL GENERATION RULES: ...
             <h3>2. Added Few-Shot Examples</h3>
 
             <p><strong>Before:</strong> No examples &mdash; the AI had to guess the expected format.</p>
-            <p><strong>After:</strong> Three carefully chosen examples:</p>
+            <p><strong>After:</strong> We include real JSON examples directly in the system prompt &mdash; showing the AI exactly what good output looks like. Here is one of the actual few-shot examples sent to the model:</p>
 
-            <div class="grid-2">
-                <div class="card card-accent">
-                    <div class="card-title">English Data Question</div>
-                    <p style="margin:0">Shows proper SQL with English column aliases</p>
-                </div>
-                <div class="card card-purple">
-                    <div class="card-title">Arabic Data Question <span class="arabic" style="font-size:12px">(سؤال بالعربية)</span></div>
-                    <p style="margin:0">Shows <code>_ar</code> columns and Arabic aliases</p>
-                </div>
+            <div class="card" style="border-left:3px solid var(--green)">
+                <div class="card-title" style="color:var(--green)">Real Example #1 &mdash; JOIN + Aggregation</div>
+                <pre style="margin:8px 0 0"><code>{
+  "sql": "SELECT d.name AS \"Department\", COUNT(u.id) AS \"Count\"
+          FROM users u
+          JOIN departments d ON u.department_id = d.id
+          WHERE u.status = 'active'
+          GROUP BY d.id, d.name
+          ORDER BY COUNT(u.id) DESC
+          LIMIT 100",
+  "summary": "Here's the breakdown of employees by department:"
+}</code></pre>
             </div>
-            <div class="card card-yellow">
-                <div class="card-title">Off-Topic Question</div>
-                <p style="margin:0">Shows how to politely redirect without generating SQL</p>
+            <div class="card" style="border-left:3px solid var(--purple)">
+                <div class="card-title" style="color:var(--purple)">Real Example #2 &mdash; Date-Range GROUP BY</div>
+                <pre style="margin:8px 0 0"><code>{
+  "sql": "SELECT MONTHNAME(a.date) AS \"Month\",
+          COUNT(DISTINCT a.user_id) AS \"Employees Attended\",
+          ROUND(AVG(TIMESTAMPDIFF(MINUTE, a.check_in, a.check_out))/60, 1) AS \"Avg Hours\"
+          FROM attendances a
+          WHERE a.date BETWEEN '2026-01-01' AND '2026-06-30'
+            AND a.check_in IS NOT NULL AND a.check_out IS NOT NULL
+          GROUP BY MONTH(a.date), MONTHNAME(a.date)
+          ORDER BY MONTH(a.date) LIMIT 100",
+  "summary": "Here's the monthly attendance summary for the first half of 2026:"
+}</code></pre>
+            </div>
+            <div class="card" style="border-left:3px solid var(--yellow)">
+                <div class="card-title" style="color:var(--yellow)">Real Example #3 &mdash; Disambiguation (no SQL)</div>
+                <pre style="margin:8px 0 0"><code>{
+  "sql": null,
+  "summary": "Could you clarify what you mean by \"best employee\"?
+              For example: by attendance rate, by KPI score, or by longest tenure?"
+}</code></pre>
             </div>
 
+            <p>We send 4&ndash;5 examples per locale (English + Arabic equivalents with Arabic column aliases). Each example teaches a different pattern: aggregations, date grouping, conversational responses, and disambiguation.</p>
             <p><strong>Why:</strong> Few-shot examples are one of the most powerful techniques. Instead of explaining every rule in words, you <em>show</em> the AI what good output looks like. Research shows 3&ndash;5 examples significantly improve accuracy.</p>
 
             <!-- Change 3: Chain-of-Thought -->
             <h3>3. Added Chain-of-Thought (Thinking Process)</h3>
 
-            <pre><code>&lt;thinking_process&gt;
-1. ANALYZE: What data does the user need? Which tables and columns?
-2. VALIDATE: Can this be answered with the available schema?
-3. DECIDE:
-   - If YES &rarr; Write SQL SELECT query
-   - If UNCLEAR &rarr; Ask clarifying question
-   - If NOT DATA-RELATED &rarr; Respond conversationally
-4. GENERATE: Write query with JOINs, aliases, and LIMIT
-&lt;/thinking_process&gt;</code></pre>
+            <p>Chain-of-thought is encouraged <strong>implicitly</strong> through our prompt structure rather than explicit step-by-step instructions. The system prompt guides reasoning through structured XML sections:</p>
 
-            <p><strong>Why:</strong> When you ask someone a complex question and they must answer immediately, they often get it wrong. But if they think step-by-step, accuracy improves dramatically. AI works the same way. Key insight: <em>"Thinking only counts when it's out loud."</em></p>
+            <div class="card" style="border-left:3px solid var(--cyan)">
+                <div class="card-title" style="color:var(--cyan)">How We Encourage Reasoning</div>
+                <ul style="margin:8px 0 0;font-size:13px;color:var(--text)">
+                    <li><code>&lt;disambiguation&gt;</code> section &mdash; tells the AI to evaluate whether the question is clear before generating SQL</li>
+                    <li><code>&lt;domain_knowledge&gt;</code> section &mdash; provides metric definitions so the AI reasons with correct HR semantics</li>
+                    <li><code>&lt;rules_sql&gt;</code> section &mdash; enforces a mental checklist (aliases, LIMIT, GROUP BY, language matching)</li>
+                    <li>On retry, we explicitly say: <em>"Think about what went wrong and fix the root cause"</em></li>
+                </ul>
+            </div>
+
+            <p>The actual error retry prompt sent when SQL fails:</p>
+            <pre><code>&lt;error_context&gt;
+The SQL query you generated had an issue.
+Query: SELECT ... (the failed SQL)
+Error: Expression #2 of SELECT list is not in GROUP BY clause...
+&lt;/error_context&gt;
+
+&lt;instructions&gt;
+Generate a corrected SQL query that fixes this issue.
+- Follow all SQL rules: SELECT only, LIMIT required, valid table/column names
+- Think about what went wrong and fix the root cause
+- Return the corrected query in a ```sql code block
+&lt;/instructions&gt;</code></pre>
+
+            <p><strong>Why:</strong> Rather than adding a separate <code>&lt;thinking_process&gt;</code> block, we structure the entire prompt so the AI naturally reasons through the right steps. The XML sections act as a guided checklist. On retries, we explicitly ask it to reason about the error.</p>
 
             <!-- Change 4: Temperature -->
             <h3>4. Split Temperature: SQL vs. Summary</h3>
@@ -857,6 +895,29 @@ SQL GENERATION RULES: ...
 temperature_summary: 0.50  (natural language)</code></pre>
                 </div>
             </div>
+
+            <p><strong>How it works in code:</strong> Temperature is configured per provider in <code>Config/config.php</code> and selected at runtime based on the current phase:</p>
+
+            <pre><code>// Config/config.php
+'gemini' => [
+    'temperature_sql'     => (float) env('AI_ASSISTANT_TEMPERATURE_SQL', 0.15),
+    'temperature_summary' => (float) env('AI_ASSISTANT_TEMPERATURE_SUMMARY', 0.5),
+],
+
+// ChatOrchestrator.php — selects temperature per phase
+private function getTemperature(string $phase): float
+{
+    $provider = config('aichatassistance.provider', 'gemini');
+    return match ($phase) {
+        'summary' => (float) config("aichatassistance.{$provider}.temperature_summary", 0.5),
+        default   => (float) config("aichatassistance.{$provider}.temperature_sql", 0.15),
+    };
+}
+
+// Used when calling the AI:
+$response = $this->aiProvider->generateCompletion(
+    $systemPrompt, $formattedHistory, $this->getTemperature('sql'), $responseSchema
+);</code></pre>
 
             <p><strong>Why:</strong> SQL needs precision; summaries need fluency. Using one temperature for both is a compromise that serves neither well. See the <a href="#temperature">Temperature section</a> for a deep dive.</p>
 
@@ -878,14 +939,27 @@ temperature_summary: 0.50  (natural language)</code></pre>
                     <pre><code>rules &rarr; schema &rarr; user context</code></pre>
                 </div>
                 <div class="comparison-block comparison-after">
-                    <div class="comparison-label">After</div>
-                    <pre><code>role + rules + examples
-  &darr;
-schema (long context)
-  &darr;
-user context (dynamic, last)</code></pre>
+                    <div class="comparison-label">After &mdash; Current Implementation</div>
+                    <pre><code>System prompt (sent as system_instruction):
+  &lt;role&gt;         "You are Idaratech HR Data Assistant &mdash;
+                   a specialized data analyst for an HR platform..."
+  &lt;capabilities&gt; What the AI can do (generate SQL, answer HR questions)
+  &lt;rules_critical&gt; Security rules (SELECT only, no sensitive data, LIMIT)
+  &lt;rules_sql&gt;    SQL generation rules (MySQL syntax, aliases, GROUP BY, etc.)
+  &lt;disambiguation&gt; When to ask clarifying questions instead of guessing
+  &lt;response_format&gt; Required JSON format + few-shot examples
+  &lt;domain_knowledge&gt; HR metric definitions (late = SUM(late_hours), etc.)
+  &lt;language_rule&gt; Match user's language in summary
+  &lt;database_schema&gt; CREATE TABLE DDL statements
+
+Content messages (sent as conversation):
+  1. &lt;user_context&gt; name, company role, company name, language, date
+  2. Conversation history
+  3. Current user question</code></pre>
                 </div>
             </div>
+
+            <p><strong>Note on "rules" and "role":</strong> These are the <em>AI model's</em> instructions &mdash; not the end user's role. <code>&lt;role&gt;</code> defines the AI's identity ("you are an HR data assistant"), and <code>&lt;rules_critical&gt;</code> / <code>&lt;rules_sql&gt;</code> define what the AI must and must not do. The actual <em>user's</em> company role (like "HR Manager" or "Employee") is sent separately in the <code>&lt;user_context&gt;</code> block.</p>
 
             <p><strong>Why:</strong> Research shows placing long context (schema) AFTER instructions but BEFORE the user's question improves comprehension by <strong>up to 30%</strong>.</p>
 
